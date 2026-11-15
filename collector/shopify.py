@@ -25,7 +25,7 @@ NON_SIZE_OPTIONS = {"color", "colour", "style", "material", "title"}
 
 CATEGORY_RULES = [
     ("underwear", r"boxer|\bbriefs?\b|\btrunks\b|underwear|undershirt|vest top|pyjama|pajama|lounge pant|robe\b|gift card|gift voucher"),
-    ("lifestyle", r"spacer|custom order|flat fee|gift ?wrap|e-?gift|shipping|deposit|insurance|alteration|warranty|diffuser|lotion|hand cream|body wash|shampoo|room spray|vinyl|\brecord\b|eau de|parfum|perfume|fragrance|cologne|candle|incense|\bsoap\b|skincare|serum|\bbook\b|magazine|\bmug\b|ceramic|poster|gift ?card|sticker|key ?ring|lighter|towel|blanket|cushion|\btray\b|\bvase\b|fabric swatch|shirt fabric"),
+    ("lifestyle", r"giclee|art print|\bgsm\b|\bedp\b|\b\d+ ?ml\b|hardcover|paperback|\bvol\.? ?\d|glow box|\bgwp\b|spacer|custom order|flat fee|gift ?wrap|e-?gift|shipping|deposit|insurance|alteration|warranty|diffuser|lotion|hand cream|body wash|shampoo|room spray|vinyl|\brecord\b|eau de|parfum|perfume|fragrance|cologne|candle|incense|\bsoap\b|skincare|serum|\bbook\b|magazine|\bmug\b|ceramic|poster|gift ?card|sticker|key ?ring|lighter|towel|blanket|cushion|\btray\b|\bvase\b|fabric swatch|shirt fabric"),
     ("shoes", r"\bshoes?\b|\bboots?\b|loafer|sneaker|trainer|derby (shoe|boot)|sandal|\bmules?\b|slipper|espadrille|brogue|oxford shoe"),
     ("bags", r"\bbag|tote|backpack|holdall|duffle|pouch|wallet|card holder"),
     ("accessories", r"\bhats?\b|beanie|\bcaps?\b|scarf|scarves|glove|\bbelts?\b|\bties?\b|\bsocks?\b|sunglass|umbrella|jewel|\brings?\b|necklace"),

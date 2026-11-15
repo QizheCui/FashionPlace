@@ -86,7 +86,7 @@
       if (S.generic.length) S.bias[id] = S.generic.reduce((a, g) => a + dot(v, g), 0) / S.generic.length;
     });
   }
-  const JUNK = /spacer|custom order|flat fee|gift ?wrap|e-?gift|gift card|shipping|deposit|insurance|alteration|diffuser|lotion|hand cream|body wash|eau de|parfum|perfume|candle|incense|\bvinyl\b|swatch|shirt fabric/i;
+  const JUNK = /spacer|custom order|flat fee|gift ?wrap|\bgwp\b|e-?gift|gift card|gift box|shipping|deposit|insurance|alteration|diffuser|lotion|hand cream|body wash|glow box|eau de|parfum|perfume|\bedp\b|\bedt\b|\b\d+ ?ml\b|candle|incense|\bsoap\b|\bvinyl\b|swatch|shirt fabric|giclee|gicl[ée]e|\bgsm\b|art print|poster|\bvol\.? ?\d|hardcover|paperback|\bbook\b|tribute to|magazine|pillow talk/i;
   const projCache = new WeakMap();
   function pv(v) { // full-size (512) vector -> map vector (k); cached per array
     if (!v || v.length === S.k) return v;
@@ -627,7 +627,13 @@
         .map((it) => ({ it }));
       const res = matchQuery(all, q);
       const pool = semantic(res.list, vec).slice(0, 400);
-      const top = diversify(pool, 2).slice(0, 12).map((x) => x.it);
+      // a mix: no more than two in a row from one brand, three of one kind of garment
+      const perCat = {}, top = [];
+      for (const x of diversify(pool, 2)) {
+        if ((perCat[x.it.category] || 0) >= (named ? 12 : 3)) continue;
+        perCat[x.it.category] = (perCat[x.it.category] || 0) + 1; top.push(x.it);
+        if (top.length >= 12) break;
+      }
       const men = pool.slice(0, 40).filter((x) => x.it.department === "men").length, women = pool.slice(0, 40).filter((x) => x.it.department === "women").length;
       S.landingQuery = { text, vec, max, dept: men > women * 2 ? "men" : women > men * 2 ? "women" : "any" };
       st.textContent = "";

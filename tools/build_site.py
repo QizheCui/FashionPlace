@@ -74,6 +74,12 @@ def main(inline: bool) -> None:
     if not inline:
         for f in WEB.iterdir():
             shutil.copy(f, OUT / f.name)
+        # stamp file versions so browsers fetch the new app straight after each deploy
+        import time
+        v = str(int(time.time()))
+        html = (OUT / "index.html").read_text()
+        html = html.replace('href="style.css"', f'href="style.css?v={v}"').replace('src="app.js"', f'src="app.js?v={v}"')
+        (OUT / "index.html").write_text(html)
         if (OUT / "data").exists():
             shutil.rmtree(OUT / "data")
         shutil.copytree(DATA, OUT / "data", ignore=shutil.ignore_patterns("price_history.json", "collect_report.json", "items.json"))
