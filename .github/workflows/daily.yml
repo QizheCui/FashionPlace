@@ -45,6 +45,8 @@ jobs:
           restore-keys: vectors-
 
       - name: Collect catalogues
+        # code/config pushes only rebuild the site; the brands' websites are visited once a day
+        if: github.event_name != 'push'
         run: python -m collector.collect
 
       - name: Build style vectors (CLIP)
@@ -55,8 +57,14 @@ jobs:
           git config user.name "fashionplace-bot"
           git config user.email "actions@users.noreply.github.com"
           git add data
-          git diff --cached --quiet || git commit -m "data: daily refresh $(date -u +%F)"
-          git push
+          git diff --cached --quiet && exit 0
+          git commit -m "data: refresh $(date -u +%F)"
+          # main may have moved while we were collecting (e.g. a merge): replay on top, keeping our fresh data
+          for i in 1 2 3; do
+            git pull --rebase -X theirs origin main && git push && exit 0
+            sleep 5
+          done
+          exit 1
 
       - name: Build site
         run: python tools/build_site.py
