@@ -495,7 +495,7 @@
     const counts = {};
     for (const d of deptsOf(p.department)) for (const [c, n] of Object.entries(S.shards[d] || {})) if (c !== "core") counts[c] = (counts[c] || 0) + n;
     if (!Object.keys(counts).length) for (const i of S.items) if (fits(i, p, { ignoreCategory: true })) counts[i.category] = (counts[i.category] || 0) + 1;
-    const cats = ["all", ...Object.entries(counts).filter(([c, n]) => n >= 8 && c !== "other" && c !== "underwear").sort((a, b) => b[1] - a[1]).map(([c]) => c)];
+    const cats = ["all", ...Object.entries(counts).filter(([c, n]) => n >= 60 && c !== "other" && c !== "underwear").sort((a, b) => b[1] - a[1]).map(([c]) => c)];
     $("#chips").innerHTML = (S.brand ? `<button class="chip on" data-clearbrand>${esc(S.brand)} ✕</button>` : "") + cats.map((c) =>
       `<button class="chip ${c === S.category ? "on" : ""}" data-cat="${c}">${c === "tshirts" ? "T-shirts" : c}</button>`).join("");
   }
