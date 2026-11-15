@@ -87,14 +87,12 @@ class ClipEncoder:
                     cache[it["image"]] = v.astype(np.float16)
         CACHE.parent.mkdir(exist_ok=True)
         np.savez_compressed(CACHE, d=np.array(cache, dtype=object))
-        # items whose image failed fall back to a text embedding of the title
+        # A piece whose photo couldn't be read gets NO vector (it's left out of matching). Embedding its
+        # title as text instead made it sit close to every typed search and float to the top of all of them.
         out = np.zeros((len(items), DIM), dtype=np.float32)
-        missing = [i for i, it in enumerate(items) if it["image"] not in cache]
         for i, it in enumerate(items):
             if it["image"] in cache:
                 out[i] = cache[it["image"]]
-        if missing:
-            out[missing] = self.text([f"a photo of {items[i]['title']}" for i in missing])
         return out
 
 
@@ -199,6 +197,11 @@ def run(fake: bool = False) -> None:
              if it.get("in_stock") and it.get("category") not in ("underwear", "lifestyle")]
     enc = FakeEncoder() if fake else ClipEncoder()
     mat = enc.items(items).astype(np.float32)
+    keep = np.linalg.norm(mat, axis=1) > 0
+    if not keep.all():
+        print(f"no photo vector for {int((~keep).sum())} pieces; leaving them out of matching")
+        items = [it for it, k in zip(items, keep) if k]
+        mat = mat[keep]
     mat /= np.linalg.norm(mat, axis=1, keepdims=True) + 1e-9
     if not fake:
         fix_categories(enc, items, mat)
@@ -232,6 +235,12 @@ def run(fake: bool = False) -> None:
          "vec": [round(float(x), 5) for x in unit(enc.text(v["prompts"]).mean(0))]}
         for v in vibes
     ]))
+    # Some photos (text-heavy banners, flat lays) sit close to *any* sentence. The app subtracts each
+    # piece's average closeness to these bland captions, so typed searches surface real matches.
+    generic = ["a photo of clothing", "a photo of a garment", "a product photo", "fashion", "an outfit",
+               "a photo of a piece of clothing on a white background", "a model wearing clothes", "menswear",
+               "womenswear", "a photo of an item for sale"]
+    (DATA / "generic.json").write_text(json.dumps([[round(float(x), 5) for x in v] for v in enc.text(generic)]))
     # "Not quite right?" nudges: a direction from 'less' towards 'more'
     refiners = json.loads((CONFIG / "refiners.json").read_text())["refiners"]
     # Each direction blends a text one ("dark clothing" minus "light clothing") with one learned from the

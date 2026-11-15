@@ -14,7 +14,7 @@
   const S = {
     tab: "foryou", category: "all", brand: null, surprise: 0.4, query: null,
     items: [], byId: {}, vecs: {}, vibes: [], vibeById: {}, brands: [], brandInfo: {}, brandCentroid: {},
-    builtins: [], model: "", brandStats: {}, refiners: [], refinerById: {},
+    builtins: [], model: "", brandStats: {}, generic: [], bias: {}, refiners: [], refinerById: {},
     steer: { nudges: {}, words: [] }, steerVec: null, profiles: {}, current: null, taste: null, avoid: null, twist: null,
   };
 
@@ -80,8 +80,13 @@
   // is projected with the same matrix so it lands on the same map.
   function decodeVectors(meta, buf) {
     const q = new Int8Array(buf), k = meta.k;
-    meta.ids.forEach((id, r) => { S.vecs[id] = norm(Array.from(q.subarray(r * k, (r + 1) * k), (x) => (x / 127) * meta.scale)); });
+    meta.ids.forEach((id, r) => {
+      const v = (S.vecs[id] = norm(Array.from(q.subarray(r * k, (r + 1) * k), (x) => (x / 127) * meta.scale)));
+      // how close this photo sits to *any* caption (text-heavy banners score high on everything)
+      if (S.generic.length) S.bias[id] = S.generic.reduce((a, g) => a + dot(v, g), 0) / S.generic.length;
+    });
   }
+  const JUNK = /spacer|custom order|flat fee|gift ?wrap|e-?gift|gift card|shipping|deposit|insurance|alteration|diffuser|lotion|hand cream|body wash|eau de|parfum|perfume|candle|incense|\bvinyl\b|swatch|shirt fabric/i;
   const projCache = new WeakMap();
   function pv(v) { // full-size (512) vector -> map vector (k); cached per array
     if (!v || v.length === S.k) return v;
@@ -221,7 +226,7 @@
   // ---------- filtering & scoring ----------
   function fits(it, p, { ignoreCategory = false, ignorePrice = false } = {}) {
     if (p.department !== "any" && it.department !== "unisex" && it.department !== p.department) return false;
-    if (!it.in_stock || it.category === "underwear" || it.category === "lifestyle" || !(it.price_gbp > 0)) return false;
+    if (!it.in_stock || it.category === "underwear" || it.category === "lifestyle" || !(it.price_gbp > 0) || JUNK.test(it.title)) return false;
     if (p.tiers && p.tiers.length && !it.live) { const tier = it.tier || (S.brandInfo[it.brand] || {}).tier; if (tier && !p.tiers.includes(tier)) return false; }
     if (it.letter_sized && p.sizes.length && !(it.letter_sizes || []).some((s) => p.sizes.includes(s))) return false;
     if (p.waist && p.waist.length && it.waist_sizes && it.waist_sizes.length && !it.waist_sizes.some((w) => p.waist.includes(w))) return false;
@@ -231,7 +236,17 @@
     if (S.brand && it.brand !== S.brand) return false;
     return !!S.vecs[it.id];
   }
-  const score = (it) => { const v = S.vecs[it.id]; return dot(v, S.taste) - (S.avoid ? 0.35 * dot(v, S.avoid) : 0); };
+  const score = (it) => { const v = S.vecs[it.id]; return dot(v, S.taste) - (S.avoid ? 0.35 * dot(v, S.avoid) : 0) - 0.7 * (S.bias[it.id] || 0); };
+  // Typed searches: closeness to the words, minus how close the photo is to *every* sentence, then
+  // a second pass that also leans towards the best first-pass matches (keeps the results coherent).
+  function semantic(pool, qvec) {
+    const q = pv(qvec), b = (it) => S.bias[it.id] || 0;
+    const first = pool.map((x) => ({ ...x, m: dot(S.vecs[x.it.id], q) - b(x.it) })).sort((a, c) => c.m - a.m);
+    const top = first.slice(0, 25).map((x) => S.vecs[x.it.id]);
+    if (top.length < 5) return first;
+    const cen = norm(mean(top)), q2 = norm(q.map((x, j) => x + 0.6 * cen[j]));
+    return first.slice(0, 4000).map((x) => ({ ...x, m: dot(S.vecs[x.it.id], q2) - b(x.it) })).sort((a, c) => c.m - a.m);
+  }
   // Nudges are measured against the pieces actually on screen (z-scores), so "Darker" visibly
   // reorders trousers even though every trouser is already close to your taste.
   const zs = (arr) => { if (!arr.length) return arr; const m = arr.reduce((a, b) => a + b, 0) / arr.length; const sd = Math.sqrt(arr.reduce((a, b) => a + (b - m) ** 2, 0) / arr.length) || 1; return arr.map((x) => (x - m) / sd); };
@@ -322,7 +337,6 @@
     const seen = new Set([...p.liked, ...p.disliked]);
 
     if (S.query) { // a specific request: hard filters for what was named, then meaning + your taste
-      const qv = pv(S.query.vec);
       const q = S.query.parsed || (S.query.parsed = parseQuery(S.query.text));
       const off = S.query.off || (S.query.off = new Set());
       // an explicit price or department in the request beats the profile's defaults
@@ -333,9 +347,9 @@
       }
       const res = matchQuery(base, q, off);
       S.query.dropped = res.dropped;
-      base = res.list;
-      const zq = zs(base.map((x) => dot(S.vecs[x.it.id], qv)));
-      const ranked = base.map((x, i) => ({ ...x, q: zq[i] + 0.35 * x.s }))
+      base = semantic(res.list, S.query.vec);
+      const zq = zs(base.map((x) => x.m));
+      const ranked = base.map((x, i) => ({ ...x, q: zq[i] + 0.3 * x.s }))
         .sort((a, b) => b.q - a.q).slice(0, 240);
       return diversify(ranked, 2).map((x) => ({ ...x, why: reason(x.it, "search") }));
     }
@@ -545,8 +559,8 @@
     if ((m = t.match(/£?\s*(\d{2,4})\s*(?:-|–|to)\s*£?\s*(\d{2,4})/))) q.facets.push({ key: "price", min: +m[1], max: +m[2], label: `£${m[1]}–£${m[2]}` });
     else if ((m = t.match(/(?:under|below|less than|max|up to|cheaper than)\s*£?\s*(\d{2,4})/))) q.facets.push({ key: "price", min: 0, max: +m[1], label: `Under £${m[1]}` });
     else if ((m = t.match(/(?:over|above|more than|from)\s*£\s*(\d{2,4})/))) q.facets.push({ key: "price", min: +m[1], max: Infinity, label: `Over £${m[1]}` });
-    if (/\b(women'?s|womens|ladies|for women|for her)\b/.test(t)) q.facets.push({ key: "dept", dept: "women", label: "Womenswear" });
-    else if (/\b(men'?s|mens|for men|for him)\b/.test(t)) q.facets.push({ key: "dept", dept: "men", label: "Menswear" });
+    if (/\b(women'?s|womens|womenswear|ladies|lady|woman|girls?|for her|feminine)\b/.test(t)) q.facets.push({ key: "dept", dept: "women", label: "Womenswear" });
+    else if (/\b(men'?s|mens|menswear|gentlem[ae]n|gents?|guys?|man|for him|masculine)\b/.test(t)) q.facets.push({ key: "dept", dept: "men", label: "Menswear" });
     const b = brandInQuery(text); if (b) q.facets.push({ key: "brand", brand: b, label: b });
     q.outOfScope = /\b(costumes?|fancy dress|halloween|cosplay|onesie|wig|uniform|school uniform|workwear boots? steel)\b/.test(t);
     return q;
@@ -603,15 +617,17 @@
     const st = $("#lStatus");
     st.textContent = "Searching every brand…";
     try {
-      const [vec] = await Promise.all([encodeText(text, st), ensureShard("any")]);
+      const [vec] = await Promise.all([encodeQuery(text, st), ensureShard("any")]);
       st.textContent = "Searching every brand…";
-      const qv = pv(vec);
       const q = parseQuery(text), pf = q.facets.find((f) => f.key === "price"), max = pf ? pf.max : Infinity;
-      const all = S.items.filter((it) => it.in_stock && it.image && S.vecs[it.id] && it.category !== "underwear" && it.category !== "other")
-        .map((it) => ({ it, s: dot(S.vecs[it.id], qv) }));
+      const named = q.facets.some((f) => f.key === "cat");
+      // a style ('classy, modern') means clothes first — bags, hats and scarves only when asked for
+      const all = S.items.filter((it) => it.in_stock && it.image && S.vecs[it.id] && it.price_gbp >= 10 && !JUNK.test(it.title)
+        && !["underwear", "other", "lifestyle"].includes(it.category) && (named || !["accessories", "bags"].includes(it.category)))
+        .map((it) => ({ it }));
       const res = matchQuery(all, q);
-      const pool = res.list.sort((a, b) => b.s - a.s).slice(0, 400);
-      const top = diversify(pool, 1).slice(0, 12).map((x) => x.it);
+      const pool = semantic(res.list, vec).slice(0, 400);
+      const top = diversify(pool, 2).slice(0, 12).map((x) => x.it);
       const men = pool.slice(0, 40).filter((x) => x.it.department === "men").length, women = pool.slice(0, 40).filter((x) => x.it.department === "women").length;
       S.landingQuery = { text, vec, max, dept: men > women * 2 ? "men" : women > men * 2 ? "women" : "any" };
       st.textContent = "";
@@ -831,6 +847,10 @@
     }
     renderEditor(); $("#fStatus").textContent = `Added ${n} photo${n === 1 ? "" : "s"} — your brand suggestions now use them.`;
   }
+  async function encodeQuery(text, statusEl) { // two phrasings, averaged: steadier than one
+    const v = await encodeText(text, statusEl);
+    try { const [w] = await encodeTexts([`a photo of ${text}`]); return v.map((x, i) => x + w[i]); } catch { return v; }
+  }
   async function addWord(kind) {
     const inp = $("#fWord"), text = inp.value.trim(), st = $("#fStatus"); if (!text) return;
     try {
@@ -890,7 +910,7 @@
     const st = $("#qStatus");
     try {
       const parsed = parseQuery(text), dept = parsed.facets.find((f) => f.key === "dept");
-      const [vec] = await Promise.all([encodeText(text, st), dept && dept.dept !== P().department ? ensureShard("any") : null]);
+      const [vec] = await Promise.all([encodeQuery(text, st), dept && dept.dept !== P().department ? ensureShard("any") : null]);
       S.query = { text, vec, parsed: parseQuery(text) }; S.brand = null; render(); window.scrollTo({ top: 0 });
       liveSearch(text, vec);
     } catch (e) {
@@ -1056,6 +1076,7 @@
         ...["vibes.json", "brands.json", "profiles/index.json"].map(getJSON), getBin("projection.bin")]);
       S.proj = new Float32Array(pbuf); S.k = S.proj.length / 512;
       S.vibes = vibes.map((v) => ({ ...v, vec: pv(v.vec) })); for (const v of S.vibes) S.vibeById[v.id] = v;
+      S.generic = (await getJSON("generic.json").catch(() => [])).map(pv);
       for (const b of brands) S.brandInfo[b.name] = b;
       S.brands = brands;
       S.brandStats = await getJSON("brand_stats.json").catch(() => ({}));

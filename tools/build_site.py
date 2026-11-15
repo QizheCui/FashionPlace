@@ -12,7 +12,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 WEB, DATA, OUT = ROOT / "web", ROOT / "data", ROOT / "_site"
-FILES = ["meta-men.json", "meta-women.json", "vibes.json", "brands.json", "brand_stats.json", "refiners.json", "profiles/index.json"]
+FILES = ["meta-men.json", "meta-women.json", "vibes.json", "brands.json", "brand_stats.json", "refiners.json", "generic.json", "profiles/index.json"]
 
 
 BINS = ["vectors-men.bin", "vectors-women.bin", "projection.bin"]
