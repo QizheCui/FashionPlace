@@ -66,3 +66,8 @@ def test_no_false_accessory_matches():
     assert shopify.normalise(raw("Harrington Jacket", "Jackets"), BRAND, FX)["category"] == "outerwear"
     assert shopify.normalise(raw("Herringbone Wool Trousers", "Trousers"), BRAND, FX)["category"] == "trousers"
     assert shopify.normalise(raw("Milton Tee", "T-Shirts"), BRAND, FX)["category"] == "tshirts"
+
+
+def test_basics_are_not_fashion_picks():
+    assert shopify.normalise(raw("Superfine Cotton Boxer Briefs in Navy", "Underwear"), BRAND, FX)["category"] == "underwear"
+    assert shopify.normalise(raw("Leather Briefcase", "Bags"), BRAND, FX)["category"] == "bags"

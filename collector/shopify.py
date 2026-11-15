@@ -19,6 +19,7 @@ SIZE_M_VALUES = {"m", "medium", "md", "m/l"}
 NON_SIZE_OPTIONS = {"color", "colour", "style", "material", "title"}
 
 CATEGORY_RULES = [
+    ("underwear", r"boxer|\bbriefs?\b|\btrunks\b|underwear|undershirt|vest top|pyjama|pajama|lounge pant|robe\b|gift card|gift voucher"),
     ("shoes", r"shoe|boot|loafer|sneaker|trainer|derby|sandal|mule|slipper"),
     ("bags", r"\bbag|tote|backpack|holdall|duffle|pouch|wallet|card holder"),
     ("accessories", r"\bhats?\b|beanie|\bcaps?\b|scarf|scarves|glove|\bbelts?\b|\bties?\b|\bsocks?\b|sunglass|umbrella|jewel|\brings?\b|necklace"),
