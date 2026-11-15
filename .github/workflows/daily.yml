@@ -1,0 +1,76 @@
+name: Daily collect & publish
+
+on:
+  schedule:
+    - cron: "17 5 * * *"   # every day ~05:17 UK time (UTC in winter)
+  workflow_dispatch: {}     # "Run workflow" button for a manual refresh
+  push:
+    branches: [main]
+    paths: ["web/**", "config/**", "collector/**", ".github/workflows/daily.yml"]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: daily
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: |
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install -r requirements.txt
+
+      - name: Tests
+        run: python -m pytest -q tests
+
+      - name: Restore image-vector cache
+        uses: actions/cache@v4
+        with:
+          path: .cache
+          key: vectors-${{ github.run_id }}
+          restore-keys: vectors-
+
+      - name: Collect catalogues
+        run: python -m collector.collect
+
+      - name: Build style vectors (CLIP)
+        run: python -m collector.embed
+
+      - name: Save data to repo
+        run: |
+          git config user.name "fashionplace-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data
+          git diff --cached --quiet || git commit -m "data: daily refresh $(date -u +%F)"
+          git push
+
+      - name: Build site
+        run: python tools/build_site.py
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: collect
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
