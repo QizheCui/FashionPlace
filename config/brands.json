@@ -1,23 +1,146 @@
 {
   "_comment": "Brands the collector knows about. source=shopify uses the store's public /products.json. source=affiliate means we still need a feed (e.g. Awin) - skipped for now. 'favourite' brands are ones the user already loves; Explore prefers the others.",
   "brands": [
-    {"name": "Wax London",       "domain": "www.waxlondon.com",       "source": "shopify",   "currency": "GBP", "favourite": true},
-    {"name": "Percival",         "domain": "percivalclo.com",         "source": "shopify",   "currency": "GBP", "favourite": true},
-    {"name": "Alex Mill",        "domain": "www.alexmill.com",        "source": "shopify",   "currency": "USD", "favourite": true},
-    {"name": "Rains",            "domain": "www.rains.com",           "source": "shopify",   "currency": "GBP", "favourite": true},
-    {"name": "Oliver Spencer",   "domain": "oliverspencer.co.uk",     "source": "shopify",   "currency": "GBP", "favourite": false},
-    {"name": "Universal Works",  "domain": "universalworks.co.uk",    "source": "shopify",   "currency": "GBP", "favourite": false},
-    {"name": "Sunspel",          "domain": "www.sunspel.com",         "source": "shopify",   "currency": "GBP", "favourite": false},
-    {"name": "Kestin",           "domain": "www.kestin.co",           "source": "shopify",   "currency": "GBP", "favourite": false},
-    {"name": "Drake's",          "domain": "www.drakes.com",          "source": "shopify",   "currency": "GBP", "favourite": false},
-    {"name": "Norse Projects",   "domain": "www.norseprojects.com",   "source": "shopify",   "currency": "GBP", "favourite": false},
-    {"name": "De Bonne Facture", "domain": "www.debonnefacture.com",      "source": "shopify",   "currency": "EUR", "favourite": false},
-    {"name": "Colhay's",         "domain": "www.colhays.com",         "source": "shopify",   "currency": "GBP", "favourite": false},
-    {"name": "Ralph Lauren",     "domain": "www.ralphlauren.co.uk",   "source": "affiliate", "currency": "GBP", "favourite": true},
-    {"name": "Reiss",            "domain": "www.reiss.com",           "source": "affiliate", "currency": "GBP", "favourite": true},
-    {"name": "Arket",            "domain": "www.arket.com",           "source": "affiliate", "currency": "GBP", "favourite": true},
-    {"name": "COS",              "domain": "www.cos.com",             "source": "affiliate", "currency": "GBP", "favourite": true},
-    {"name": "Suitsupply",       "domain": "suitsupply.com",          "source": "affiliate", "currency": "GBP", "favourite": true}
+    {
+      "name": "Wax London",
+      "domain": "www.waxlondon.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": true,
+      "blurb": "London label making relaxed, textured menswear with a strong focus on responsibly sourced fabrics."
+    },
+    {
+      "name": "Percival",
+      "domain": "percivalclo.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": true,
+      "blurb": "Soho-born London brand: modern prep with playful knitwear and a 90s vintage wink."
+    },
+    {
+      "name": "Alex Mill",
+      "domain": "www.alexmill.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": true,
+      "blurb": "New York label doing easy, vintage-leaning American casualwear."
+    },
+    {
+      "name": "Rains",
+      "domain": "www.rains.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": true,
+      "blurb": "Danish rainwear brand: minimal, waterproof outerwear and bags with a clean Scandinavian look."
+    },
+    {
+      "name": "Oliver Spencer",
+      "domain": "oliverspencer.co.uk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London designer known for relaxed British tailoring and natural, characterful fabrics."
+    },
+    {
+      "name": "Universal Works",
+      "domain": "universalworks.co.uk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Nottingham brand mixing British workwear with a laid-back, colourful touch."
+    },
+    {
+      "name": "Sunspel",
+      "domain": "www.sunspel.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "English brand making refined everyday essentials since 1860: tees, polos and knitwear done properly."
+    },
+    {
+      "name": "Kestin",
+      "domain": "www.kestin.co",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Edinburgh brand blending Scottish heritage with Scandinavian-style utility and minimalism."
+    },
+    {
+      "name": "Drake's",
+      "domain": "www.drakes.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London tie-maker turned full menswear house: soft tailoring, Ivy staples and English craft."
+    },
+    {
+      "name": "Norse Projects",
+      "domain": "www.norseprojects.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Copenhagen label for functional, quietly minimal everyday clothing."
+    },
+    {
+      "name": "De Bonne Facture",
+      "domain": "www.debonnefacture.com",
+      "source": "shopify",
+      "currency": "EUR",
+      "favourite": false,
+      "blurb": "Paris brand reviving French workwear, made with small European workshops."
+    },
+    {
+      "name": "Colhay's",
+      "domain": "www.colhays.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London knitwear specialist making vintage-inspired jumpers and cardigans."
+    },
+    {
+      "name": "Ralph Lauren",
+      "domain": "www.ralphlauren.co.uk",
+      "source": "affiliate",
+      "currency": "GBP",
+      "favourite": true,
+      "blurb": "The American prep icon: Oxford shirts, cable knits and classic tailoring."
+    },
+    {
+      "name": "Reiss",
+      "domain": "www.reiss.com",
+      "source": "affiliate",
+      "currency": "GBP",
+      "favourite": true,
+      "blurb": "London brand for sharp, contemporary smart-casual and tailoring."
+    },
+    {
+      "name": "Arket",
+      "domain": "www.arket.com",
+      "source": "affiliate",
+      "currency": "GBP",
+      "favourite": true,
+      "blurb": "Scandinavian modern basics with a clean, lasting design approach."
+    },
+    {
+      "name": "COS",
+      "domain": "www.cos.com",
+      "source": "affiliate",
+      "currency": "GBP",
+      "favourite": true,
+      "blurb": "Minimal, architectural modern essentials."
+    },
+    {
+      "name": "Suitsupply",
+      "domain": "suitsupply.com",
+      "source": "affiliate",
+      "currency": "GBP",
+      "favourite": true,
+      "blurb": "Amsterdam tailoring house for well-cut suits, blazers and smart separates."
+    }
   ],
-  "fx_to_gbp": {"GBP": 1.0, "USD": 0.79, "EUR": 0.85}
+  "fx_to_gbp": {
+    "GBP": 1.0,
+    "USD": 0.79,
+    "EUR": 0.85
+  }
 }

@@ -15,7 +15,12 @@ DELAY_SECONDS = 1.5  # be polite: one request every 1.5s per store
 
 WOMEN_RE = re.compile(r"\b(women'?s?|womens|womenswear|ladies|female)\b", re.I)
 MEN_RE = re.compile(r"\b(men'?s?|mens|menswear|male)\b", re.I)
-SIZE_M_VALUES = {"m", "medium", "md", "m/l"}
+LETTER_ORDER = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"]
+LETTER_SIZES = {
+    **{x.lower(): x for x in LETTER_ORDER},
+    "small": "S", "medium": "M", "md": "M", "large": "L", "x-small": "XS", "x-large": "XL",
+    "xx-large": "XXL", "2xl": "XXL", "3xl": "XXXL", "extra small": "XS", "extra large": "XL",
+}
 NON_SIZE_OPTIONS = {"color", "colour", "style", "material", "title"}
 
 CATEGORY_RULES = [
@@ -130,17 +135,16 @@ def normalise(p: dict, brand: dict, fx: dict) -> dict | None:
         return None
     rate = fx.get(brand.get("currency", "GBP"), 1.0)
     idx = _size_option_index(p)
-    sizes_available, size_m_available = [], False
+    sizes_available, letter_sizes = [], set()
+    letter_sized = False
     for v in variants:
-        value = v.get(f"option{idx + 1}") if idx is not None else v.get("title")
+        value = (v.get(f"option{idx + 1}") if idx is not None else v.get("title")) or ""
+        letter = LETTER_SIZES.get(value.strip().lower())
+        letter_sized |= letter is not None
         if value and v.get("available"):
             sizes_available.append(value)
-            if value.strip().lower() in SIZE_M_VALUES:
-                size_m_available = True
-    has_letter_sizes = any(
-        (v.get(f"option{idx + 1}") or "").strip().lower() in {"xs", "s", "m", "l", "xl", "xxl", "medium", "small", "large"}
-        for v in variants
-    ) if idx is not None else False
+            if letter:
+                letter_sizes.add(letter)
 
     available = [v for v in variants if v.get("available")] or variants
     price = min(float(v["price"]) for v in available if v.get("price"))
@@ -162,7 +166,10 @@ def normalise(p: dict, brand: dict, fx: dict) -> dict | None:
         "currency": brand.get("currency", "GBP"),
         "in_stock": any(v.get("available") for v in variants),
         "sizes_available": sizes_available,
-        # None = sizing isn't S/M/L (e.g. waist sizes, one-size) so we can't judge
-        "size_m_available": size_m_available if has_letter_sizes else None,
+        # letter sizes in stock, normalised (XS..XXL); [] with letter_sized=False means waist/shoe/one-size
+        "letter_sized": letter_sized,
+        "letter_sizes": sorted(letter_sizes, key=LETTER_ORDER.index),
+        # kept for older app versions
+        "size_m_available": ("M" in letter_sizes) if letter_sized else None,
         "published_at": p.get("published_at"),
     }

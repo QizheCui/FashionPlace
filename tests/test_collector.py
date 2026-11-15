@@ -71,3 +71,10 @@ def test_no_false_accessory_matches():
 def test_basics_are_not_fashion_picks():
     assert shopify.normalise(raw("Superfine Cotton Boxer Briefs in Navy", "Underwear"), BRAND, FX)["category"] == "underwear"
     assert shopify.normalise(raw("Leather Briefcase", "Bags"), BRAND, FX)["category"] == "bags"
+
+
+def test_letter_sizes_normalised():
+    it = shopify.normalise(raw(sizes=("Small", "Medium", "Large")), BRAND, FX)
+    assert it["letter_sized"] and it["letter_sizes"] == ["S", "M", "L"]
+    shoe = shopify.normalise(raw("Loafer", "Shoes", sizes=("8", "9")), BRAND, FX)
+    assert shoe["letter_sized"] is False and shoe["letter_sizes"] == []

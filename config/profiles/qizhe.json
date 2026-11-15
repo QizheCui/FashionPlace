@@ -2,8 +2,37 @@
   "id": "qizhe",
   "name": "Qizhe",
   "department": "men",
-  "size": "M",
-  "budget": {"ideal_max_gbp": 200, "hard_max_gbp": 300},
+  "sizes": [
+    "M"
+  ],
+  "budget": {
+    "min_gbp": 0,
+    "ideal_max_gbp": 200,
+    "hard_max_gbp": 300
+  },
+  "vibes": [
+    "old-money",
+    "ivy-prep",
+    "quiet-luxury",
+    "euro-autumn",
+    "soft-tailoring"
+  ],
+  "surprise_vibes": [
+    "bold-colour",
+    "texture",
+    "vintage"
+  ],
+  "brands": [
+    "Ralph Lauren",
+    "Reiss",
+    "Rains",
+    "Arket",
+    "COS",
+    "Wax London",
+    "Percival",
+    "Suitsupply",
+    "Alex Mill"
+  ],
   "taste_prompts": [
     "a relaxed fit men's outfit with old money style and a modern minimalist touch",
     "understated classic menswear in navy, camel, cream, olive and brown",

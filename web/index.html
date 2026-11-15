@@ -17,25 +17,65 @@
       <button data-tab="deals">Deals</button>
       <button data-tab="saved">Saved <span id="savedCount"></span></button>
     </nav>
-    <select id="profilePick" aria-label="Profile"></select>
+    <button class="who" id="whoBtn" title="Switch profile"><span id="whoName"></span> ▾</button>
   </header>
 
   <section class="intro" id="intro"></section>
 
+  <section class="tastebar" id="tastebar"></section>
+
+  <section class="brands-row" id="brandsRow" hidden></section>
+
   <section class="controls" id="controls">
     <div class="chips" id="chips"></div>
-    <label class="toggle"><input type="checkbox" id="underIdeal"> <span id="underIdealLabel">Under £200</span></label>
+    <div class="price" id="priceCtl">
+      <span class="lbl">Price</span>
+      <div class="range2">
+        <input type="range" id="priceMin" min="0" max="1000" step="10" aria-label="Minimum price">
+        <input type="range" id="priceMax" min="0" max="1000" step="10" aria-label="Maximum price">
+        <div class="fill" id="priceFill"></div>
+      </div>
+      <span class="val" id="priceVal"></span>
+    </div>
     <div class="slider" id="surpriseWrap" hidden>
       <span>Familiar</span>
-      <input type="range" id="surprise" min="0" max="100" value="40">
+      <input type="range" id="surprise" min="0" max="100" value="40" aria-label="How adventurous">
       <span>Surprise me</span>
     </div>
   </section>
 
   <main id="grid" class="grid"></main>
   <p class="empty" id="empty" hidden></p>
-
   <footer class="foot" id="foot"></footer>
+
+  <!-- Who's shopping? -->
+  <div class="overlay" id="welcome" hidden>
+    <div class="sheet welcome">
+      <div class="brandmark big">Fashion<em>Place</em></div>
+      <p class="sub">Who's shopping?</p>
+      <div class="people" id="people"></div>
+      <button class="ghost" id="newProfile">+ New profile</button>
+    </div>
+  </div>
+
+  <!-- Taste setup / tuning -->
+  <div class="overlay" id="editor" hidden>
+    <div class="sheet editor">
+      <div class="ed-head">
+        <div class="steps" id="steps"></div>
+        <button class="x" id="edClose" aria-label="Close">✕</button>
+      </div>
+      <div class="ed-body" id="edBody"></div>
+      <div class="ed-foot">
+        <button class="ghost" id="edBack">Back</button>
+        <span class="spacer"></span>
+        <button class="ghost" id="edSave">Save &amp; close</button>
+        <button class="solid" id="edNext">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
   <script src="app.js"></script>
 </body>
 </html>

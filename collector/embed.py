@@ -113,7 +113,7 @@ def build_profile(enc, profile: dict) -> dict:
     surprise = enc.text(profile.get("surprise_prompts") or ["x"])
     vec = lambda m: [round(float(x), 5) for x in unit(m.mean(0))]
     return {
-        **{k: profile[k] for k in ("id", "name", "department", "size", "budget")},
+        **{k: profile.get(k) for k in ("id", "name", "department", "sizes", "budget", "vibes", "surprise_vibes", "brands")},
         "taste": vec(taste),
         "avoid": vec(avoid),
         "surprise": vec(surprise),
@@ -138,6 +138,15 @@ def run(fake: bool = False) -> None:
         prof = build_profile(enc, json.loads(pf.read_text()))
         (DATA / "profiles" / pf.name).write_text(json.dumps(prof))
         print(f"profile {prof['id']} built")
+    # style moods offered during setup, each as a vector on the same style map
+    vibes = json.loads((CONFIG / "vibes.json").read_text())["vibes"]
+    (DATA / "vibes.json").write_text(json.dumps([
+        {"id": v["id"], "label": v["label"], "desc": v["desc"], "vec": [round(float(x), 5) for x in unit(enc.text(v["prompts"]).mean(0))]}
+        for v in vibes
+    ]))
+    brands = json.loads((CONFIG / "brands.json").read_text())["brands"]
+    (DATA / "brands.json").write_text(json.dumps(
+        [{k: b.get(k) for k in ("name", "domain", "source", "blurb")} for b in brands], ensure_ascii=False))
     index = [p.stem for p in sorted((CONFIG / "profiles").glob("*.json"))]
     (DATA / "profiles" / "index.json").write_text(json.dumps(index))
 
