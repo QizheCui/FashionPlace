@@ -1,0 +1,76 @@
+{
+  "date": "2026-11-15",
+  "brands": {
+    "Wax London": {
+      "status": "ok",
+      "products": 756
+    },
+    "Percival": {
+      "status": "ok",
+      "products": 930
+    },
+    "Alex Mill": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kept_previous": 0
+    },
+    "Rains": {
+      "status": "ok",
+      "products": 220
+    },
+    "Oliver Spencer": {
+      "status": "ok",
+      "products": 520
+    },
+    "Universal Works": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kept_previous": 0
+    },
+    "Sunspel": {
+      "status": "ok",
+      "products": 1063
+    },
+    "Kestin": {
+      "status": "ok",
+      "products": 159
+    },
+    "Drake's": {
+      "status": "ok",
+      "products": 2086
+    },
+    "Norse Projects": {
+      "status": "ok",
+      "products": 656
+    },
+    "De Bonne Facture": {
+      "status": "failed",
+      "reason": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'debonnefacture.com'. (_ssl.c:1011)>",
+      "kept_previous": 0
+    },
+    "Colhay's": {
+      "status": "ok",
+      "products": 80
+    },
+    "Ralph Lauren": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)"
+    },
+    "Reiss": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)"
+    },
+    "Arket": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)"
+    },
+    "COS": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)"
+    },
+    "Suitsupply": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)"
+    }
+  }
+}
