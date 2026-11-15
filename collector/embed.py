@@ -63,6 +63,7 @@ class ClipEncoder:
         from PIL import Image
 
         try:
+            url = url.replace("width=600", "width=320")  # CLIP looks at 224px; a smaller download is much faster
             req = urllib.request.Request(url, headers={"User-Agent": "FashionPlaceBot/0.1"})
             with urllib.request.urlopen(req, timeout=30) as r:
                 return Image.open(io.BytesIO(r.read())).convert("RGB")
