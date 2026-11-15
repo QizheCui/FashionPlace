@@ -14,7 +14,8 @@ permissions:
   id-token: write
 
 concurrency:
-  group: daily
+  # code pushes deploy straight away instead of queueing behind a long nightly collection
+  group: daily-${{ github.event_name == 'push' && 'push' || 'collect' }}
   cancel-in-progress: false
 
 jobs:

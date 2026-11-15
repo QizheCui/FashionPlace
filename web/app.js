@@ -70,6 +70,12 @@
     if (!r.ok) throw new Error(`${path}: ${r.status}`);
     return r.arrayBuffer();
   }
+  async function getText(path) {
+    if (window.FP_DATA && typeof window.FP_DATA[path] === "string") return window.FP_DATA[path];
+    const r = await fetch(`data/${path}`, { cache: "no-cache" });
+    if (!r.ok) throw new Error(`${path}: ${r.status}`);
+    return r.text();
+  }
   async function getJSON(path) {
     if (window.FP_DATA && window.FP_DATA[path]) return window.FP_DATA[path];
     const r = await fetch(`data/${path}`, { cache: "no-cache" });
@@ -366,6 +372,11 @@
         const p2 = { ...p, price: usePrice ? { min: 0, max: 1e9 } : p.price, department: useDept ? "any" : p.department };
         base = steerPool(S.items.filter((it) => fits(it, p2)).map((it) => ({ it, s: score(it) })));
       }
+      const kw = S.query.kw;
+      if (kw && kw.ids.size && !kw.missing && !off.has("kw")) { // exact model/name match: search those pieces only
+        const p3 = { ...p, price: { min: 0, max: 1e9 }, department: "any", tiers: [] };
+        base = steerPool(S.items.filter((it) => kw.ids.has(it.id) && fits(it, p3)).map((it) => ({ it, s: score(it) })));
+      }
       const res = matchQuery(base, q, off);
       S.query.dropped = res.dropped;
       base = semantic(res.list, S.query.vec, S.query.text);
@@ -477,7 +488,7 @@
     $("#tastebar").hidden = S.tab === "saved";
     $("#tastebar").innerHTML = `
       <form class="search" id="searchForm"><input id="q" placeholder="Search anything — “black wool trousers for work under £150” or a feeling" value="${S.query ? esc(S.query.text) : ""}" maxlength="140">${S.query ? `<button type="button" class="ghost sm" id="qClear">Clear</button>` : ""}</form>
-      ${S.query ? facetChips(S.query.parsed || parseQuery(S.query.text), S.query.dropped || [], S.query.off || new Set()) : ""}
+      ${S.query ? facetChips(S.query.parsed || parseQuery(S.query.text), S.query.dropped || [], S.query.off || new Set(), S.query.kw) : ""}
       <div class="tasterow"><div class="leans"><span class="lbl">Your feed leans</span>${l.map(([n, pc]) => `<span class="lean"><b>${esc(n)}</b> ${pc}%</span>`).join("")}</div>
       <div class="learn">${p.liked.length + p.disliked.length ? `Learning from ${p.liked.length} ♥ and ${p.disliked.length} ✕` : "♥ and ✕ pieces to teach it"}</div>
       <button class="ghost sm" data-open="tune">Tune my taste</button></div>
@@ -590,7 +601,8 @@
   function facetOk(it, f) {
     const title = it.title.toLowerCase();
     switch (f.key) {
-      case "cat": return (!f.cat || it.category === f.cat) && (!f.sub || f.sub.test(title) || f.sub.test((it.ptype || "").toLowerCase()));
+      case "cat": return (!f.cat || it.category === f.cat) && (!f.sub || f.sub.test(title) || f.sub.test((it.ptype || "").toLowerCase())
+        || !!(S.query && S.query.kw && S.query.kw.ids.has(it.id)));  // 'Weejun' is a loafer even if the title doesn't say so
       case "colour": { const ok = COLOUR_OK[f.colour] || [f.colour]; return ok.includes(it.colour) || Q_COLOURS[f.colour].some((w) => title.includes(w)); }
       case "material": return f.ok.some((x) => (it.materials || []).includes(x) || title.includes(x));
       case "price": return it.price_gbp >= f.min && it.price_gbp <= f.max;
@@ -614,14 +626,64 @@
     }
     return { list: [], dropped };
   }
-  function facetChips(q, dropped, off) {
-    const scope = q.outOfScope ? `<span class="qnote">We search fashion brands, so costumes and fancy dress are rare here — these are the closest pieces to build the look from.</span>` : "";
+  function facetChips(q, dropped, off, kw) {
+    let scope = q.outOfScope ? `<span class="qnote">We search fashion brands, so costumes and fancy dress are rare here — these are the closest pieces to build the look from.</span>` : "";
+    if (kw && kw.missing) scope += `<span class="qnote">We don't have “${esc(kw.tokens.join(" "))}” in our shops right now — here's the closest we have.</span>`;
+    if (kw && kw.ids.size && !kw.missing) q = { ...q, facets: [...q.facets, { key: "kw", label: `“${kw.tokens.join(" ")}”` }] };
     if (!q.facets.length) return scope ? `<div class="qchips">${scope}</div>` : "";
     return `<div class="qchips"><span class="lbl">Looking for</span>${q.facets.map((f) => {
       const isOff = off.has(f.key), isDropped = dropped.some((d) => d.key === f.key);
       return `<button class="qchip ${isOff || isDropped ? "off" : ""}" data-qfacet="${f.key}" title="${isOff ? "Add back" : "Remove this filter"}">${esc(f.label)} ${isOff ? "+" : "✕"}</button>`;
     }).join("")}${dropped.length ? `<span class="qnote">No exact match — showing the closest without ${dropped.map((d) => esc(d.label.toLowerCase())).join(" or ")}.</span>` : ""}${scope}</div>`;
   }
+
+  // ---------- exact words: model names like "Evo SL", "Weejun", "Cloudmonster" ----------
+  let IDX = null;
+  function loadIndex() {
+    return (IDX ||= (async () => {
+      const txt = await getText("search-index.txt");
+      const nl = txt.indexOf("\n"), parts = txt.slice(0, nl).split("\t").slice(1);
+      const part = [], ids = [], texts = [];
+      for (const line of txt.slice(nl + 1).split("\n")) {
+        const a = line.indexOf("\t"), b = line.indexOf("\t", a + 1);
+        if (a < 0 || b < 0) continue;
+        part.push(+line.slice(0, a)); ids.push(line.slice(a + 1, b)); texts.push(line.slice(b + 1));
+      }
+      return { parts, part, ids, texts };
+    })());
+  }
+  const KW_STOP = new Set(("a an and or the for with in on of to my me i im i'm want need looking some something that this "
+    + "very really nice good best new old cheap smart casual everyday work working office day night weekend winter summer spring "
+    + "autumn fall men mens women womens woman man size uk eu pair style look outfit like under over below above than less more "
+    + "from up price pound pounds gbp colour color material fabric made wear wearing modern classic classy").split(" "));
+  const escRe = (w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  // Words left after the garment/colour/material/price/brand are understood. Rare ones (a model name)
+  // must appear in the title; common ones ('running') are left to meaning-based matching.
+  async function keywordPlan(text, q) {
+    const t = text.toLowerCase();
+    let toks = (t.match(/[a-z0-9][a-z0-9'+.-]*/g) || []).map((w) => w.replace(/[.'-]+$/, "")).filter((w) => w && !KW_STOP.has(w) && !/^£?\d{2,4}$/.test(w));
+    const brand = q.facets.find((f) => f.key === "brand");
+    const brandWords = brand ? brand.brand.toLowerCase().split(/\s+/) : [];
+    toks = toks.filter((w) => !brandWords.includes(w) && !(brand && brand.brand.toLowerCase().includes(w)) && !Q_CATS.some(([re]) => re.test(w)) &&
+      !Object.values(Q_COLOURS).flat().includes(w) && !Object.keys(Q_MATERIALS).includes(w) && w.length >= 2);
+    if (!toks.length) return null;
+    const idx = await loadIndex(), N = idx.texts.length;
+    const res = toks.map((w) => ({ w, re: new RegExp(`(^|[^a-z0-9])${escRe(w)}([^a-z0-9]|$)`) }));
+    for (const r of res) { let n = 0; for (const x of idx.texts) if (r.re.test(x)) n++; r.df = n; }
+    const productLike = !!(brand || q.facets.some((f) => f.key === "cat"));
+    const specific = res.filter((r) => r.df > 0 && r.df <= Math.max(40, N * 0.004));
+    const unknown = productLike ? res.filter((r) => r.df === 0 && /\d|^[a-z]{2,}$/.test(r.w)) : [];
+    if (!specific.length) return unknown.length ? { tokens: unknown.map((r) => r.w), ids: new Set(), parts: [], missing: true } : null;
+    // a feeling ('modern city finance') isn't a product name: only use title words when they actually
+    // pin down pieces, and never claim something is missing
+    if (!productLike && (specific.length !== res.length || res.length > 3)) return null;
+    const ids = new Set(), parts = new Set();
+    idx.texts.forEach((x, i) => { if (specific.every((r) => r.re.test(x)) && (!brand || x.startsWith(brand.brand.toLowerCase()) || x.includes(brand.brand.toLowerCase()))) { ids.add(idx.ids[i]); parts.add(idx.parts[idx.part[i]]); } });
+    if (!productLike && !ids.size) return null;
+    const missing = ids.size === 0 || unknown.length > 0;
+    return { tokens: (missing ? [...specific, ...unknown] : specific).map((r) => r.w), ids, parts: [...parts], missing };
+  }
+  async function loadKeywordParts(kw) { if (kw && kw.parts.length) await Promise.all(kw.parts.map((n) => loadPart(n))); }
 
   // "Nike running shoes" → only Nike pieces (when we have enough of them)
   function brandInQuery(text) {
@@ -640,13 +702,16 @@
     st.textContent = "Searching every brand…";
     try {
       const q0 = parseQuery(text), c0 = q0.facets.find((f) => f.key === "cat" && f.cat), d0 = q0.facets.find((f) => f.key === "dept");
-      const [vec] = await Promise.all([encodeQuery(text, st), ensureShard("any"), c0 ? ensureCat(d0 ? d0.dept : "any", c0.cat) : null]);
+      const [vec, kw] = await Promise.all([encodeQuery(text, st), keywordPlan(text, q0).catch(() => null), ensureShard("any"), c0 ? ensureCat(d0 ? d0.dept : "any", c0.cat) : null]);
+      await loadKeywordParts(kw);
       st.textContent = "Searching every brand…";
       const q = parseQuery(text), pf = q.facets.find((f) => f.key === "price"), max = pf ? pf.max : Infinity;
+      const exact = kw && kw.ids.size && !kw.missing;
       const named = q.facets.some((f) => f.key === "cat");
       // a style ('classy, modern') means clothes first — bags, hats and scarves only when asked for
       const all = S.items.filter((it) => it.in_stock && it.image && S.vecs[it.id] && it.price_gbp >= 10 && !JUNK.test(it.title)
-        && !["underwear", "other", "lifestyle"].includes(it.category) && (named || !["accessories", "bags"].includes(it.category)))
+        && (!exact || kw.ids.has(it.id))
+        && !["underwear", "other", "lifestyle"].includes(it.category) && (exact || named || !["accessories", "bags"].includes(it.category)))
         .map((it) => ({ it }));
       const res = matchQuery(all, q);
       const pool = semantic(res.list, vec, text).slice(0, 400);
@@ -654,14 +719,14 @@
       const perCat = {}, top = [];
       const perBrand = {};
       for (const x of pool) {
-        if ((perCat[x.it.category] || 0) >= (named ? 12 : 3) || (perBrand[x.it.brand] || 0) >= 2) continue;
+        if ((perCat[x.it.category] || 0) >= (named || exact ? 12 : 3) || (perBrand[x.it.brand] || 0) >= (exact ? 12 : 2)) continue;
         perCat[x.it.category] = (perCat[x.it.category] || 0) + 1; perBrand[x.it.brand] = (perBrand[x.it.brand] || 0) + 1; top.push(x.it);
         if (top.length >= 12) break;
       }
       const men = pool.slice(0, 40).filter((x) => x.it.department === "men").length, women = pool.slice(0, 40).filter((x) => x.it.department === "women").length;
       S.landingQuery = { text, vec, max, dept: men > women * 2 ? "men" : women > men * 2 ? "women" : "any" };
       st.textContent = "";
-      $("#lResHead").innerHTML = `<h2>For “${esc(text)}”</h2>${facetChips(q, res.dropped, new Set()).replace(/data-qfacet="[^"]*"/g, "disabled")}
+      $("#lResHead").innerHTML = `<h2>For “${esc(text)}”</h2>${facetChips(q, res.dropped, new Set(), kw).replace(/data-qfacet="[^"]*"/g, "disabled")}
         <p class="l-sub">${!pool.length ? "Nothing in our brands matches that yet — try removing a word or two." : `${pool.length >= 400 ? "Hundreds of matches" : `${pool.length} match${pool.length === 1 ? "" : "es"}`} across ${new Set(pool.map((x) => x.it.brand)).size} brands. Save it and we'll keep finding more, in your size.`}</p>
         ${pool.length ? `<button class="l-cta" id="lSave">Make this my taste →</button>` : ""}`;
       $("#lGrid").innerHTML = top.map(lcard).join("");
@@ -943,8 +1008,9 @@
     try {
       const parsed = parseQuery(text), dept = parsed.facets.find((f) => f.key === "dept"), cat = parsed.facets.find((f) => f.key === "cat" && f.cat);
       const useDept = dept && dept.dept !== P().department ? "any" : P().department;
-      const [vec] = await Promise.all([encodeQuery(text, st), useDept === "any" ? ensureShard("any") : null, cat ? ensureCat(useDept, cat.cat) : null]);
-      S.query = { text, vec, parsed: parseQuery(text) }; S.brand = null; render(); window.scrollTo({ top: 0 });
+      const [vec, kw] = await Promise.all([encodeQuery(text, st), keywordPlan(text, parsed).catch(() => null), useDept === "any" ? ensureShard("any") : null, cat ? ensureCat(useDept, cat.cat) : null]);
+      await loadKeywordParts(kw);
+      S.query = { text, vec, kw, parsed: parseQuery(text) }; S.brand = null; render(); window.scrollTo({ top: 0 });
       liveSearch(text, vec);
     } catch (e) {
       st.textContent = S.model === "fake" ? "Search by feeling works on the live site." : `Couldn't load the style model (${e.message}).`;
@@ -1114,7 +1180,7 @@
     if (p) { $("#welcome").hidden = true; showLanding(false); await useProfile(p); render(); }
   });
 
-  if (/[?&]debug=1/.test(location.search)) window.__fp = { S, parseQuery, matchQuery, render, pv, norm, mean }; // for automated tests
+  if (/[?&]debug=1/.test(location.search)) window.__fp = { S, parseQuery, matchQuery, render, pv, norm, mean, keywordPlan, loadKeywordParts }; // for automated tests
 
   // ---------- boot ----------
   (async function boot() {

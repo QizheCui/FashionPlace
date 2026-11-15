@@ -69,6 +69,25 @@ def landing(shards: dict) -> dict:
     return {"pieces": len(every), "brands": len(names), "names": names[:24], "picks": picks}
 
 
+def search_index(by_id: dict) -> str:
+    """One line per piece: which catalogue part it lives in, its id, and 'brand title' in lower case.
+    Lets the app find exact words (model names like 'Evo SL' or 'Weejun') across the whole library
+    without downloading it."""
+    parts, lines = [], []
+    for meta in sorted(DATA.glob("meta-*.json")):
+        name = meta.stem[len("meta-"):]
+        if name.endswith("-core"):
+            continue
+        pi = len(parts)
+        parts.append(name)
+        for i in json.loads(meta.read_text())["ids"]:
+            it = by_id.get(i)
+            if it:
+                text = re.sub(r"\s+", " ", f"{it['brand']} {it['title']}".lower().replace("\t", " "))
+                lines.append(f"{pi}\t{i}\t{text}")
+    return "\t".join(["#parts", *parts]) + "\n" + "\n".join(lines)
+
+
 def main(inline: bool) -> None:
     OUT.mkdir(exist_ok=True)
     if not inline:
@@ -91,6 +110,7 @@ def main(inline: bool) -> None:
             ids = json.loads(meta.read_text())["ids"]
             out = {"updated": updated, "items": [by_id[i] for i in ids if i in by_id]}
             (OUT / "data" / f"items-{name}.json").write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")))
+        (OUT / "data" / "search-index.txt").write_text(search_index(by_id))
         core = {d: {"updated": updated, "items": [by_id[i] for i in json.loads((DATA / f"meta-{d}-core.json").read_text())["ids"] if i in by_id]}
                 for d in ("men", "women") if (DATA / f"meta-{d}-core.json").exists()}
         (OUT / "data" / "landing.json").write_text(json.dumps(landing(core or shards), ensure_ascii=False))
@@ -109,6 +129,7 @@ def main(inline: bool) -> None:
         blob[f"items-{name}.json"] = {"updated": updated, "items": [by_id[i] for i in m["ids"] if i in by_id]}
         blob[f"vectors-{name}.bin"] = base64.b64encode((DATA / f"vectors-{name}.bin").read_bytes()).decode()
     blob["landing.json"] = landing(shards)
+    blob["search-index.txt"] = search_index(by_id)
     for b in BINS:
         blob[b] = base64.b64encode((DATA / b).read_bytes()).decode()
     html = (WEB / "index.html").read_text()
