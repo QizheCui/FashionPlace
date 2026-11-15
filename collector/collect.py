@@ -100,7 +100,7 @@ def run(only: str | None = None, fixture_dir: Path | None = None, today: str | N
         # keep each brand to its newest in-stock pieces so one giant catalogue can't drown the rest
         norm.sort(key=lambda n: (n["in_stock"], n.get("published_at") or ""), reverse=True)
         total = len(norm)
-        norm = norm[:MAX_PER_BRAND]
+        norm = norm[:MAX_PER_BRAND * (2 if brand.get("multibrand") else 1)]
         return brand, norm, {"status": "ok", "products": len(norm), "catalogue": total, "currency": brand.get("currency")}
 
     chosen = [b for b in cfg["brands"] if not only or b["name"] == only]

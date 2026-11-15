@@ -1092,7 +1092,8 @@
       "departments": [
         "women"
       ],
-      "tier": "boutique"
+      "tier": "boutique",
+      "multibrand": true
     },
     {
       "name": "Sister Jane",
@@ -1643,7 +1644,8 @@
         "men",
         "women"
       ],
-      "tier": "boutique"
+      "tier": "boutique",
+      "multibrand": true
     },
     {
       "name": "Kith",
@@ -1656,7 +1658,8 @@
         "men",
         "women"
       ],
-      "tier": "premium"
+      "tier": "premium",
+      "multibrand": true
     },
     {
       "name": "Stüssy",
@@ -1707,7 +1710,8 @@
         "men",
         "women"
       ],
-      "tier": "luxury"
+      "tier": "luxury",
+      "multibrand": true
     },
     {
       "name": "Hanifa",
@@ -2146,6 +2150,327 @@
       "tier": "luxury"
     },
     {
+      "name": "Gymshark",
+      "domain": "www.gymshark.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "British gym and training wear.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "Tracksmith",
+      "domain": "www.tracksmith.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Running gear with a classic, collegiate New England look.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Satisfy",
+      "domain": "satisfyrunning.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Paris running label: technical fabrics with a punk, vintage edge.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "luxury"
+    },
+    {
+      "name": "Bandit Running",
+      "domain": "banditrunning.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "New York running brand with bold, community-driven design.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Ciele Athletics",
+      "domain": "cieleathletics.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Montreal running caps and performance wear.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "District Vision",
+      "domain": "districtvision.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Running and mindful-movement gear, known for sunglasses.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Norda",
+      "domain": "nordarun.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Montreal trail-running shoes.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Soar Running",
+      "domain": "soarrunning.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London performance running kit.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Alo Yoga",
+      "domain": "www.aloyoga.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Los Angeles yoga and studio-to-street wear.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Vuori",
+      "domain": "vuoriclothing.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "California performance and athleisure.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Rhone",
+      "domain": "www.rhone.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Men's performance training and office-ready athleisure.",
+      "departments": [
+        "men"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Ten Thousand",
+      "domain": "www.tenthousand.cc",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Men's training gear built for hard workouts.",
+      "departments": [
+        "men"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Outdoor Voices",
+      "domain": "www.outdoorvoices.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Colourful, easy activewear.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Bodega",
+      "domain": "bdgastore.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Boston sneaker store: Nike, adidas, New Balance and more.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium",
+      "multibrand": true
+    },
+    {
+      "name": "Concepts",
+      "domain": "cncpts.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Sneaker boutique with Nike, adidas, Asics and collaborations.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium",
+      "multibrand": true
+    },
+    {
+      "name": "Packer Shoes",
+      "domain": "packershoes.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "New Jersey sneaker store: running and lifestyle shoes.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique",
+      "multibrand": true
+    },
+    {
+      "name": "Extra Butter",
+      "domain": "extrabutterny.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "New York sneaker boutique.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique",
+      "multibrand": true
+    },
+    {
+      "name": "Feature",
+      "domain": "feature.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Sneaker and streetwear store.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique",
+      "multibrand": true
+    },
+    {
+      "name": "Bait",
+      "domain": "www.baitme.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Sneakers and streetwear.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique",
+      "multibrand": true
+    },
+    {
+      "name": "Lapstone & Hammer",
+      "domain": "www.lapstoneandhammer.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Philadelphia store for sneakers and menswear.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium",
+      "multibrand": true
+    },
+    {
+      "name": "Hanon",
+      "domain": "hanon-shop.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Aberdeen sneaker store.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique",
+      "multibrand": true
+    },
+    {
+      "name": "Naked Copenhagen",
+      "domain": "www.nakedcph.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Copenhagen sneaker store.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique",
+      "multibrand": true
+    },
+    {
+      "name": "Wellgosh",
+      "domain": "www.wellgosh.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Leicester sneaker and running store.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique",
+      "multibrand": true
+    },
+    {
+      "name": "Afew",
+      "domain": "en.afew-store.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Düsseldorf sneaker store.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique",
+      "multibrand": true
+    },
+    {
       "name": "Ralph Lauren",
       "domain": "www.ralphlauren.co.uk",
       "source": "affiliate",
@@ -2352,6 +2677,84 @@
     {
       "name": "Liberty London",
       "domain": "www.libertylondon.com",
+      "source": "affiliate",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Nike",
+      "domain": "",
+      "source": "affiliate",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "adidas",
+      "domain": "",
+      "source": "affiliate",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "On",
+      "domain": "",
+      "source": "affiliate",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "New Balance",
+      "domain": "",
+      "source": "affiliate",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "Hoka",
+      "domain": "",
+      "source": "affiliate",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Lululemon",
+      "domain": "",
       "source": "affiliate",
       "currency": "GBP",
       "favourite": false,

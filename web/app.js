@@ -111,6 +111,20 @@
     for (const [b, rows] of Object.entries(groups)) { S.brandCentroid[b] = norm(mean(rows)); S.brandCount[b] = rows.length; }
     S.globalCentroid = norm(mean(Object.values(S.brandCentroid)));
     S.summaryCache = {};
+    // labels found inside multi-brand shops (Nike at Kith, Lemaire at Dover Street Market…) become brands too
+    const known = new Set(S.brands.map((b) => b.name));
+    const extra = {};
+    for (const it of S.items) {
+      if (known.has(it.brand) || !S.brandCentroid[it.brand] || S.brandCount[it.brand] < 6) continue;
+      const e = (extra[it.brand] ||= { name: it.brand, source: "via", tier: it.tier, departments: [], blurb: "", via: new Set() });
+      if (it.department !== "unisex" && !e.departments.includes(it.department)) e.departments.push(it.department);
+      if (it.retailer) e.via.add(it.retailer);
+    }
+    for (const e of Object.values(extra)) {
+      if (!e.departments.length) e.departments = ["men", "women"];
+      e.blurb = e.via.size ? `Sold here via ${[...e.via].slice(0, 3).join(", ")}.` : "";
+      delete e.via; S.brands.push(e); S.brandInfo[e.name] = e;
+    }
     const n = Object.keys(groups).length;
     $("#foot").textContent = `${S.items.length.toLocaleString()} pieces from ${n} brands · updated ${S.updated}` + (S.model === "fake" ? " · demo data" : "");
   }
@@ -304,11 +318,12 @@
         return { it, status: st, advice: advice(it, p), why: p.saved[it.id] ? `Saved ${p.saved[it.id].date} at ${money(p.saved[it.id].price)}` : "" };
       }).sort((a, b) => (b.status && b.status.cls === "deal") - (a.status && a.status.cls === "deal"));
     }
-    const base = steerPool(S.items.filter((it) => fits(it, p)).map((it) => ({ it, s: score(it) })));
+    let base = steerPool(S.items.filter((it) => fits(it, p)).map((it) => ({ it, s: score(it) })));
     const seen = new Set([...p.liked, ...p.disliked]);
 
     if (S.query) { // search by feeling: the query leads, your taste breaks ties
-      const qv = pv(S.query.vec);
+      const qv = pv(S.query.vec), onlyBrand = brandInQuery(S.query.text);
+      if (onlyBrand) base = base.filter((x) => x.it.brand === onlyBrand);
       const zq = zs(base.map((x) => dot(S.vecs[x.it.id], qv)));
       const ranked = base.map((x, i) => ({ ...x, q: zq[i] + 0.35 * x.s }))
         .sort((a, b) => b.q - a.q).slice(0, 240);
@@ -484,6 +499,18 @@
     $("#lq").focus({ preventScroll: true });
     if (!S.landingQuery) { $("#lResHead").innerHTML = `<p class="l-eyebrow">Today in the feed</p>`; $("#lGrid").innerHTML = LAND.picks.map(lcard).join(""); }
   }
+  // "Nike running shoes" → only Nike pieces (when we have enough of them)
+  function brandInQuery(text) {
+    const t = ` ${text} `;
+    let best = null;
+    for (const b of Object.keys(S.brandCount || {})) {
+      if (b.length < 2) continue;
+      // short names ('On', 'COS') must be typed with their capitals, so 'shoes on sale' isn't a brand search
+      const re = new RegExp(`[^A-Za-z0-9]${b.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}[^A-Za-z0-9]`, b.length <= 3 ? "" : "i");
+      if (re.test(t) && (!best || b.length > best.length)) best = b;
+    }
+    return best && S.brandCount[best] >= 5 ? best : null;
+  }
   async function landingSearch(text) {
     const st = $("#lStatus");
     st.textContent = "Searching every brand…";
@@ -492,7 +519,8 @@
       st.textContent = "Searching every brand…";
       const qv = pv(vec);
       const m = text.match(/under\s*£?\s*(\d{2,4})/i), max = m ? +m[1] : Infinity;
-      const pool = S.items.filter((it) => it.in_stock && it.image && S.vecs[it.id] && it.category !== "underwear" && it.category !== "other" && it.price_gbp <= max)
+      const onlyBrand = brandInQuery(text);
+      const pool = S.items.filter((it) => it.in_stock && it.image && S.vecs[it.id] && it.category !== "underwear" && it.category !== "other" && it.price_gbp <= max && (!onlyBrand || it.brand === onlyBrand))
         .map((it) => ({ it, s: dot(S.vecs[it.id], qv) })).sort((a, b) => b.s - a.s).slice(0, 400);
       const top = diversify(pool, 1).slice(0, 12).map((x) => x.it);
       const men = pool.slice(0, 40).filter((x) => x.it.department === "men").length, women = pool.slice(0, 40).filter((x) => x.it.department === "women").length;

@@ -29,6 +29,7 @@ CATEGORY_RULES = [
     ("bags", r"\bbag|tote|backpack|holdall|duffle|pouch|wallet|card holder"),
     ("accessories", r"\bhats?\b|beanie|\bcaps?\b|scarf|scarves|glove|\bbelts?\b|\bties?\b|\bsocks?\b|sunglass|umbrella|jewel|\brings?\b|necklace"),
     ("sweats", r"sweatshirt|hoodie|sweat\b|sweatpants?|jogger|track ?pants?|fleece"),
+    ("activewear", r"legging|sports bra|\btights\b|running (top|tee|t-shirt|shorts?|tights?|jacket|vest|singlet)|training (top|tee|shorts?)|base ?layer|singlet|track ?suit|\bgym\b"),
     ("dresses", r"\bdress(es)?\b(?! shirt)|jumpsuit|playsuit"),
     ("skirts", r"\bskirts?\b"),
     ("tailoring", r"blazer|\bsuit\b|suits\b|waistcoat|sport coat|tuxedo"),
@@ -136,6 +137,18 @@ def detect_department(p: dict) -> str:
     return "unisex"
 
 
+BRAND_ALIASES = {"nike": "Nike", "nike sportswear": "Nike", "jordan": "Jordan", "adidas": "adidas", "adidas originals": "adidas",
+                 "adidas performance": "adidas", "on": "On", "on running": "On", "new balance": "New Balance", "asics": "Asics",
+                 "hoka": "Hoka", "hoka one one": "Hoka", "salomon": "Salomon", "saucony": "Saucony", "puma": "Puma",
+                 "converse": "Converse", "vans": "Vans", "reebok": "Reebok", "mizuno": "Mizuno", "brooks": "Brooks"}
+
+
+def canon_brand(vendor: str) -> str:
+    """Shops spell labels differently ('ADIDAS ORIGINALS', 'On Running'): one name per label."""
+    v = re.sub(r"\s+", " ", vendor).strip()
+    return BRAND_ALIASES.get(v.lower(), v if not v.isupper() or len(v) <= 4 else v.title())
+
+
 def department_for(p: dict, brand: dict) -> str:
     """Untagged items take their brand's department: a menswear-only label's 'unisex' tee is menswear."""
     dept = detect_department(p)
@@ -216,9 +229,15 @@ def normalise(p: dict, brand: dict, fx: dict) -> dict | None:
     images = [i.get("src") for i in (p.get("images") or []) if i.get("src")]
 
     cat = detect_category(p)
+    # multi-brand shops (Kith, Dover Street Market, sneaker stores): the piece's own label is the brand,
+    # the shop is where you buy it
+    vendor = (p.get("vendor") or "").strip()
+    multi = brand.get("multibrand") and vendor and vendor.lower() != brand["name"].lower()
     return {
         "id": f"{brand['domain']}:{p['id']}",
-        "brand": brand["name"],
+        "brand": canon_brand(vendor) if multi else brand["name"],
+        "retailer": brand["name"] if multi else None,
+        "tier": brand.get("tier"),
         "favourite_brand": bool(brand.get("favourite")),
         "title": p.get("title", "").strip(),
         "url": f"https://{brand['domain']}/products/{p.get('handle')}",

@@ -103,3 +103,14 @@ def test_womenswear_categories():
     assert cat("Pleated Midi Skirt", "Skirts") == "skirts"
     assert cat("Poplin Dress Shirt", "Shirts") == "shirts"
     assert cat("Wool Suit Jacket", "Tailoring") == "tailoring"
+
+
+def test_multibrand_store_keeps_the_label():
+    store = {**BRAND, "name": "Sneaker Store", "multibrand": True, "tier": "boutique"}
+    r = raw("Cloudmonster Running Shoe", "Shoes", sizes=("9", "10"))
+    r["vendor"] = "On Running"
+    it = shopify.normalise(r, store, FX)
+    assert it["brand"] == "On" and it["retailer"] == "Sneaker Store" and it["category"] == "shoes"
+    r["vendor"] = "ADIDAS ORIGINALS"
+    assert shopify.normalise(r, store, FX)["brand"] == "adidas"
+    assert shopify.normalise(raw("High Rise Running Tights", "Bottoms"), BRAND, FX)["category"] == "activewear"

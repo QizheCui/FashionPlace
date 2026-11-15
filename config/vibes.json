@@ -228,6 +228,24 @@
         "bold printed womenswear with colourful patterns",
         "pattern clashing dress and blouse"
       ]
+    },
+    {
+      "id": "athleisure",
+      "label": "Athleisure",
+      "desc": "Clean sportswear you wear all day",
+      "prompts": [
+        "stylish athleisure outfit, clean sportswear",
+        "minimal tracksuit and fashion trainers"
+      ]
+    },
+    {
+      "id": "runner",
+      "label": "Runner",
+      "desc": "Running shoes and performance kit",
+      "prompts": [
+        "running shoes and performance running clothing",
+        "technical running jacket and shorts"
+      ]
     }
   ]
 }
