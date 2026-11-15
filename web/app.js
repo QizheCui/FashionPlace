@@ -135,10 +135,18 @@
       words: [], avoidWords: [], liked: [], disliked: [], saved: {}, setupDone: false,
     };
   }
+  // Built-in profiles (e.g. the owner's) are private: they only appear on a device that already
+  // uses them, or after opening the site once with their link (…/FashionPlace/#qizhe).
   function allPeople() {
-    const list = Object.values(S.profiles);
-    for (const b of S.builtins) if (!S.profiles[b.id]) list.unshift(profileFromBuiltin(b));
-    return list;
+    return Object.values(S.profiles);
+  }
+  function unlockFromLink() {
+    const id = decodeURIComponent((location.hash || "").slice(1));
+    const b = id && S.builtins.find((x) => x.id === id);
+    if (!b) return null;
+    history.replaceState(null, "", location.pathname + location.search);
+    if (!S.profiles[b.id]) { S.profiles[b.id] = upgrade(profileFromBuiltin(b)); saveStore(); }
+    return S.profiles[b.id];
   }
   async function useProfile(p) {
     await ensureShard(p.department);
@@ -515,6 +523,7 @@
         <span class="av" style="background:${tint(p.name)}">${esc((p.name || "?")[0])}</span>
         <span><b>${esc(p.name)}</b><small>${p.setupDone ? `${p.vibes.length} vibes · ${p.liked.length} ♥ · ${priceLabel(p.price)}` : "Not set up yet"}</small></span>
       </button>${S.profiles[p.id] ? `<button class="pdel" data-delperson="${esc(p.id)}" title="${p.builtin ? "Reset to the original taste" : "Remove this profile"}">${p.builtin ? "Reset" : "Remove"}</button>` : ""}</div>`).join("");
+    if (!allPeople().length) $("#people").innerHTML = `<p class="sub">No profiles on this device yet. Setting one up takes a minute — it's saved here, on this device.</p>`;
     $("#welcome").hidden = false;
   }
 
@@ -911,6 +920,11 @@
     if (e.key === "Escape" && !$("#editor").hidden) $("#edClose").click();
   });
 
+  window.addEventListener("hashchange", async () => {
+    const p = S.builtins.length && unlockFromLink();
+    if (p) { $("#welcome").hidden = true; showLanding(false); await useProfile(p); render(); }
+  });
+
   // ---------- boot ----------
   (async function boot() {
     try {
@@ -926,7 +940,8 @@
       S.live = await getJSON("live.json").catch(() => null);
       S.builtins = await Promise.all(index.map((id) => getJSON(`profiles/${id}.json`)));
       loadStore();
-      const last = S.lastId && S.profiles[S.lastId];
+      const unlocked = unlockFromLink();
+      const last = unlocked || (S.lastId && S.profiles[S.lastId]);
       if (last && last.setupDone) { await useProfile(last); render(); } else openLanding();
     } catch (err) {
       console.error(err);

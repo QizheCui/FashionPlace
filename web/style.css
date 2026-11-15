@@ -341,3 +341,8 @@ body.on-landing > :not(#landing):not(.overlay):not(.toast):not(script) { display
   .l-grid { grid-template-columns: repeat(2, 1fr); gap: 18px 12px; }
   .l-names { font-size: 20px; }
 }
+
+.l-foot { border-top: 1px solid var(--line); padding: 36px 6vw 48px; display: flex; flex-direction: column; gap: 8px; color: #6b625a; font-size: 13px; line-height: 1.55; }
+.l-foot .brandmark { font-size: 22px; color: var(--ink); margin-bottom: 6px; }
+.l-foot p { margin: 0; max-width: 640px; }
+.l-copy { margin-top: 8px !important; }
