@@ -3,14 +3,57 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FashionPlace</title>
+  <title>SU 素 — your taste, every brand</title>
+  <meta name="description" content="Describe your style and SU finds it across 120+ fashion brands — in your size, with the real deals flagged.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Landing: what a new visitor sees first -->
+  <div class="landing" id="landing" hidden>
+    <header class="l-top">
+      <div class="brandmark">SU <em>素</em></div>
+      <nav class="l-nav">
+        <a href="#how">How it works</a>
+        <a href="#brands">Brands</a>
+        <button class="l-pill" id="signIn">Sign in</button>
+      </nav>
+    </header>
+    <section class="l-hero">
+      <p class="l-eyebrow" id="lEyebrow">Your personal stylist · 120+ brands</p>
+      <h1>Describe your style.<br><em>We'll find it in every brand.</em></h1>
+      <p class="l-sub">One feed of pieces that are actually you — in your size, from labels you love and ones you haven't met yet, with the real deals flagged.</p>
+      <form class="l-search" id="lSearch">
+        <label for="lq" class="sr">Describe your style</label>
+        <input id="lq" placeholder="e.g. Sunday in Copenhagen in October" maxlength="140" autocomplete="off">
+        <button type="submit">Show me</button>
+      </form>
+      <div class="l-try"><span>Try:</span>
+        <button data-try="Quiet luxury, under £200">Quiet luxury, under £200</button>
+        <button data-try="Dark trousers for work and dinner">Dark trousers for work and dinner</button>
+        <button data-try="French girl, but make it winter">French girl, but make it winter</button>
+      </div>
+      <p class="status" id="lStatus"></p>
+    </section>
+    <section class="l-results" aria-label="Pieces">
+      <div class="l-res-head" id="lResHead"></div>
+      <div class="l-grid" id="lGrid"></div>
+    </section>
+    <section class="l-how" id="how">
+      <div><div class="n">01</div><h2>Tell us your taste</h2><p>A feeling, a photo, a few pieces you love. It takes a minute.</p></div>
+      <div><div class="n">02</div><h2>We search every brand</h2><p>Independent labels to designer houses — filtered to your size and budget.</p></div>
+      <div><div class="n">03</div><h2>Buy at the right price</h2><p>We track prices daily, so you see genuine discounts — and when it's worth waiting.</p></div>
+    </section>
+    <section class="l-brands" id="brands">
+      <p class="l-eyebrow">One feed across</p>
+      <p class="l-names" id="lNames"></p>
+      <button class="l-cta" id="lStart">Find my style — it's free</button>
+    </section>
+  </div>
+
   <header class="top">
-    <div class="brandmark">Fashion<em>Place</em></div>
+    <button class="brandmark" id="homeBtn" aria-label="SU home">SU <em>素</em></button>
     <nav class="tabs" role="tablist">
       <button data-tab="foryou" class="active">For You</button>
       <button data-tab="explore">Explore</button>
@@ -53,7 +96,7 @@
   <!-- Who's shopping? -->
   <div class="overlay" id="welcome" hidden>
     <div class="sheet welcome">
-      <div class="brandmark big">Fashion<em>Place</em></div>
+      <div class="brandmark big">SU <em>素</em></div>
       <p class="sub">Who's shopping?</p>
       <div class="people" id="people"></div>
       <button class="ghost" id="newProfile">+ New profile</button>

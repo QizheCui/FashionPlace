@@ -450,6 +450,65 @@
     $("#empty").textContent = S.tab === "saved" ? "Nothing saved yet — tap ♥ on anything you love." : "Nothing here — try widening the price range or sizes.";
   }
 
+  // ---------- landing: what a first-time visitor sees ----------
+  let LAND = null;
+  function showLanding(on) {
+    document.body.classList.toggle("on-landing", on);
+    $("#landing").hidden = !on;
+    if (on) window.scrollTo({ top: 0 });
+  }
+  function lcard(it) {
+    const d = it.deal || {};
+    const badge = d.verdict === "real_drop" ? `<span class="badge deal">Price drop −${d.discount_pct}%</span>`
+      : d.verdict === "on_sale_unverified" ? `<span class="badge deal">Sale −${d.discount_pct}%</span>` : "";
+    return `<a class="lcard" href="${esc(it.url)}" target="_blank" rel="noopener">
+      <div class="photo"><div class="ph" style="background:${tint(it.title)}">${esc(shortTitle(it.title))}</div>
+        ${it.image ? `<img src="${esc(it.image)}" alt="${esc(it.title)}" loading="lazy" onerror="this.remove()">` : ""}<div class="badges">${badge}</div></div>
+      <div class="meta"><div class="b">${esc(it.brand)}</div><div class="t">${esc(it.title)}</div>
+      <div class="price">${money(it.price_gbp)}${it.compare_at_gbp ? `<s>${money(it.compare_at_gbp)}</s>` : ""}</div></div></a>`;
+  }
+  async function openLanding() {
+    showLanding(true);
+    if (!LAND) LAND = await getJSON("landing.json").catch(() => null);
+    if (!LAND) return;
+    $("#lEyebrow").textContent = `Your personal stylist · ${Math.floor(LAND.brands / 10) * 10}+ brands`;
+    $("#lNames").textContent = `${LAND.names.slice(0, 8).join(" · ")} · and ${LAND.brands - 8} more`;
+    $("#lq").focus({ preventScroll: true });
+    if (!S.landingQuery) { $("#lResHead").innerHTML = `<p class="l-eyebrow">Today in the feed</p>`; $("#lGrid").innerHTML = LAND.picks.map(lcard).join(""); }
+  }
+  async function landingSearch(text) {
+    const st = $("#lStatus");
+    st.textContent = "Searching every brand…";
+    try {
+      const [vec] = await Promise.all([encodeText(text, st), ensureShard("any")]);
+      st.textContent = "Searching every brand…";
+      const qv = pv(vec);
+      const m = text.match(/under\s*£?\s*(\d{2,4})/i), max = m ? +m[1] : Infinity;
+      const pool = S.items.filter((it) => it.in_stock && it.image && S.vecs[it.id] && it.category !== "underwear" && it.category !== "other" && it.price_gbp <= max)
+        .map((it) => ({ it, s: dot(S.vecs[it.id], qv) })).sort((a, b) => b.s - a.s).slice(0, 400);
+      const top = diversify(pool, 1).slice(0, 12).map((x) => x.it);
+      const men = pool.slice(0, 40).filter((x) => x.it.department === "men").length, women = pool.slice(0, 40).filter((x) => x.it.department === "women").length;
+      S.landingQuery = { text, vec, max, dept: men > women * 2 ? "men" : women > men * 2 ? "women" : "any" };
+      st.textContent = "";
+      $("#lResHead").innerHTML = `<h2>For “${esc(text)}”</h2><p class="l-sub">${pool.length >= 400 ? "Hundreds of matches" : `${pool.length} matches`} across ${new Set(pool.map((x) => x.it.brand)).size} brands. Save it and SU keeps finding more, in your size.</p><button class="l-cta" id="lSave">Make this my taste →</button>`;
+      $("#lGrid").innerHTML = top.map(lcard).join("");
+      $("#lResHead").scrollIntoView({ behavior: "smooth", block: "start" });
+    } catch (e) {
+      st.textContent = S.model === "fake" ? "Search works on the live site." : `Couldn't search just now (${e.message}). Try again in a moment.`;
+    }
+  }
+  function startSetup(fromQuery) {
+    const np = newProfile("");
+    if (fromQuery && S.landingQuery) {
+      const q = S.landingQuery;
+      np.department = q.dept;
+      np.words.push({ label: q.text, vec: q.vec.map((x) => Math.round(x * 1e5) / 1e5) });
+      if (Number.isFinite(q.max)) np.price.max = Math.min(1000, q.max);
+    }
+    ensureShard(np.department);
+    openEditor(np, true);
+  }
+
   // ---------- who's shopping ----------
   function openWelcome() {
     $("#people").innerHTML = allPeople().map((p) => `<div class="prow"><button class="person" data-person="${esc(p.id)}">
@@ -587,7 +646,7 @@
     S.profiles[d.id] = d; S.current = d;
     ensureShard(d.department).then(() => { recompute(); render(); });
     recompute(); saveStore();
-    $("#whoName").textContent = d.name; $("#editor").hidden = true; $("#welcome").hidden = true;
+    $("#whoName").textContent = d.name; $("#editor").hidden = true; $("#welcome").hidden = true; showLanding(false);
     if (wasOnboarding) S.tab = "foryou";
     render(); window.scrollTo({ top: 0 });
     toast(wasOnboarding ? `Welcome, ${d.name} — here's your feed` : "Taste updated");
@@ -751,14 +810,19 @@
       S.steer = { nudges: {}, words: [] }; recompute(); saveStore(); render(); toast("Saved to your taste"); return;
     }
     if (t.closest("[data-open=tune]")) { openEditor(P(), false, 1); return; }
-    if (t.closest("#whoBtn")) { openWelcome(); return; }
-    if (t.id === "welcome" && P()) { $("#welcome").hidden = true; return; } // click outside closes it
+    if (t.closest("#whoBtn") || t.closest("#signIn")) { openWelcome(); return; }
+    if (t.id === "welcome") { $("#welcome").hidden = true; return; } // click outside closes it
+    if (t.closest("#homeBtn")) { openLanding(); return; }
+    if (t.closest("#lStart")) { startSetup(false); return; }
+    if (t.closest("#lSave")) { startSetup(true); return; }
+    const tr0 = t.closest("[data-try]"); if (tr0) { $("#lq").value = tr0.dataset.try; landingSearch(tr0.dataset.try); return; }
     const person = t.closest("[data-person]");
     if (person) {
       const p = allPeople().find((x) => x.id === person.dataset.person);
       $("#welcome").hidden = true;
       if (!p.setupDone) { openEditor(p, true); return; }
       $("#intro").innerHTML = `<h1>Loading…</h1>`;
+      showLanding(false);
       useProfile(p).then(() => { render(); window.scrollTo({ top: 0 }); }); return;
     }
     const del = t.closest("[data-delperson]");
@@ -769,10 +833,10 @@
       if (S.current && S.current.id === id) S.current = null;
       saveStore(); openWelcome(); return;
     }
-    if (t.closest("#newProfile")) { const np = newProfile(""); ensureShard(np.department); openEditor(np, true); return; }
+    if (t.closest("#newProfile")) { $("#welcome").hidden = true; startSetup(false); return; }
 
     // editor
-    if (t.closest("#edClose")) { $("#editor").hidden = true; if (!P()) openWelcome(); return; }
+    if (t.closest("#edClose")) { $("#editor").hidden = true; if (!P()) openLanding(); return; }
     if (t.closest("#edSave")) { saveEditor(); return; }
     if (t.closest("#edBack")) { ED.step = Math.max(0, ED.step - 1); renderEditor(); return; }
     if (t.closest("#edNext")) {
@@ -821,6 +885,7 @@
     if (t.closest("#fMore")) { fillPicks(); return; }
   });
   document.addEventListener("submit", async (e) => {
+    if (e.target.id === "lSearch") { e.preventDefault(); const q = $("#lq").value.trim(); if (q) landingSearch(q); return; }
     if (e.target.id === "steerForm") {
       e.preventDefault(); const text = $("#steerText").value.trim(); if (!text) return;
       try { const vec = await encodeText(text, $("#qStatus")); S.steer.words.push({ label: text, vec }); recompute(); render(); toast("Re-ranked with your note"); }
@@ -862,7 +927,7 @@
       S.builtins = await Promise.all(index.map((id) => getJSON(`profiles/${id}.json`)));
       loadStore();
       const last = S.lastId && S.profiles[S.lastId];
-      if (last && last.setupDone) { await useProfile(last); render(); } else openWelcome();
+      if (last && last.setupDone) { await useProfile(last); render(); } else openLanding();
     } catch (err) {
       console.error(err);
       $("#intro").innerHTML = `<h1>No data yet</h1><p>The daily collector hasn't run yet (${esc(err.message)}).</p>`;
