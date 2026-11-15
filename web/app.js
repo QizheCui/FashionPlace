@@ -192,7 +192,7 @@
   function fits(it, p, { ignoreCategory = false, ignorePrice = false } = {}) {
     if (p.department !== "any" && it.department !== "unisex" && it.department !== p.department) return false;
     if (!it.in_stock || it.category === "underwear") return false;
-    if (p.tiers && p.tiers.length && !it.live) { const b = S.brandInfo[it.brand]; if (b && b.tier && !p.tiers.includes(b.tier)) return false; }
+    if (p.tiers && p.tiers.length && !it.live) { const tier = it.tier || (S.brandInfo[it.brand] || {}).tier; if (tier && !p.tiers.includes(tier)) return false; }
     if (it.letter_sized && p.sizes.length && !(it.letter_sizes || []).some((s) => p.sizes.includes(s))) return false;
     if (p.waist && p.waist.length && it.waist_sizes && it.waist_sizes.length && !it.waist_sizes.some((w) => p.waist.includes(w))) return false;
     if (p.shoe && p.shoe.length && it.shoe_sizes && it.shoe_sizes.length && !it.shoe_sizes.some((w) => p.shoe.includes(w) || p.shoe.includes(w - 0.5))) return false;
@@ -380,7 +380,7 @@
         </div>
       </div>
       <div class="meta">
-        <div class="b">${esc(it.brand)}</div>
+        <div class="b">${esc(it.brand)}${it.retailer && it.retailer !== it.brand ? ` <span class="via">via ${esc(it.retailer)}</span>` : ""}</div>
         <div class="t"><a href="${esc(it.url)}" target="_blank" rel="noopener">${esc(it.title)}</a></div>
         <div class="price">${money(it.price_gbp)}${it.compare_at_gbp ? `<s>${money(it.compare_at_gbp)}</s>` : ""}</div>
         ${why ? `<div class="why">${esc(why)}</div>` : ""}

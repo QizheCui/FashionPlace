@@ -267,3 +267,4 @@ button, select, input { font: inherit; color: inherit; }
 @media (max-width: 700px) { .live-row h2 { margin: 0 18px 12px; } }
 
 .bp .tierlbl { font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; }
+.meta .b .via { text-transform: none; letter-spacing: 0; font-weight: 400; }
