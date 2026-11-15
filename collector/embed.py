@@ -157,11 +157,22 @@ def fix_categories(enc, items: list[dict], mat: np.ndarray) -> None:
         if title_says == "other" and cats[best] != it["category"] and pr[best] > (0.4 if it["category"] == "other" else 0.6):
             it["category"] = cats[best]
             changed += 1
-    by_id = {it["id"]: it["category"] for it in items}
+    # untagged 'unisex' pieces: if the photo clearly shows a man or a woman wearing it, use that
+    g = enc.text(["a photo of a man wearing menswear", "a photo of a woman wearing womenswear"])
+    gl = 100.0 * mat @ g.T
+    gp = np.exp(gl - gl.max(1, keepdims=True))
+    gp /= gp.sum(1, keepdims=True)
+    moved = 0
+    for it, pr in zip(items, gp):
+        if it.get("department") == "unisex" and pr.max() > 0.85:
+            it["department"] = "men" if pr[0] > pr[1] else "women"
+            moved += 1
+    print(f"unisex pieces assigned from photos: {moved}")
+    by_id = {it["id"]: (it["category"], it.get("department")) for it in items}
     full = json.loads((DATA / "items.json").read_text())
     for it in full["items"]:
         if it["id"] in by_id:
-            it["category"] = by_id[it["id"]]
+            it["category"], it["department"] = by_id[it["id"]]
     (DATA / "items.json").write_text(json.dumps(full, ensure_ascii=False))
     print(f"categories corrected from photos: {changed}")
 
