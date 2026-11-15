@@ -3,3 +3,6 @@ __pycache__/
 .cache/
 _site/
 .DS_Store
+
+# generated daily by GitHub Actions; lives on the "data" branch
+data/

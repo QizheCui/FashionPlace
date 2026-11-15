@@ -37,6 +37,13 @@ jobs:
       - name: Tests
         run: python -m pytest -q tests
 
+      - name: Load yesterday's data (kept on the 'data' branch so main stays small)
+        run: |
+          rm -rf data
+          git clone -q --depth 1 --branch data "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" /tmp/databranch \
+            && cp -r /tmp/databranch/. data && rm -rf data/.git || mkdir -p data
+          ls data | head -20
+
       - name: Restore image-vector cache
         uses: actions/cache@v4
         with:
@@ -49,22 +56,23 @@ jobs:
         if: github.event_name != 'push'
         run: python -m collector.collect
 
+      - name: Import affiliate feeds (if set up)
+        if: github.event_name != 'push'
+        env:
+          AWIN_FEED_URL: ${{ secrets.AWIN_FEED_URL }}
+        run: python -m collector.affiliate
+
       - name: Build style vectors (CLIP)
         run: python -m collector.embed
 
-      - name: Save data to repo
+      - name: Save data to the 'data' branch (replaced each day, so history doesn't pile up)
         run: |
-          git config user.name "fashionplace-bot"
-          git config user.email "actions@users.noreply.github.com"
-          git add data
-          git diff --cached --quiet && exit 0
-          git commit -m "data: refresh $(date -u +%F)"
-          # main may have moved while we were collecting (e.g. a merge): replay on top, keeping our fresh data
-          for i in 1 2 3; do
-            git pull --rebase -X theirs origin main && git push && exit 0
-            sleep 5
-          done
-          exit 1
+          cd data
+          git init -q -b data
+          git add -A
+          git -c user.name="fashionplace-bot" -c user.email="actions@users.noreply.github.com" commit -qm "data: refresh $(date -u +%F)"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" data
+          rm -rf .git
 
       - name: Build site
         run: python tools/build_site.py
