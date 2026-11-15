@@ -5,7 +5,7 @@ Uses CLIP (images and words live in the same space), so a phrase like
 
 Usage:  python -m collector.embed            # real CLIP model (needs sentence-transformers)
         python -m collector.embed --fake     # offline: hashed bag-of-words vectors, for tests/dev
-Writes: data/vectors.json, data/profiles/<id>.json
+Writes: data/vectors.bin + vectors_meta.json + projection.bin, data/vibes.json, data/refiners.json, data/profiles/<id>.json
 """
 from __future__ import annotations
 
@@ -27,6 +27,7 @@ CONFIG = ROOT / "config"
 CACHE = ROOT / ".cache" / "image_vectors.npz"
 DIM = 512
 MODEL_NAME = "clip-ViT-B-32"
+PROJ_DIM = 192
 
 
 # ---------- encoders ----------
@@ -125,14 +126,24 @@ def build_profile(enc, profile: dict) -> dict:
 
 
 def run(fake: bool = False) -> None:
-    items = json.loads((DATA / "items.json").read_text())["items"]
+    items = [it for it in json.loads((DATA / "items.json").read_text())["items"]
+             if it.get("in_stock") and it.get("category") != "underwear"]
     enc = FakeEncoder() if fake else ClipEncoder()
     mat = enc.items(items).astype(np.float32)
-    b64, scale = pack(mat)
-    (DATA / "vectors.json").write_text(
-        json.dumps({"model": "fake" if fake else MODEL_NAME, "dim": DIM, "scale": scale,
-                    "ids": [it["id"] for it in items], "data": b64})
-    )
+    mat /= np.linalg.norm(mat, axis=1, keepdims=True) + 1e-9
+    # Shrink 512 -> K dims for the browser download. Uncentred SVD keeps item·query dot products
+    # (what ranking uses) as intact as possible; the browser projects its own text/photo vectors
+    # with the same matrix, so everything stays on one map.
+    k = min(PROJ_DIM, *mat.shape)
+    _, _, vt = np.linalg.svd(mat, full_matrices=False)
+    proj = vt[:k].T.astype(np.float32)                      # 512 x k
+    low = mat @ proj
+    scale = float(np.abs(low).max()) or 1.0
+    (DATA / "vectors.bin").write_bytes(np.clip(np.round(low / scale * 127), -127, 127).astype(np.int8).tobytes())
+    (DATA / "projection.bin").write_bytes(proj.tobytes())  # float32, row-major 512 x k
+    (DATA / "vectors_meta.json").write_text(json.dumps(
+        {"model": "fake" if fake else MODEL_NAME, "dim": DIM, "k": k, "scale": scale, "ids": [it["id"] for it in items]}))
+    (DATA / "vectors.json").unlink(missing_ok=True)
     (DATA / "profiles").mkdir(exist_ok=True)
     for pf in sorted((CONFIG / "profiles").glob("*.json")):
         prof = build_profile(enc, json.loads(pf.read_text()))

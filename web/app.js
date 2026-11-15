@@ -53,16 +53,37 @@
   const P = () => S.current;
 
   // ---------- data ----------
+  async function getBin(path) {
+    if (window.FP_DATA && typeof window.FP_DATA[path] === "string") {
+      const bin = atob(window.FP_DATA[path]), u = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+      return u.buffer;
+    }
+    const r = await fetch(`data/${path}`, { cache: "no-cache" });
+    if (!r.ok) throw new Error(`${path}: ${r.status}`);
+    return r.arrayBuffer();
+  }
   async function getJSON(path) {
     if (window.FP_DATA && window.FP_DATA[path]) return window.FP_DATA[path];
     const r = await fetch(`data/${path}`, { cache: "no-cache" });
     if (!r.ok) throw new Error(`${path}: ${r.status}`);
     return r.json();
   }
-  function decodeVectors(v) {
-    const bin = atob(v.data), q = new Int8Array(bin.length);
-    for (let i = 0; i < bin.length; i++) q[i] = (bin.charCodeAt(i) << 24) >> 24;
-    v.ids.forEach((id, r) => { S.vecs[id] = norm(Array.from(q.subarray(r * v.dim, (r + 1) * v.dim), (x) => (x / 127) * v.scale)); });
+  // Items arrive already shrunk to k dims; anything made at full size (text, photos, vibes)
+  // is projected with the same matrix so it lands on the same map.
+  function decodeVectors(meta, buf, projBuf) {
+    const q = new Int8Array(buf), k = meta.k;
+    S.k = k; S.proj = new Float32Array(projBuf);
+    meta.ids.forEach((id, r) => { S.vecs[id] = norm(Array.from(q.subarray(r * k, (r + 1) * k), (x) => (x / 127) * meta.scale)); });
+  }
+  const projCache = new WeakMap();
+  function pv(v) { // full-size (512) vector -> map vector (k); cached per array
+    if (!v || v.length === S.k) return v;
+    let out = projCache.get(v);
+    if (out) return out;
+    const k = S.k, P = S.proj; out = new Array(k).fill(0);
+    for (let i = 0; i < v.length; i++) { const x = v[i]; if (!x) continue; const row = i * k; for (let j = 0; j < k; j++) out[j] += x * P[row + j]; }
+    out = norm(out); projCache.set(v, out); return out;
   }
 
   // ---------- profiles ----------
@@ -109,7 +130,7 @@
     const disliked = withFeedback ? mean(p.disliked.map((id) => S.vecs[id])) : null;
     const t = blend([
       [mean(vibeVecs(p.vibes)), 1.0],
-      [mean(p.words.map((w) => w.vec)), 1.0],
+      [mean(p.words.map((w) => pv(w.vec))), 1.0],
       [mean(p.brands.map((b) => S.brandCentroid[b])), 0.6],
       [liked, Math.min(1.6, 0.3 * p.liked.length)],
       [disliked, -Math.min(0.8, 0.2 * p.disliked.length)],
@@ -123,7 +144,7 @@
     const nudges = { ...(p.nudges || {}) };
     for (const [id, n] of Object.entries(S.steer.nudges)) nudges[id] = (nudges[id] || 0) + n;
     for (const [id, n] of Object.entries(nudges)) { const r = S.refinerById[id]; if (r && n) parts.push([r.vec, NUDGE_W * n]); }
-    for (const w of [...(p.steerWords || []), ...S.steer.words]) parts.push([w.vec, WORD_W]);
+    for (const w of [...(p.steerWords || []), ...S.steer.words]) parts.push([pv(w.vec), WORD_W]);
     if (!parts.length) return null;
     const out = new Array(parts[0][0].length).fill(0);
     for (const [v, w] of parts) for (let i = 0; i < v.length; i++) out[i] += w * v[i];
@@ -134,7 +155,7 @@
     const p = P();
     S.steerVec = steerVector(p);
     S.taste = tasteFrom(p);
-    S.avoid = blend([[mean(vibeVecs(p.avoidVibes)), 1], [mean(p.avoidWords.map((w) => w.vec)), 1]]);
+    S.avoid = blend([[mean(vibeVecs(p.avoidVibes)), 1], [mean(p.avoidWords.map((w) => pv(w.vec))), 1]]);
     S.twist = blend([[mean(vibeVecs(p.surpriseVibes.length ? p.surpriseVibes : ["bold-colour", "texture", "vintage"])), 1]]);
   }
   function leans(taste) {
@@ -167,7 +188,7 @@
     if (best && S.byId[best]) return `Close to the ${shortTitle(S.byId[best].title)} you liked`;
     const cands = [
       ...p.vibes.map((id) => S.vibeById[id]).filter(Boolean).map((x) => [x.label, x.vec]),
-      ...p.words.map((w) => [w.label, w.vec]),
+      ...p.words.map((w) => [w.thumb ? "your photos" : w.label, pv(w.vec)]),
     ].filter(([l]) => facetFits(l, it.category)).map(([l, vec]) => [l, dot(v, vec)]).sort((a, b) => b[1] - a[1]);
     const top = cands[0] ? shorten(cands[0][0]) : (leans(S.taste)[0] || ["your taste"])[0];
     if (mode === "explore" && S.twist && dot(v, S.twist) > dot(v, S.taste) * 0.92) return `${cap(top)}, with a bolder twist`;
@@ -239,7 +260,8 @@
     const seen = new Set([...p.liked, ...p.disliked]);
 
     if (S.query) { // search by feeling: the query leads, your taste breaks ties
-      const ranked = base.map((x) => ({ ...x, q: 0.75 * dot(S.vecs[x.it.id], S.query.vec) + 0.25 * x.s }))
+      const qv = pv(S.query.vec);
+      const ranked = base.map((x) => ({ ...x, q: 0.75 * dot(S.vecs[x.it.id], qv) + 0.25 * x.s }))
         .sort((a, b) => b.q - a.q).slice(0, 240);
       return diversify(ranked, 2).map((x) => ({ ...x, why: reason(x.it, "search") }));
     }
@@ -455,7 +477,7 @@
   function brandStepCards(d) {
     const t = tasteFrom(d, { withFeedback: false });
     const hasTaste = d.vibes.length || d.words.length;
-    const sources = [...d.vibes.map((id) => S.vibeById[id]).filter(Boolean).map((v) => [v.label, v.vec]), ...d.words.map((w) => [w.thumb ? "your photos" : `“${w.label}”`, w.vec])];
+    const sources = [...d.vibes.map((id) => S.vibeById[id]).filter(Boolean).map((v) => [v.label, v.vec]), ...d.words.map((w) => [w.thumb ? "your photos" : `“${w.label}”`, pv(w.vec)])];
     const list = S.brands.filter((b) => S.brandCentroid[b.name] && brandFitsDept(b, d.department)).map((b) => {
       const c = S.brandCentroid[b.name];
       const because = sources.map(([l, v]) => [l, dot(c, v)]).sort((a, x) => x[1] - a[1])[0];
@@ -709,12 +731,13 @@
   // ---------- boot ----------
   (async function boot() {
     try {
-      const [items, vectors, vibes, brands, index] = await Promise.all(
-        ["items.json", "vectors.json", "vibes.json", "brands.json", "profiles/index.json"].map(getJSON));
-      S.items = items.items; S.model = vectors.model;
+      const [items, meta, vibes, brands, index, vbuf, pbuf] = await Promise.all([
+        ...["items.json", "vectors_meta.json", "vibes.json", "brands.json", "profiles/index.json"].map(getJSON),
+        getBin("vectors.bin"), getBin("projection.bin")]);
+      S.items = items.items; S.model = meta.model;
       for (const it of S.items) S.byId[it.id] = it;
-      decodeVectors(vectors);
-      S.vibes = vibes; for (const v of vibes) S.vibeById[v.id] = v;
+      decodeVectors(meta, vbuf, pbuf);
+      S.vibes = vibes.map((v) => ({ ...v, vec: pv(v.vec) })); for (const v of S.vibes) S.vibeById[v.id] = v;
       for (const b of brands) S.brandInfo[b.name] = b;
       const groups = {};
       for (const it of S.items) if (S.vecs[it.id] && it.category !== "underwear") (groups[it.brand] ||= []).push(S.vecs[it.id]);
@@ -722,7 +745,8 @@
       S.globalCentroid = norm(mean(Object.values(S.brandCentroid)));
       S.brands = brands.filter((b) => groups[b.name] || b.source !== "shopify");
       S.brandStats = await getJSON("brand_stats.json").catch(() => ({}));
-      S.refiners = await getJSON("refiners.json").catch(() => []); for (const r of S.refiners) S.refinerById[r.id] = r;
+      S.refiners = (await getJSON("refiners.json").catch(() => [])).map((r) => ({ ...r, vec: pv(r.vec) }));
+      for (const r of S.refiners) S.refinerById[r.id] = r;
       S.builtins = await Promise.all(index.map((id) => getJSON(`profiles/${id}.json`)));
       loadStore();
       $("#foot").textContent = `${S.items.length} pieces from ${Object.keys(groups).length} brands · updated ${items.updated}` + (S.model === "fake" ? " · demo data" : "");
