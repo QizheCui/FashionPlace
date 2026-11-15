@@ -65,6 +65,7 @@
     const p = state.profile;
     if (it.department !== "unisex" && it.department !== p.department) return false;
     if (!it.in_stock || it.size_m_available === false) return false;
+    if (it.category === "underwear") return false; // basics, gift cards etc. — not what the feed is for
     if (it.price_gbp > p.budget.hard_max_gbp) return false;
     if (state.underIdeal && it.price_gbp > p.budget.ideal_max_gbp) return false;
     if (state.category !== "all" && it.category !== state.category) return false;
@@ -193,7 +194,7 @@
 
   function renderChips() {
     const cats = ["all", ...new Set(state.items.filter((i) => i.department !== "women").map((i) => i.category))]
-      .filter((c) => c !== "other");
+      .filter((c) => c !== "other" && c !== "underwear");
     $("#chips").innerHTML = cats.map((c) =>
       `<button class="chip ${c === state.category ? "on" : ""}" data-cat="${c}">${c === "tshirts" ? "T-shirts" : c}</button>`).join("");
   }
