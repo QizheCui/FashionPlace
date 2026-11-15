@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
 CONFIG = ROOT / "config"
 HISTORY_DAYS = 90
-MAX_PER_BRAND = 600
+MAX_PER_BRAND = 3000
 
 
 def load_json(path: Path, default):

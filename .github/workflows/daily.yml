@@ -20,7 +20,7 @@ concurrency:
 jobs:
   collect:
     runs-on: ubuntu-latest
-    timeout-minutes: 150
+    timeout-minutes: 330
     steps:
       - uses: actions/checkout@v4
 
@@ -42,6 +42,8 @@ jobs:
           rm -rf data
           git clone -q --depth 1 --branch data "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" /tmp/databranch \
             && cp -r /tmp/databranch/. data && rm -rf data/.git || mkdir -p data
+          # the big files are stored compressed (GitHub refuses single files over 100 MB)
+          for f in data/*.json.gz; do [ -e "$f" ] && gunzip -f "$f"; done
           ls data | head -20
 
       - name: Restore image-vector cache
@@ -69,10 +71,12 @@ jobs:
         run: |
           cd data
           git init -q -b data
+          gzip -kf items.json price_history.json
+          printf 'items.json\nprice_history.json\n' > .gitignore
           git add -A
           git -c user.name="fashionplace-bot" -c user.email="actions@users.noreply.github.com" commit -qm "data: refresh $(date -u +%F)"
           git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" data
-          rm -rf .git
+          rm -rf .git .gitignore items.json.gz price_history.json.gz
 
       - name: Build site
         run: python tools/build_site.py

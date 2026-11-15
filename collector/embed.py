@@ -30,6 +30,8 @@ CACHE = ROOT / ".cache" / "image_vectors.npz"
 DIM = 512
 MODEL_NAME = "clip-ViT-B-32"
 PROJ_DIM = 192
+MAX_NEW_PER_RUN = int(__import__("os").environ.get("MAX_NEW_EMBED", "45000"))
+CORE_PER_BRAND = 80
 
 
 # ---------- encoders ----------
@@ -75,7 +77,9 @@ class ClipEncoder:
     def items(self, items: list[dict]) -> np.ndarray:
         cache = dict(np.load(CACHE, allow_pickle=True)["d"].item()) if CACHE.exists() else {}
         todo = [it for it in items if it["image"] and it["image"] not in cache]
-        print(f"embedding {len(todo)} new images ({len(items) - len(todo)} cached)")
+        backlog = max(0, len(todo) - MAX_NEW_PER_RUN)
+        todo = todo[:MAX_NEW_PER_RUN]  # a huge first catch-up is spread over a few nightly runs
+        print(f"embedding {len(todo)} new images ({len(items) - len(todo) - backlog} cached, {backlog} left for later runs)")
         for start in range(0, len(todo), 64):
             chunk = todo[start : start + 64]
             with ThreadPoolExecutor(16) as ex:
@@ -215,12 +219,33 @@ def run(fake: bool = False) -> None:
     scale = float(np.abs(low).max()) or 1.0
     q = np.clip(np.round(low / scale * 127), -127, 127).astype(np.int8)
     (DATA / "projection.bin").write_bytes(proj.tobytes())  # float32, row-major 512 x k
-    # one shard per department (unisex pieces go in both) so a phone only downloads what it shows
+    # Shards, so a phone only downloads what it shows:
+    #   <dept>-core : a varied slice of every brand (newest pieces + genuine deals) for the feed and the front page
+    #   <dept>-<category> : every piece of one kind (all men's shoes, all women's coats…), loaded on demand
+    meta_base = {"model": "fake" if fake else MODEL_NAME, "dim": DIM, "k": k, "scale": scale}
+    index = {}
+    for old_f in list(DATA.glob("vectors-*.bin")) + list(DATA.glob("meta-*.json")):
+        old_f.unlink()
     for dept in ("men", "women"):
         rows = [i for i, it in enumerate(items) if it.get("department") in (dept, "unisex")]
-        (DATA / f"vectors-{dept}.bin").write_bytes(q[rows].tobytes())
-        (DATA / f"meta-{dept}.json").write_text(json.dumps(
-            {"model": "fake" if fake else MODEL_NAME, "dim": DIM, "k": k, "scale": scale, "ids": [items[i]["id"] for i in rows]}))
+        per_brand, core = {}, []
+        for i in rows:  # items arrive newest-first per brand from the collector
+            it = items[i]
+            b = it["brand"]
+            if per_brand.get(b, 0) < CORE_PER_BRAND or (it.get("deal") or {}).get("verdict") == "real_drop":
+                core.append(i)
+                per_brand[b] = per_brand.get(b, 0) + 1
+        groups = {"core": core}
+        for i in rows:
+            groups.setdefault(items[i]["category"], []).append(i)
+        index[dept] = {}
+        for name, idx in groups.items():
+            if name in ("underwear", "lifestyle", "other") or not idx:
+                continue
+            (DATA / f"vectors-{dept}-{name}.bin").write_bytes(q[idx].tobytes())
+            (DATA / f"meta-{dept}-{name}.json").write_text(json.dumps({**meta_base, "ids": [items[i]["id"] for i in idx]}))
+            index[dept][name] = len(idx)
+    (DATA / "shards.json").write_text(json.dumps(index))
     for old in ("vectors.json", "vectors.bin", "vectors_meta.json"):
         (DATA / old).unlink(missing_ok=True)
     (DATA / "profiles").mkdir(exist_ok=True)

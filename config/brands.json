@@ -2471,6 +2471,1128 @@
       "multibrand": true
     },
     {
+      "name": "Blackstock & Weber",
+      "domain": "blackstockandweber.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Morjas",
+      "domain": "morjas.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Duke + Dexter",
+      "domain": "dukeanddexter.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Myrqvist",
+      "domain": "myrqvist.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Jacques Soloviere",
+      "domain": "jacques-soloviere.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Meermin",
+      "domain": "meermin.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Loake",
+      "domain": "loake.co.uk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Sanders",
+      "domain": "sanders-uk.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Oliver Sweeney",
+      "domain": "www.oliversweeney.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Cheaney",
+      "domain": "cheaney.co.uk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Tricker's",
+      "domain": "trickers.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Barker",
+      "domain": "www.barkershoes.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "G.H. Bass",
+      "domain": "www.ghbass.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Yuketen",
+      "domain": "yuketen.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Quoddy",
+      "domain": "quoddy.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Rancourt & Co",
+      "domain": "www.rancourtandcompany.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Oak Street Bootmakers",
+      "domain": "oakstreetbootmakers.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Common Projects",
+      "domain": "www.commonprojects.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "luxury"
+    },
+    {
+      "name": "Koio",
+      "domain": "www.koio.co",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Axel Arigato",
+      "domain": "axelarigato.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Filling Pieces",
+      "domain": "fillingpieces.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Diemme",
+      "domain": "diemme.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Paraboot",
+      "domain": "www.paraboot.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Senso",
+      "domain": "sensoshoes.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Alohas",
+      "domain": "alohas.io",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Larroudé",
+      "domain": "larroude.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Mansur Gavriel",
+      "domain": "www.mansurgavriel.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Dear Frances",
+      "domain": "www.dearfrances.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Flattered",
+      "domain": "flattered.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "ATP Atelier",
+      "domain": "www.atpatelier.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Penelope Chilvers",
+      "domain": "penelopechilvers.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Bobbies",
+      "domain": "bobbies.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Ancient Greek Sandals",
+      "domain": "ancient-greek-sandals.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Carel",
+      "domain": "www.carel.fr",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Le Monde Béryl",
+      "domain": "lemondeberyl.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Rothy's",
+      "domain": "rothys.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Intentionally Blank",
+      "domain": "intentionallyblank.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Nisolo",
+      "domain": "nisolo.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Cariuma",
+      "domain": "cariuma.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Sam Edelman",
+      "domain": "www.samedelman.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Loeffler Randall",
+      "domain": "www.loefflerrandall.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Jenny Bird",
+      "domain": "jenny-bird.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Frahm",
+      "domain": "www.frahm.co.uk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Hymn London",
+      "domain": "hymnlondon.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Hamilton and Hare",
+      "domain": "hamiltonandhare.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Orlebar Brown",
+      "domain": "www.orlebarbrown.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "John Smedley",
+      "domain": "www.johnsmedley.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "L.E.J",
+      "domain": "lej.co.uk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Community Clothing",
+      "domain": "communityclothing.co.uk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Rapanui",
+      "domain": "rapanuiclothing.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "Finisterre",
+      "domain": "finisterre.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Howies",
+      "domain": "www.howies.co.uk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Paynter",
+      "domain": "paynterjacket.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Hiut Denim",
+      "domain": "hiutdenim.co.uk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Lavenham",
+      "domain": "lavenhamjackets.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Grenfell",
+      "domain": "grenfell.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Lyle & Scott",
+      "domain": "www.lyleandscott.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "Nudie Jeans",
+      "domain": "www.nudiejeans.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Filippa K",
+      "domain": "www.filippa-k.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Wood Wood",
+      "domain": "www.woodwood.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Tiger of Sweden",
+      "domain": "www.tigerofsweden.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Sefr",
+      "domain": "sefr-online.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Le Mont St Michel",
+      "domain": "www.lemontsaintmichel.fr",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Armor Lux",
+      "domain": "armorlux.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Saint James",
+      "domain": "www.saint-james.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Gant",
+      "domain": "www.gant.co.uk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "Barena Venezia",
+      "domain": "www.barenavenezia.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Portuguese Flannel",
+      "domain": "portugueseflannel.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Beams Plus",
+      "domain": "beamsplus.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Thom Sweeney",
+      "domain": "thomsweeney.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "luxury"
+    },
+    {
+      "name": "Lardini",
+      "domain": "lardini.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "luxury"
+    },
+    {
+      "name": "Boglioli",
+      "domain": "boglioli.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "luxury"
+    },
+    {
+      "name": "Seasalt Cornwall",
+      "domain": "www.seasaltcornwall.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "Joanie",
+      "domain": "www.joanieclothing.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "Thought",
+      "domain": "www.wearethought.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "Sosandar",
+      "domain": "www.sosandar.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "The Fold London",
+      "domain": "thefoldlondon.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "House of Sunny",
+      "domain": "houseofsunny.co.uk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Daisy Street",
+      "domain": "daisystreet.co.uk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "Motel Rocks",
+      "domain": "motelrocks.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "Hosbjerg",
+      "domain": "hosbjerg.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Twist & Tango",
+      "domain": "twistandtango.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Résumé",
+      "domain": "resumecph.dk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Remain Birger Christensen",
+      "domain": "remainbirgerchristensen.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "A-View",
+      "domain": "a-view.dk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Mother of Pearl",
+      "domain": "motherofpearl.co.uk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Kate Sheridan",
+      "domain": "katesheridan.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Lowie",
+      "domain": "lowie.co.uk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Hobes",
+      "domain": "hobes.co.uk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Jigsaw",
+      "domain": "www.jigsaw-online.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "Pretty Lavish",
+      "domain": "prettylavish.co.uk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
       "name": "Ralph Lauren",
       "domain": "www.ralphlauren.co.uk",
       "source": "affiliate",

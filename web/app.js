@@ -14,7 +14,7 @@
   const S = {
     tab: "foryou", category: "all", brand: null, surprise: 0.4, query: null,
     items: [], byId: {}, vecs: {}, vibes: [], vibeById: {}, brands: [], brandInfo: {}, brandCentroid: {},
-    builtins: [], model: "", brandStats: {}, generic: [], bias: {}, refiners: [], refinerById: {},
+    builtins: [], model: "", brandStats: {}, generic: [], bias: {}, shards: {}, refiners: [], refinerById: {},
     steer: { nudges: {}, words: [] }, steerVec: null, profiles: {}, current: null, taste: null, avoid: null, twist: null,
   };
 
@@ -99,15 +99,25 @@
 
   // ---------- catalogue shards (men / women), loaded on demand ----------
   S.loaded = {};
-  function ensureShard(dept) {
-    const depts = dept === "any" ? ["men", "women"] : [dept];
-    return Promise.all(depts.map((d) => (S.loaded[d] ||= (async () => {
-      const [items, meta, buf] = await Promise.all([getJSON(`items-${d}.json`), getJSON(`meta-${d}.json`), getBin(`vectors-${d}.bin`)]);
+  // The catalogue comes in parts: "<dept>-core" (a varied slice of every brand) loads first; "<dept>-<category>"
+  // (every piece of one kind) loads when someone opens that category or searches for it.
+  function loadPart(name) {
+    return (S.loaded[name] ||= (async () => {
+      const [items, meta, buf] = await Promise.all([getJSON(`items-${name}.json`), getJSON(`meta-${name}.json`), getBin(`vectors-${name}.bin`)]);
       S.model = meta.model; S.updated = items.updated;
-      for (const it of items.items) if (!S.byId[it.id] || S.byId[it.id].live) { S.byId[it.id] = it; S.items.push(it); }
+      for (const it of items.items) {
+        const had = S.byId[it.id];
+        if (!had) { S.byId[it.id] = it; S.items.push(it); }   // unisex pieces appear in both departments: keep one
+        else if (had.live) { S.byId[it.id] = it; S.items[S.items.indexOf(had)] = it; }
+      }
       decodeVectors(meta, buf);
       rebuildBrands();
-    })())));
+    })());
+  }
+  const deptsOf = (dept) => (dept === "any" ? ["men", "women"] : [dept]);
+  function ensureShard(dept) { return Promise.all(deptsOf(dept).map((d) => loadPart(`${d}-core`))); }
+  function ensureCat(dept, cat) {
+    return Promise.all(deptsOf(dept).filter((d) => S.shards[d] && S.shards[d][cat]).map((d) => loadPart(`${d}-${cat}`)));
   }
   function rebuildBrands() {
     const groups = {};
@@ -131,7 +141,8 @@
       delete e.via; S.brands.push(e); S.brandInfo[e.name] = e;
     }
     const n = Object.keys(groups).length;
-    $("#foot").textContent = `${S.items.length.toLocaleString()} pieces from ${n} brands · updated ${S.updated}` + (S.model === "fake" ? " · demo data" : "");
+    const total = Object.values(S.shards).reduce((a, cats) => a + Object.entries(cats).filter(([c]) => c !== "core").reduce((x, [, v]) => x + v, 0), 0);
+    $("#foot").textContent = `${(total || S.items.length).toLocaleString()} pieces · updated ${S.updated}` + (S.model === "fake" ? " · demo data" : "");
   }
 
   // ---------- profiles ----------
@@ -338,7 +349,7 @@
   function build() {
     const p = P();
     if (S.tab === "saved") {
-      return p.liked.map((id) => S.byId[id]).filter(Boolean).map((it) => {
+      return p.liked.map((id) => S.byId[id] || (p.saved[id] && p.saved[id].item)).filter(Boolean).map((it) => {
         const st = savedStatus(it, p);
         return { it, status: st, advice: advice(it, p), why: p.saved[it.id] ? `Saved ${p.saved[it.id].date} at ${money(p.saved[it.id].price)}` : "" };
       }).sort((a, b) => (b.status && b.status.cls === "deal") - (a.status && a.status.cls === "deal"));
@@ -482,7 +493,8 @@
   function renderChips() {
     const p = P();
     const counts = {};
-    for (const i of S.items) if (fits(i, p, { ignoreCategory: true })) counts[i.category] = (counts[i.category] || 0) + 1;
+    for (const d of deptsOf(p.department)) for (const [c, n] of Object.entries(S.shards[d] || {})) if (c !== "core") counts[c] = (counts[c] || 0) + n;
+    if (!Object.keys(counts).length) for (const i of S.items) if (fits(i, p, { ignoreCategory: true })) counts[i.category] = (counts[i.category] || 0) + 1;
     const cats = ["all", ...Object.entries(counts).filter(([c, n]) => n >= 8 && c !== "other" && c !== "underwear").sort((a, b) => b[1] - a[1]).map(([c]) => c)];
     $("#chips").innerHTML = (S.brand ? `<button class="chip on" data-clearbrand>${esc(S.brand)} ✕</button>` : "") + cats.map((c) =>
       `<button class="chip ${c === S.category ? "on" : ""}" data-cat="${c}">${c === "tshirts" ? "T-shirts" : c}</button>`).join("");
@@ -627,7 +639,8 @@
     const st = $("#lStatus");
     st.textContent = "Searching every brand…";
     try {
-      const [vec] = await Promise.all([encodeQuery(text, st), ensureShard("any")]);
+      const q0 = parseQuery(text), c0 = q0.facets.find((f) => f.key === "cat" && f.cat), d0 = q0.facets.find((f) => f.key === "dept");
+      const [vec] = await Promise.all([encodeQuery(text, st), ensureShard("any"), c0 ? ensureCat(d0 ? d0.dept : "any", c0.cat) : null]);
       st.textContent = "Searching every brand…";
       const q = parseQuery(text), pf = q.facets.find((f) => f.key === "price"), max = pf ? pf.max : Infinity;
       const named = q.facets.some((f) => f.key === "cat");
@@ -681,7 +694,7 @@
 
   // ---------- taste editor (setup + tuning) ----------
   const TIERS = { "high-street": "High street", boutique: "Independent & boutique", premium: "Premium & designer", luxury: "Luxury" };
-  const STEPS = ["Basics", "Vibes", "Words & photos", "Brands", "Tap what you'd wear"];
+  const STEPS = ["Basics", "Vibes", "Words & photos", "Pick favourites"];
   const vibesFor = (dept) => S.vibes.filter((v) => !v.for || v.for === "any" || dept === "any" || v.for === dept);
   const brandFitsDept = (b, dept) => dept === "any" || !b.departments || b.departments.includes(dept);
   const ED = { step: 0, draft: null, onboarding: false, shown: new Set() };
@@ -732,11 +745,9 @@
           ${Object.entries(d.nudges || {}).map(([id, n]) => `<span class="word">${esc((S.refinerById[id] || { label: id }).label)}${n > 1 ? ` ×${n}` : ""} <button data-delnudge="${id}" aria-label="Remove">✕</button></span>`).join("")}
           ${(d.steerWords || []).map((w, i) => `<span class="word">“${esc(w.label)}” <button data-delsteer="${i}" aria-label="Remove">✕</button></span>`).join("")}</div>` : ""}
         ${!d.words.length && !d.avoidWords.length ? `<p class="sub">Optional — skip if the vibes say it all.</p>` : ""}`;
-    } else if (ED.step === 3) {
-      body.innerHTML = `<h2>Brands for you</h2><p class="sub">Ranked by everything you've told us so far — tap ♥ on the ones you already love. The rest are ones Explore will introduce you to.</p><div class="bpick">${brandStepCards(d)}</div>`;
     } else {
-      body.innerHTML = `<h2>Tap what you'd wear</h2><p class="sub">Pick anything that catches your eye — even a few helps. <button class="link" id="fMore">Show me others</button></p><div class="pickgrid" id="pickGrid"></div>`;
-      fillPicks();
+      body.innerHTML = `<h2>Pick your favourites</h2><p class="sub">Picked for you from what you've told us so far. Tap the ones you'd wear — every tap swaps the rest for closer matches. <button class="link" id="fMore">Show different ones</button></p><p class="status" id="pickStatus"></p><div class="pickgrid" id="pickGrid"></div>`;
+      ED.grid = []; fillPicks();
     }
   }
   function brandSummary(name) { // for brands without a written blurb: describe them from their own catalogue
@@ -773,35 +784,39 @@
     $("#fPriceVal").textContent = priceLabel(d.price);
     $("#fFill").style.left = `${d.price.min / 10}%`; $("#fFill").style.right = `${100 - d.price.max / 10}%`;
   }
-  function fillPicks() {
-    const d = ED.draft, prevB = S.brand, prevC = S.category; S.brand = null; S.category = "all";
-    const t = tasteFrom(d, { withFeedback: false });
-    let pool = S.items.filter((it) => fits(it, d) && it.image && !ED.shown.has(it.id) && !["accessories", "bags", "shoes", "other"].includes(it.category));
+  // Best matches for the taste so far (vibes + words + photos + taps), with just enough variety:
+  // no more than 2 per brand or 3 per kind of garment, and nothing near-identical to a piece already shown.
+  function pickCandidates(d, n, exclude) {
+    const prevB = S.brand, prevC = S.category; S.brand = null; S.category = "all";
+    const t = tasteFrom(d);
+    const pool = S.items.filter((it) => fits(it, d) && it.image && !exclude.has(it.id) && !["accessories", "bags", "other", "underwear", "lifestyle"].includes(it.category));
     S.brand = prevB; S.category = prevC;
-    const hasTaste = d.vibes.length || d.words.length || d.brands.length;
-    pool = pool.map((it) => ({ it, s: hasTaste ? dot(S.vecs[it.id], t) : Math.random() })).sort((a, b) => b.s - a.s).slice(0, 300);
-    // farthest-point sampling so the 16 picks are varied, not 16 navy jumpers
-    const out = [], perBrand = {};
-    if (pool.length) { const first = pool[Math.floor(Math.random() * Math.min(20, pool.length))]; out.push(first); perBrand[first.it.brand] = 1; }
-    while (out.length < 16) {
-      let best = null, bestD = -Infinity;
-      for (const x of pool) {
-        if (out.includes(x) || (perBrand[x.it.brand] || 0) >= 3) continue;
-        let near = -1; for (const o of out) near = Math.max(near, dot(S.vecs[o.it.id], S.vecs[x.it.id]));
-        const dscore = (1 - near) + 0.15 * x.s;
-        if (dscore > bestD) { bestD = dscore; best = x; }
-      }
-      if (!best) break;
-      out.push(best); perBrand[best.it.brand] = (perBrand[best.it.brand] || 0) + 1;
+    const ranked = pool.map((it) => ({ it, s: dot(S.vecs[it.id], t) - 0.7 * (S.bias[it.id] || 0) })).sort((a, b) => b.s - a.s).slice(0, 400);
+    const keep = ED.grid.map((id) => S.byId[id]).filter(Boolean);
+    const perBrand = {}, perCat = {}, out = [];
+    for (const it of keep) { perBrand[it.brand] = (perBrand[it.brand] || 0) + 1; perCat[it.category] = (perCat[it.category] || 0) + 1; }
+    for (const x of ranked) {
+      if (out.length >= n) break;
+      if ((perBrand[x.it.brand] || 0) >= 2 || (perCat[x.it.category] || 0) >= 3) continue;
+      const v = S.vecs[x.it.id];
+      if ([...keep, ...out].some((o) => dot(S.vecs[o.id], v) > 0.93)) continue; // near-duplicate
+      out.push(x.it); perBrand[x.it.brand] = (perBrand[x.it.brand] || 0) + 1; perCat[x.it.category] = (perCat[x.it.category] || 0) + 1;
     }
-    out.forEach((x) => ED.shown.add(x.it.id));
-    $("#pickGrid").innerHTML = out.map(({ it }) => `<button class="pick ${d.liked.includes(it.id) ? "on" : ""}" data-pick="${esc(it.id)}" style="background:${tint(it.title)}">
+    return out;
+  }
+  function fillPicks(keepLiked = false) {
+    const d = ED.draft;
+    ED.grid = keepLiked ? ED.grid.filter((id) => d.liked.includes(id)) : [];
+    const fresh = pickCandidates(d, 12 - ED.grid.length, new Set([...ED.shown, ...ED.grid]));
+    fresh.forEach((it) => ED.shown.add(it.id));
+    ED.grid.push(...fresh.map((it) => it.id));
+    $("#pickGrid").innerHTML = ED.grid.map((id) => S.byId[id]).filter(Boolean).map((it) => `<button class="pick ${d.liked.includes(it.id) ? "on" : ""}" data-pick="${esc(it.id)}" style="background:${tint(it.title)}">
       <img src="${esc(it.image)}" alt="${esc(it.title)}" loading="lazy" onerror="this.remove()"><span>${esc(it.brand)}</span></button>`).join("")
       || `<p class="sub">No pieces fit these sizes and prices — go back and widen them.</p>`;
   }
   function saveEditor() {
     const d = ED.draft; d.setupDone = true; d.name = d.name.trim() || "Me"; d.saved ||= {};
-    for (const id of d.liked) if (!d.saved[id] && S.byId[id]) d.saved[id] = { price: S.byId[id].price_gbp, date: today() };
+    for (const id of d.liked) if (!d.saved[id] && S.byId[id]) d.saved[id] = { price: S.byId[id].price_gbp, date: today(), item: { ...S.byId[id] } };
     const wasOnboarding = ED.onboarding;
     if (!S.current || S.current.id !== d.id) S.steer = { nudges: {}, words: [] }; // nudges belong to whoever made them
     S.profiles[d.id] = d; S.current = d;
@@ -926,8 +941,9 @@
   async function runSearch(text) {
     const st = $("#qStatus");
     try {
-      const parsed = parseQuery(text), dept = parsed.facets.find((f) => f.key === "dept");
-      const [vec] = await Promise.all([encodeQuery(text, st), dept && dept.dept !== P().department ? ensureShard("any") : null]);
+      const parsed = parseQuery(text), dept = parsed.facets.find((f) => f.key === "dept"), cat = parsed.facets.find((f) => f.key === "cat" && f.cat);
+      const useDept = dept && dept.dept !== P().department ? "any" : P().department;
+      const [vec] = await Promise.all([encodeQuery(text, st), useDept === "any" ? ensureShard("any") : null, cat ? ensureCat(useDept, cat.cat) : null]);
       S.query = { text, vec, parsed: parseQuery(text) }; S.brand = null; render(); window.scrollTo({ top: 0 });
       liveSearch(text, vec);
     } catch (e) {
@@ -940,7 +956,11 @@
     const t = e.target;
     const tab = t.closest("[data-tab]");
     if (tab) { S.tab = tab.dataset.tab; S.brand = null; S.query = null; render(); window.scrollTo({ top: 0 }); return; }
-    if (t.closest("[data-cat]")) { S.category = t.closest("[data-cat]").dataset.cat; render(); return; }
+    if (t.closest("[data-cat]")) {
+      S.category = t.closest("[data-cat]").dataset.cat; render();
+      if (S.category !== "all") { $("#empty").hidden = false; $("#empty").textContent = "Loading every piece in this category…"; ensureCat(P().department, S.category).then(render); }
+      return;
+    }
     if (t.closest("[data-clearbrand]")) { S.brand = null; render(); return; }
     if (t.closest("#qClear")) { S.query = null; render(); return; }
     const qf = t.closest("[data-qfacet]");
@@ -954,7 +974,8 @@
       p.liked = p.liked.filter((x) => x !== id); p.disliked = p.disliked.filter((x) => x !== id);
       if (act.dataset.act === "like" && !wasLiked) {
         p.liked.unshift(id);
-        p.saved[id] = { price: it.price_gbp, date: today(), outOfSize: !!(it.letter_sized && !(it.letter_sizes || []).some((s) => p.sizes.includes(s))) };
+        p.saved[id] = { price: it.price_gbp, date: today(), outOfSize: !!(it.letter_sized && !(it.letter_sizes || []).some((s) => p.sizes.includes(s))),
+          item: { ...it } }; // a copy, so Saved works even before that part of the catalogue is loaded
         if (it.live) { p.extra ||= {}; p.extra[id] = { item: it, vec: (S.liveVec || {})[id] }; }
         toast("Saved — more like this");
       } else delete p.saved[id];
@@ -1049,8 +1070,17 @@
     const dw = t.closest("[data-delword]"); if (dw) { ED.draft.words.splice(+dw.dataset.delword, 1); renderEditor(); return; }
     const da = t.closest("[data-delavoid]"); if (da) { ED.draft.avoidWords.splice(+da.dataset.delavoid, 1); renderEditor(); return; }
     const pk = t.closest("[data-pick]");
-    if (pk) { const id = pk.dataset.pick, d = ED.draft; d.liked = d.liked.includes(id) ? d.liked.filter((x) => x !== id) : [id, ...d.liked]; pk.classList.toggle("on"); return; }
-    if (t.closest("#fMore")) { fillPicks(); return; }
+    if (pk) {
+      const id = pk.dataset.pick, d = ED.draft, on = !d.liked.includes(id);
+      d.liked = on ? [id, ...d.liked] : d.liked.filter((x) => x !== id);
+      pk.classList.toggle("on", on);
+      if (on) { // narrow down: swap the untapped pieces for closer matches
+        clearTimeout(ED.pickT);
+        ED.pickT = setTimeout(() => { fillPicks(true); const st = $("#pickStatus"); if (st) st.textContent = `Updated from your ${d.liked.length} pick${d.liked.length > 1 ? "s" : ""}.`; }, 700);
+      }
+      return;
+    }
+    if (t.closest("#fMore")) { fillPicks(true); return; }
   });
   document.addEventListener("submit", async (e) => {
     if (e.target.id === "lSearch") { e.preventDefault(); const q = $("#lq").value.trim(); if (q) landingSearch(q); return; }
@@ -1094,6 +1124,7 @@
       S.proj = new Float32Array(pbuf); S.k = S.proj.length / 512;
       S.vibes = vibes.map((v) => ({ ...v, vec: pv(v.vec) })); for (const v of S.vibes) S.vibeById[v.id] = v;
       S.generic = (await getJSON("generic.json").catch(() => [])).map(pv);
+      S.shards = await getJSON("shards.json").catch(() => ({}));
       for (const b of brands) S.brandInfo[b.name] = b;
       S.brands = brands;
       S.brandStats = await getJSON("brand_stats.json").catch(() => ({}));

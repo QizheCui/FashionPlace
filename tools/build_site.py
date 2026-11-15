@@ -12,10 +12,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 WEB, DATA, OUT = ROOT / "web", ROOT / "data", ROOT / "_site"
-FILES = ["meta-men.json", "meta-women.json", "vibes.json", "brands.json", "brand_stats.json", "refiners.json", "generic.json", "profiles/index.json"]
+FILES = ["vibes.json", "brands.json", "brand_stats.json", "refiners.json", "generic.json", "profiles/index.json"]
 
 
-BINS = ["vectors-men.bin", "vectors-women.bin", "projection.bin"]
+BINS = ["projection.bin"]
 KEEP = ["id", "brand", "title", "url", "image", "category", "department", "price_gbp", "compare_at_gbp", "in_stock",
         "letter_sized", "letter_sizes", "waist_sizes", "shoe_sizes", "deal", "tier", "retailer", "colour", "materials", "ptype"]
 DEAL_KEEP = ["verdict", "discount_pct", "is_lowest_price", "tracked_days"]
@@ -82,18 +82,32 @@ def main(inline: bool) -> None:
         (OUT / "index.html").write_text(html)
         if (OUT / "data").exists():
             shutil.rmtree(OUT / "data")
-        shutil.copytree(DATA, OUT / "data", ignore=shutil.ignore_patterns("price_history.json", "collect_report.json", "items.json"))
+        shutil.copytree(DATA, OUT / "data", ignore=shutil.ignore_patterns("price_history.json", "collect_report.json", "items.json", "brand_stats_full.json"))
         shards = shard_items()
-        for dept, items in shards.items():
-            (OUT / "data" / f"items-{dept}.json").write_text(json.dumps(items, ensure_ascii=False, separators=(",", ":")))
-        (OUT / "data" / "landing.json").write_text(json.dumps(landing(shards), ensure_ascii=False))
+        by_id = {it["id"]: it for d in shards.values() for it in d["items"]}
+        updated = next(iter(shards.values()))["updated"]
+        for meta in sorted(DATA.glob("meta-*.json")):  # one item file per vector shard, same order of ids
+            name = meta.stem[len("meta-"):]
+            ids = json.loads(meta.read_text())["ids"]
+            out = {"updated": updated, "items": [by_id[i] for i in ids if i in by_id]}
+            (OUT / "data" / f"items-{name}.json").write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")))
+        core = {d: {"updated": updated, "items": [by_id[i] for i in json.loads((DATA / f"meta-{d}-core.json").read_text())["ids"] if i in by_id]}
+                for d in ("men", "women") if (DATA / f"meta-{d}-core.json").exists()}
+        (OUT / "data" / "landing.json").write_text(json.dumps(landing(core or shards), ensure_ascii=False))
         print("built", OUT)
         return
     names = FILES + [f"profiles/{p}.json" for p in json.loads((DATA / "profiles/index.json").read_text())]
     blob = {n: json.loads((DATA / n).read_text()) for n in names}
     shards = shard_items()
-    for dept, items in shards.items():
-        blob[f"items-{dept}.json"] = items
+    by_id = {it["id"]: it for d in shards.values() for it in d["items"]}
+    updated = next(iter(shards.values()))["updated"]
+    blob["shards.json"] = json.loads((DATA / "shards.json").read_text())
+    for meta in sorted(DATA.glob("meta-*.json")):
+        name = meta.stem[len("meta-"):]
+        m = json.loads(meta.read_text())
+        blob[f"meta-{name}.json"] = m
+        blob[f"items-{name}.json"] = {"updated": updated, "items": [by_id[i] for i in m["ids"] if i in by_id]}
+        blob[f"vectors-{name}.bin"] = base64.b64encode((DATA / f"vectors-{name}.bin").read_bytes()).decode()
     blob["landing.json"] = landing(shards)
     for b in BINS:
         blob[b] = base64.b64encode((DATA / b).read_bytes()).decode()
