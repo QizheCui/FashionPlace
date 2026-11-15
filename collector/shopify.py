@@ -38,8 +38,8 @@ CATEGORY_RULES = [
     ("tshirts", r"t-shirt|tee\b|tees\b|t shirt|polo"),
     ("tops", r"blouse|\bcami\b|camisole|bodysuit|\btops?\b|bustier|corset"),
     ("shirts", r"shirt|oxford|flannel"),
+    ("denim", r"\bjeans?\b|denim"),
     ("trousers", r"trouser|chino|pant|cord\b|corduroy"),
-    ("denim", r"jean|denim"),
     ("shorts", r"short"),
 ]
 

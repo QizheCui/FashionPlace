@@ -21,6 +21,8 @@ from pathlib import Path
 
 import numpy as np
 
+from collector import shopify
+
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
 CONFIG = ROOT / "config"
@@ -149,9 +151,10 @@ def fix_categories(enc, items: list[dict], mat: np.ndarray) -> None:
     changed = 0
     for it, pr in zip(items, probs):
         best = int(pr.argmax())
-        # titles are usually right when they name the garment ('jean', 'scarf', 'sweatpant'); the photo
-        # only decides when the title/type gave us nothing
-        if it["category"] == "other" and pr[best] > 0.4:
+        # titles are right when they name the garment ('jean', 'scarf', 'sweatpant'); when the title is
+        # just a name ('Calcata') the shop's product type can be off, so a confident photo wins
+        title_says = shopify.detect_category({"title": it["title"], "product_type": ""})
+        if title_says == "other" and cats[best] != it["category"] and pr[best] > (0.4 if it["category"] == "other" else 0.6):
             it["category"] = cats[best]
             changed += 1
     by_id = {it["id"]: it["category"] for it in items}
