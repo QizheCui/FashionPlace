@@ -140,7 +140,7 @@ CATEGORY_PROMPTS = {
 
 def fix_categories(enc, items: list[dict], mat: np.ndarray) -> None:
     """Shop titles are often unhelpful ('Calcata', 'Braida'); ask CLIP what the photo shows instead.
-    Rule-based category wins unless it's 'other' or the photo very clearly says otherwise."""
+    Rule-based category wins; the photo fills in when the rules found nothing."""
     cats = list(CATEGORY_PROMPTS)
     t = enc.text([CATEGORY_PROMPTS[c] for c in cats])
     logits = 100.0 * mat @ t.T
@@ -149,7 +149,9 @@ def fix_categories(enc, items: list[dict], mat: np.ndarray) -> None:
     changed = 0
     for it, pr in zip(items, probs):
         best = int(pr.argmax())
-        if cats[best] != it["category"] and (it["category"] == "other" or pr[best] > 0.85):
+        # titles are usually right when they name the garment ('jean', 'scarf', 'sweatpant'); the photo
+        # only decides when the title/type gave us nothing
+        if it["category"] == "other" and pr[best] > 0.4:
             it["category"] = cats[best]
             changed += 1
     by_id = {it["id"]: it["category"] for it in items}
