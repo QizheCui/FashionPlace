@@ -203,11 +203,26 @@ def run(fake: bool = False) -> None:
     ]))
     # "Not quite right?" nudges: a direction from 'less' towards 'more'
     refiners = json.loads((CONFIG / "refiners.json").read_text())["refiners"]
-    (DATA / "refiners.json").write_text(json.dumps([
-        {"id": r["id"], "label": r["label"],
-         "vec": [round(float(x), 5) for x in unit(unit(enc.text(r["more"]).mean(0)) - unit(enc.text(r["less"]).mean(0)))]}
-        for r in refiners
-    ]))
+    # Each direction blends a text one ("dark clothing" minus "light clothing") with one learned from the
+    # catalogue's own photos: the average of pieces whose titles say 'charcoal/navy/black' minus those
+    # saying 'cream/ecru/stone'. The photo-based half lives where the products live, so it moves the feed more.
+    titles = [it["title"].lower() for it in items]
+
+    def photo_dir(more: str, less: str):
+        a = [i for i, t in enumerate(titles) if re.search(more, t) and not re.search(less, t)]
+        b = [i for i, t in enumerate(titles) if re.search(less, t) and not re.search(more, t)]
+        if len(a) < 20 or len(b) < 20:
+            return None
+        return unit(unit(mat[a].mean(0)) - unit(mat[b].mean(0)))
+
+    out = []
+    for r in refiners:
+        d = unit(unit(enc.text(r["more"]).mean(0)) - unit(enc.text(r["less"]).mean(0)))
+        pdir = photo_dir(r["title_more"], r["title_less"]) if r.get("title_more") else None
+        if pdir is not None:
+            d = unit(0.4 * d + 1.0 * pdir)
+        out.append({"id": r["id"], "label": r["label"], "vec": [round(float(x), 5) for x in d]})
+    (DATA / "refiners.json").write_text(json.dumps(out))
     cfg = json.loads((CONFIG / "brands.json").read_text())
     report = json.loads((DATA / "collect_report.json").read_text())["brands"] if (DATA / "collect_report.json").exists() else {}
     out = []

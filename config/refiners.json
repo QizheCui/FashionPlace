@@ -1,15 +1,125 @@
 {
   "_comment": "Quick nudges in the 'Not quite right?' bar. Each is a direction on the style map: towards 'more' and away from 'less'.",
   "refiners": [
-    {"id": "darker",  "label": "Darker",       "more": ["dark coloured clothing in charcoal, navy, black and deep brown"], "less": ["light coloured clothing in white, cream, beige and pastel"]},
-    {"id": "lighter", "label": "Lighter",      "more": ["light coloured clothing in white, cream, beige and pastel"], "less": ["dark coloured clothing in charcoal, navy, black and deep brown"]},
-    {"id": "smarter", "label": "Smarter",      "more": ["smart tailored clothing for the office and a dinner date"], "less": ["casual relaxed weekend clothing"]},
-    {"id": "casual",  "label": "More casual",  "more": ["casual relaxed weekend clothing"], "less": ["smart tailored clothing for the office and a dinner date"]},
-    {"id": "plainer", "label": "Plainer",      "more": ["plain solid colour clothing with no pattern or print"], "less": ["patterned, printed or graphic clothing"]},
-    {"id": "bolder",  "label": "Bolder",       "more": ["bold colourful statement clothing"], "less": ["plain muted neutral clothing"]},
-    {"id": "slimmer", "label": "Slimmer fit",  "more": ["slim fit tailored clothing"], "less": ["wide oversized baggy clothing"]},
-    {"id": "wider",   "label": "Roomier fit",  "more": ["wide relaxed oversized clothing"], "less": ["slim fit tailored clothing"]},
-    {"id": "warmer",  "label": "Warmer",       "more": ["warm heavy winter clothing in thick wool"], "less": ["lightweight summer clothing in linen"]},
-    {"id": "dressy",  "label": "Dressier",     "more": ["elegant evening outfit for a dinner or event"], "less": ["sporty athletic clothing"]}
+    {
+      "id": "darker",
+      "label": "Darker",
+      "more": [
+        "dark coloured clothing in charcoal, navy, black and deep brown"
+      ],
+      "less": [
+        "light coloured clothing in white, cream, beige and pastel"
+      ],
+      "title_more": "\\b(black|charcoal|navy|dark|chocolate|espresso|midnight|ink|slate|graphite|anthracite)\\b",
+      "title_less": "\\b(white|cream|ecru|ivory|stone|beige|sand|light|natural|oat|oatmeal|pastel|off white)\\b"
+    },
+    {
+      "id": "lighter",
+      "label": "Lighter",
+      "more": [
+        "light coloured clothing in white, cream, beige and pastel"
+      ],
+      "less": [
+        "dark coloured clothing in charcoal, navy, black and deep brown"
+      ],
+      "title_more": "\\b(white|cream|ecru|ivory|stone|beige|sand|light|natural|oat|oatmeal|pastel|off white)\\b",
+      "title_less": "\\b(black|charcoal|navy|dark|chocolate|espresso|midnight|ink|slate|graphite|anthracite)\\b"
+    },
+    {
+      "id": "smarter",
+      "label": "Smarter",
+      "more": [
+        "smart tailored clothing for the office and a dinner date"
+      ],
+      "less": [
+        "casual relaxed weekend clothing"
+      ],
+      "title_more": "\\b(blazer|tailored|pleated|loafer|oxford|suit|trouser|wool trousers|derby|cashmere|merino|silk)\\b",
+      "title_less": "\\b(hoodie|sweat|sweatshirt|sweatpant|jogger|tee|t-shirt|graphic|cargo|fleece|track|shorts)\\b"
+    },
+    {
+      "id": "casual",
+      "label": "More casual",
+      "more": [
+        "casual relaxed weekend clothing"
+      ],
+      "less": [
+        "smart tailored clothing for the office and a dinner date"
+      ],
+      "title_more": "\\b(hoodie|sweat|sweatshirt|sweatpant|jogger|tee|t-shirt|graphic|cargo|fleece|track|shorts)\\b",
+      "title_less": "\\b(blazer|tailored|pleated|loafer|oxford|suit|trouser|wool trousers|derby|cashmere|merino|silk)\\b"
+    },
+    {
+      "id": "plainer",
+      "label": "Plainer",
+      "more": [
+        "plain solid colour clothing with no pattern or print"
+      ],
+      "less": [
+        "patterned, printed or graphic clothing"
+      ],
+      "title_more": "\\b(plain|solid|essential|classic)\\b",
+      "title_less": "\\b(stripe|striped|check|print|printed|floral|graphic|plaid|paisley|dot|camo|logo)\\b"
+    },
+    {
+      "id": "bolder",
+      "label": "Bolder",
+      "more": [
+        "bold colourful statement clothing"
+      ],
+      "less": [
+        "plain muted neutral clothing"
+      ],
+      "title_more": "\\b(red|orange|yellow|pink|cobalt|purple|burgundy|emerald|fuchsia|bright|print|floral)\\b",
+      "title_less": "\\b(grey|gray|navy|black|beige|cream|white|ecru|stone|charcoal)\\b"
+    },
+    {
+      "id": "slimmer",
+      "label": "Slimmer fit",
+      "more": [
+        "slim fit tailored clothing"
+      ],
+      "less": [
+        "wide oversized baggy clothing"
+      ],
+      "title_more": "\\b(slim|skinny|tapered|fitted|cropped)\\b",
+      "title_less": "\\b(wide|relaxed|baggy|oversized|loose|boxy|balloon)\\b"
+    },
+    {
+      "id": "wider",
+      "label": "Roomier fit",
+      "more": [
+        "wide relaxed oversized clothing"
+      ],
+      "less": [
+        "slim fit tailored clothing"
+      ],
+      "title_more": "\\b(wide|relaxed|baggy|oversized|loose|boxy|balloon)\\b",
+      "title_less": "\\b(slim|skinny|tapered|fitted|cropped)\\b"
+    },
+    {
+      "id": "warmer",
+      "label": "Warmer",
+      "more": [
+        "warm heavy winter clothing in thick wool"
+      ],
+      "less": [
+        "lightweight summer clothing in linen"
+      ],
+      "title_more": "\\b(wool|cashmere|fleece|shearling|down|padded|knit|corduroy|flannel|mohair|alpaca|puffer)\\b",
+      "title_less": "\\b(linen|seersucker|short sleeve|swim|poplin|tank|vest top|camisole)\\b"
+    },
+    {
+      "id": "dressy",
+      "label": "Dressier",
+      "more": [
+        "elegant evening outfit for a dinner or event"
+      ],
+      "less": [
+        "sporty athletic clothing"
+      ],
+      "title_more": "\\b(silk|satin|velvet|tailored|blazer|evening|sequin|lace|tuxedo)\\b",
+      "title_less": "\\b(sweat|jogger|hoodie|running|track|cargo|fleece)\\b"
+    }
   ]
 }

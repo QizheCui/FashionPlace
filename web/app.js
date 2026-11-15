@@ -162,14 +162,15 @@
     return t || S.globalCentroid;
   }
   // "Not quite right?" — nudges (directions) and words, from this session + saved in the profile
-  const NUDGE_W = 0.35, WORD_W = 0.6;
+  const WORD_W = 2; // a typed note counts like two nudges
   function steerVector(p) {
     const parts = [];
     const nudges = { ...(p.nudges || {}) };
     for (const [id, n] of Object.entries(S.steer.nudges)) nudges[id] = (nudges[id] || 0) + n;
-    for (const [id, n] of Object.entries(nudges)) { const r = S.refinerById[id]; if (r && n) parts.push([r.vec, NUDGE_W * n]); }
+    for (const [id, n] of Object.entries(nudges)) { const r = S.refinerById[id]; if (r && n) parts.push([r.vec, n]); }
     for (const w of [...(p.steerWords || []), ...S.steer.words]) parts.push([pv(w.vec), WORD_W]);
     if (!parts.length) return null;
+    S.steerStrength = Math.min(4, parts.reduce((a, [, w]) => a + w, 0));
     const out = new Array(parts[0][0].length).fill(0);
     for (const [v, w] of parts) for (let i = 0; i < v.length; i++) out[i] += w * v[i];
     return out;
@@ -201,10 +202,17 @@
     if (S.brand && it.brand !== S.brand) return false;
     return !!S.vecs[it.id];
   }
-  const score = (it) => {
-    const v = S.vecs[it.id];
-    return dot(v, S.taste) - (S.avoid ? 0.35 * dot(v, S.avoid) : 0) + (S.steerVec ? dot(v, S.steerVec) : 0);
-  };
+  const score = (it) => { const v = S.vecs[it.id]; return dot(v, S.taste) - (S.avoid ? 0.35 * dot(v, S.avoid) : 0); };
+  // Nudges are measured against the pieces actually on screen (z-scores), so "Darker" visibly
+  // reorders trousers even though every trouser is already close to your taste.
+  const zs = (arr) => { if (!arr.length) return arr; const m = arr.reduce((a, b) => a + b, 0) / arr.length; const sd = Math.sqrt(arr.reduce((a, b) => a + (b - m) ** 2, 0) / arr.length) || 1; return arr.map((x) => (x - m) / sd); };
+  function steerPool(pool) { // every score from here on is a z-score within the pool
+    if (pool.length < 3) return pool;
+    const zt = zs(pool.map((x) => x.s));
+    if (!S.steerVec) return pool.map((x, i) => ({ ...x, s: zt[i] }));
+    const zn = zs(pool.map((x) => dot(S.vecs[x.it.id], S.steerVec))), w = 0.45 * S.steerStrength;
+    return pool.map((x, i) => ({ ...x, s: zt[i] + w * zn[i] }));
+  }
 
   function reason(it, mode) {
     const v = S.vecs[it.id], p = P();
@@ -281,12 +289,13 @@
         return { it, status: st, advice: advice(it, p), why: p.saved[it.id] ? `Saved ${p.saved[it.id].date} at ${money(p.saved[it.id].price)}` : "" };
       }).sort((a, b) => (b.status && b.status.cls === "deal") - (a.status && a.status.cls === "deal"));
     }
-    const base = S.items.filter((it) => fits(it, p)).map((it) => ({ it, s: score(it) }));
+    const base = steerPool(S.items.filter((it) => fits(it, p)).map((it) => ({ it, s: score(it) })));
     const seen = new Set([...p.liked, ...p.disliked]);
 
     if (S.query) { // search by feeling: the query leads, your taste breaks ties
       const qv = pv(S.query.vec);
-      const ranked = base.map((x) => ({ ...x, q: 0.75 * dot(S.vecs[x.it.id], qv) + 0.25 * x.s }))
+      const zq = zs(base.map((x) => dot(S.vecs[x.it.id], qv)));
+      const ranked = base.map((x, i) => ({ ...x, q: zq[i] + 0.35 * x.s }))
         .sort((a, b) => b.q - a.q).slice(0, 240);
       return diversify(ranked, 2).map((x) => ({ ...x, why: reason(x.it, "search") }));
     }
@@ -299,10 +308,10 @@
       const k = S.surprise, mine = new Set(p.brands);
       const floor = quantile(base.map((x) => x.s), 0.55 - 0.35 * k);
       const top = S.brand ? new Set() : new Set(base.slice().sort((a, b) => b.s - a.s).slice(0, 12).map((x) => x.it.id));
-      const ranked = base.filter((x) => (S.brand || x.s >= floor) && !seen.has(x.it.id) && !top.has(x.it.id)).map((x) => {
-        const v = S.vecs[x.it.id];
-        return { ...x, e: (1 - k) * x.s + k * (S.twist ? dot(v, S.twist) : 0) + (mine.has(x.it.brand) ? 0 : 0.06) };
-      }).sort((a, b) => b.e - a.e);
+      const cand = base.filter((x) => (S.brand || x.s >= floor) && !seen.has(x.it.id) && !top.has(x.it.id));
+      const zw = zs(cand.map((x) => (S.twist ? dot(S.vecs[x.it.id], S.twist) : 0)));
+      const ranked = cand.map((x, i) => ({ ...x, e: (1 - k) * x.s + 1.5 * k * zw[i] + (mine.has(x.it.brand) ? 0 : 0.5) }))
+        .sort((a, b) => b.e - a.e);
       const pool = ranked.length ? ranked : base.filter((x) => !seen.has(x.it.id)).sort((a, b) => b.s - a.s); // tiny catalogue fallback
       return (S.brand ? pool : diversify(pool, 1)).map((x) => ({ ...x, why: reason(x.it, "explore") }));
     }
@@ -314,7 +323,7 @@
   function brandsToKnow() {
     const p = P(), mine = new Set(p.brands);
     const prevBrand = S.brand, prevCat = S.category; S.brand = null; S.category = "all";
-    const scored = S.items.filter((it) => fits(it, p)).map((it) => ({ it, s: score(it) }));
+    const scored = steerPool(S.items.filter((it) => fits(it, p)).map((it) => ({ it, s: score(it) })));
     S.brand = prevBrand; S.category = prevCat;
     const strong = quantile(scored.map((x) => x.s), 0.85);
     const by = {};
