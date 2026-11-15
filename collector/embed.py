@@ -126,12 +126,49 @@ def build_profile(enc, profile: dict) -> dict:
     }
 
 
+CATEGORY_PROMPTS = {
+    "tshirts": "a photo of a t-shirt or polo shirt", "shirts": "a photo of a button-up shirt",
+    "knitwear": "a photo of a knitted jumper or cardigan", "sweats": "a photo of a sweatshirt, hoodie or joggers",
+    "outerwear": "a photo of a jacket or coat", "tailoring": "a photo of a tailored blazer or suit",
+    "trousers": "a photo of trousers", "denim": "a photo of jeans", "shorts": "a photo of shorts",
+    "shoes": "a photo of shoes, boots or trainers", "bags": "a photo of a bag",
+    "accessories": "a photo of a hat, scarf, belt, socks or jewellery", "dresses": "a photo of a dress",
+    "skirts": "a photo of a skirt", "tops": "a photo of a women's top or blouse",
+    "underwear": "a photo of underwear, swimwear or pyjamas",
+}
+
+
+def fix_categories(enc, items: list[dict], mat: np.ndarray) -> None:
+    """Shop titles are often unhelpful ('Calcata', 'Braida'); ask CLIP what the photo shows instead.
+    Rule-based category wins unless it's 'other' or the photo very clearly says otherwise."""
+    cats = list(CATEGORY_PROMPTS)
+    t = enc.text([CATEGORY_PROMPTS[c] for c in cats])
+    logits = 100.0 * mat @ t.T
+    probs = np.exp(logits - logits.max(1, keepdims=True))
+    probs /= probs.sum(1, keepdims=True)
+    changed = 0
+    for it, pr in zip(items, probs):
+        best = int(pr.argmax())
+        if cats[best] != it["category"] and (it["category"] == "other" or pr[best] > 0.85):
+            it["category"] = cats[best]
+            changed += 1
+    by_id = {it["id"]: it["category"] for it in items}
+    full = json.loads((DATA / "items.json").read_text())
+    for it in full["items"]:
+        if it["id"] in by_id:
+            it["category"] = by_id[it["id"]]
+    (DATA / "items.json").write_text(json.dumps(full, ensure_ascii=False))
+    print(f"categories corrected from photos: {changed}")
+
+
 def run(fake: bool = False) -> None:
     items = [it for it in json.loads((DATA / "items.json").read_text())["items"]
              if it.get("in_stock") and it.get("category") != "underwear"]
     enc = FakeEncoder() if fake else ClipEncoder()
     mat = enc.items(items).astype(np.float32)
     mat /= np.linalg.norm(mat, axis=1, keepdims=True) + 1e-9
+    if not fake:
+        fix_categories(enc, items, mat)
     # Shrink 512 -> K dims for the browser download. Uncentred SVD keeps item·query dot products
     # (what ranking uses) as intact as possible; the browser projects its own text/photo vectors
     # with the same matrix, so everything stays on one map.

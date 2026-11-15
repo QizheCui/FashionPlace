@@ -162,7 +162,7 @@
     return t || S.globalCentroid;
   }
   // "Not quite right?" — nudges (directions) and words, from this session + saved in the profile
-  const NUDGE_W = 0.22, WORD_W = 0.6;
+  const NUDGE_W = 0.35, WORD_W = 0.6;
   function steerVector(p) {
     const parts = [];
     const nudges = { ...(p.nudges || {}) };
