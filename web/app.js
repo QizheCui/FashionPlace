@@ -42,12 +42,19 @@
 
   // ---------- storage ----------
   function loadStore() {
-    try { const s = JSON.parse(localStorage.getItem(STORE)) || {}; S.profiles = s.profiles || {}; S.lastId = s.current; }
+    try { const s = JSON.parse(localStorage.getItem(STORE)) || {}; S.profiles = s.profiles || {}; S.lastId = s.current; Object.values(S.profiles).forEach(upgrade); }
     catch { S.profiles = {}; }
     try { // carry over likes from the first version of the app
       const old = JSON.parse(localStorage.getItem("fp:feedback:qizhe"));
       if (old && !S.profiles.qizhe) S.pendingOldFeedback = old;
     } catch {}
+  }
+  // profiles saved by older versions of the app may miss newer fields
+  function upgrade(p) {
+    const d = { tiers: [], waist: [], shoe: [], nudges: {}, steerWords: [], saved: {}, extra: {}, avoidVibes: [], surpriseVibes: ["bold-colour", "texture", "vintage"],
+      brands: [], words: [], avoidWords: [], liked: [], disliked: [], vibes: [], sizes: ["M"], price: { min: 0, max: 300 }, department: "men" };
+    for (const [k, v] of Object.entries(d)) if (p[k] === undefined || p[k] === null) p[k] = JSON.parse(JSON.stringify(v));
+    return p;
   }
   function saveStore() { try { localStorage.setItem(STORE, JSON.stringify({ profiles: S.profiles, current: S.current && S.current.id })); } catch {} }
   const P = () => S.current;
@@ -460,7 +467,7 @@
   const ED = { step: 0, draft: null, onboarding: false, shown: new Set() };
 
   function openEditor(p, onboarding, step = 0) {
-    ED.draft = JSON.parse(JSON.stringify(p)); ED.onboarding = onboarding; ED.step = step; ED.shown = new Set();
+    ED.draft = upgrade(JSON.parse(JSON.stringify(p))); ED.onboarding = onboarding; ED.step = step; ED.shown = new Set();
     $("#editor").hidden = false; renderEditor();
   }
   function renderEditor() {
