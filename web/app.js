@@ -471,7 +471,7 @@
     showLanding(true);
     if (!LAND) LAND = await getJSON("landing.json").catch(() => null);
     if (!LAND) return;
-    $("#lEyebrow").textContent = `Your personal stylist · ${Math.floor(LAND.brands / 10) * 10}+ brands`;
+    $("#lCount").textContent = `${Math.floor(LAND.brands / 10) * 10}+`;
     $("#lNames").textContent = `${LAND.names.slice(0, 8).join(" · ")} · and ${LAND.brands - 8} more`;
     $("#lq").focus({ preventScroll: true });
     if (!S.landingQuery) { $("#lResHead").innerHTML = `<p class="l-eyebrow">Today in the feed</p>`; $("#lGrid").innerHTML = LAND.picks.map(lcard).join(""); }
