@@ -3,11 +3,13 @@
   "brands": {
     "Wax London": {
       "status": "ok",
-      "products": 756
+      "products": 756,
+      "currency": "GBP"
     },
     "Percival": {
       "status": "ok",
-      "products": 930
+      "products": 930,
+      "currency": "GBP"
     },
     "Alex Mill": {
       "status": "failed",
@@ -16,11 +18,13 @@
     },
     "Rains": {
       "status": "ok",
-      "products": 220
+      "products": 220,
+      "currency": "GBP"
     },
     "Oliver Spencer": {
       "status": "ok",
-      "products": 520
+      "products": 520,
+      "currency": "GBP"
     },
     "Universal Works": {
       "status": "failed",
@@ -29,19 +33,23 @@
     },
     "Sunspel": {
       "status": "ok",
-      "products": 1063
+      "products": 1063,
+      "currency": "GBP"
     },
     "Kestin": {
       "status": "ok",
-      "products": 159
+      "products": 159,
+      "currency": "GBP"
     },
     "Drake's": {
       "status": "ok",
-      "products": 2086
+      "products": 2086,
+      "currency": "GBP"
     },
     "Norse Projects": {
       "status": "ok",
-      "products": 656
+      "products": 656,
+      "currency": "GBP"
     },
     "De Bonne Facture": {
       "status": "failed",
@@ -50,7 +58,238 @@
     },
     "Colhay's": {
       "status": "ok",
-      "products": 80
+      "products": 80,
+      "currency": "GBP"
+    },
+    "Albam": {
+      "status": "ok",
+      "products": 64,
+      "currency": "GBP"
+    },
+    "Folk": {
+      "status": "ok",
+      "products": 1445,
+      "currency": "GBP"
+    },
+    "Private White V.C.": {
+      "status": "ok",
+      "products": 237,
+      "currency": "GBP"
+    },
+    "Uskees": {
+      "status": "ok",
+      "products": 249,
+      "currency": "GBP"
+    },
+    "Peregrine": {
+      "status": "ok",
+      "products": 113,
+      "currency": "GBP"
+    },
+    "Howlin'": {
+      "status": "failed",
+      "reason": "<urlopen error [Errno -2] Name or service not known>",
+      "kept_previous": 0
+    },
+    "Arpenteur": {
+      "status": "failed",
+      "reason": "<urlopen error [Errno -2] Name or service not known>",
+      "kept_previous": 0
+    },
+    "Nigel Cabourn": {
+      "status": "failed",
+      "reason": "<urlopen error [Errno -2] Name or service not known>",
+      "kept_previous": 0
+    },
+    "YMC": {
+      "status": "ok",
+      "products": 463,
+      "currency": "GBP"
+    },
+    "Studio Nicholson": {
+      "status": "ok",
+      "products": 1309,
+      "currency": "GBP"
+    },
+    "Mfpen": {
+      "status": "ok",
+      "products": 226,
+      "currency": "EUR"
+    },
+    "Aim\u00e9 Leon Dore": {
+      "status": "ok",
+      "products": 1011,
+      "currency": "USD"
+    },
+    "Rowing Blazers": {
+      "status": "ok",
+      "products": 843,
+      "currency": "USD"
+    },
+    "Anglo-Italian": {
+      "status": "ok",
+      "products": 285,
+      "currency": "GBP"
+    },
+    "Taylor Stitch": {
+      "status": "ok",
+      "products": 3896,
+      "currency": "USD"
+    },
+    "Spoke": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kept_previous": 0
+    },
+    "Todd Snyder": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kept_previous": 0
+    },
+    "Sirplus": {
+      "status": "ok",
+      "products": 247,
+      "currency": "GBP"
+    },
+    "Spier & Mackay": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kept_previous": 0
+    },
+    "Luca Faloni": {
+      "status": "failed",
+      "reason": "HTTP Error 403: Forbidden",
+      "kept_previous": 0
+    },
+    "Buck Mason": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kept_previous": 0
+    },
+    "Saturdays NYC": {
+      "status": "ok",
+      "products": 503,
+      "currency": "USD"
+    },
+    "Corridor": {
+      "status": "ok",
+      "products": 514,
+      "currency": "USD"
+    },
+    "Grenson": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kept_previous": 0
+    },
+    "Velasca": {
+      "status": "ok",
+      "products": 1631,
+      "currency": "EUR"
+    },
+    "A Kind of Guise": {
+      "status": "ok",
+      "products": 636,
+      "currency": "EUR"
+    },
+    "The Workers Club": {
+      "status": "ok",
+      "products": 163,
+      "currency": "GBP"
+    },
+    "Berg & Berg": {
+      "status": "failed",
+      "reason": "not JSON (text/html)",
+      "kept_previous": 0
+    },
+    "Asket": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kept_previous": 0
+    },
+    "Rixo": {
+      "status": "ok",
+      "products": 842,
+      "currency": "GBP"
+    },
+    "Kitri": {
+      "status": "ok",
+      "products": 221,
+      "currency": "GBP"
+    },
+    "Damson Madder": {
+      "status": "ok",
+      "products": 558,
+      "currency": "GBP"
+    },
+    "Nobody's Child": {
+      "status": "ok",
+      "products": 3700,
+      "currency": "GBP"
+    },
+    "With Nothing Underneath": {
+      "status": "ok",
+      "products": 218,
+      "currency": "GBP"
+    },
+    "Navygrey": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kept_previous": 0
+    },
+    "Lisou": {
+      "status": "failed",
+      "reason": "<urlopen error timed out>",
+      "kept_previous": 0
+    },
+    "Musier Paris": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kept_previous": 0
+    },
+    "Aligne": {
+      "status": "failed",
+      "reason": "<urlopen error [SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] ssl/tls alert handshake failure (_ssl.c:1011)>",
+      "kept_previous": 0
+    },
+    "Omnes": {
+      "status": "ok",
+      "products": 1029,
+      "currency": "GBP"
+    },
+    "Paloma Wool": {
+      "status": "ok",
+      "products": 1177,
+      "currency": "EUR"
+    },
+    "Kowtow": {
+      "status": "ok",
+      "products": 288,
+      "currency": "NZD"
+    },
+    "Rouje": {
+      "status": "ok",
+      "products": 630,
+      "currency": "EUR"
+    },
+    "ME+EM": {
+      "status": "failed",
+      "reason": "not JSON (text/html; charset=utf-8)",
+      "kept_previous": 0
+    },
+    "Never Fully Dressed": {
+      "status": "ok",
+      "products": 825,
+      "currency": "GBP"
+    },
+    "Anine Bing": {
+      "status": "ok",
+      "products": 637,
+      "currency": "GBP"
+    },
+    "Faithfull the Brand": {
+      "status": "ok",
+      "products": 884,
+      "currency": "AUD"
     },
     "Ralph Lauren": {
       "status": "skipped",
