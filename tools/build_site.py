@@ -11,18 +11,18 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 WEB, DATA, OUT = ROOT / "web", ROOT / "data", ROOT / "_site"
-FILES = ["items.json", "vectors_meta.json", "vibes.json", "brands.json", "brand_stats.json", "refiners.json", "profiles/index.json"]
+FILES = ["meta-men.json", "meta-women.json", "vibes.json", "brands.json", "brand_stats.json", "refiners.json", "profiles/index.json"]
 
 
-BINS = ["vectors.bin", "projection.bin"]
+BINS = ["vectors-men.bin", "vectors-women.bin", "projection.bin"]
 KEEP = ["id", "brand", "title", "url", "image", "category", "department", "price_gbp", "compare_at_gbp", "in_stock",
         "letter_sized", "letter_sizes", "waist_sizes", "shoe_sizes", "deal"]
 DEAL_KEEP = ["verdict", "discount_pct", "is_lowest_price", "tracked_days"]
 
 
-def slim_items(path: Path) -> None:
-    """The web app only needs a few fields per product; trimming keeps the phone download small."""
-    d = json.loads(path.read_text())
+def shard_items() -> dict:
+    """The web app only needs a few fields per product, split by department; trimming keeps the phone download small."""
+    d = json.loads((DATA / "items.json").read_text())
     out = []
     for it in d["items"]:
         x = {k: it[k] for k in KEEP if it.get(k) not in (None, [], False) or k in ("in_stock", "price_gbp")}
@@ -31,7 +31,8 @@ def slim_items(path: Path) -> None:
         else:
             x.pop("deal", None)
         out.append(x)
-    path.write_text(json.dumps({"updated": d["updated"], "items": out}, ensure_ascii=False, separators=(",", ":")))
+    return {dept: {"updated": d["updated"], "items": [x for x in out if x.get("department") in (dept, "unisex")]}
+            for dept in ("men", "women")}
 
 
 def main(inline: bool) -> None:
@@ -41,12 +42,15 @@ def main(inline: bool) -> None:
             shutil.copy(f, OUT / f.name)
         if (OUT / "data").exists():
             shutil.rmtree(OUT / "data")
-        shutil.copytree(DATA, OUT / "data", ignore=shutil.ignore_patterns("price_history.json", "collect_report.json"))
-        slim_items(OUT / "data" / "items.json")
+        shutil.copytree(DATA, OUT / "data", ignore=shutil.ignore_patterns("price_history.json", "collect_report.json", "items.json"))
+        for dept, items in shard_items().items():
+            (OUT / "data" / f"items-{dept}.json").write_text(json.dumps(items, ensure_ascii=False, separators=(",", ":")))
         print("built", OUT)
         return
     names = FILES + [f"profiles/{p}.json" for p in json.loads((DATA / "profiles/index.json").read_text())]
     blob = {n: json.loads((DATA / n).read_text()) for n in names}
+    for dept, items in shard_items().items():
+        blob[f"items-{dept}.json"] = items
     for b in BINS:
         blob[b] = base64.b64encode((DATA / b).read_bytes()).decode()
     html = (WEB / "index.html").read_text()

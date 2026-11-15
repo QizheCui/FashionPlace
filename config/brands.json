@@ -10,7 +10,8 @@
       "blurb": "London label making relaxed, textured menswear with a strong focus on responsibly sourced fabrics.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Percival",
@@ -21,7 +22,8 @@
       "blurb": "Soho-born London brand: modern prep with playful knitwear and a 90s vintage wink.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Alex Mill",
@@ -33,7 +35,8 @@
       "departments": [
         "men",
         "women"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Rains",
@@ -45,7 +48,8 @@
       "departments": [
         "men",
         "women"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Oliver Spencer",
@@ -56,7 +60,8 @@
       "blurb": "London designer known for relaxed British tailoring and natural, characterful fabrics.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "premium"
     },
     {
       "name": "Universal Works",
@@ -67,7 +72,8 @@
       "blurb": "Nottingham brand mixing British workwear with a laid-back, colourful touch.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Sunspel",
@@ -79,7 +85,8 @@
       "departments": [
         "men",
         "women"
-      ]
+      ],
+      "tier": "premium"
     },
     {
       "name": "Kestin",
@@ -90,7 +97,8 @@
       "blurb": "Edinburgh brand blending Scottish heritage with Scandinavian-style utility and minimalism.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Drake's",
@@ -101,7 +109,8 @@
       "blurb": "London tie-maker turned full menswear house: soft tailoring, Ivy staples and English craft.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "premium"
     },
     {
       "name": "Norse Projects",
@@ -113,7 +122,8 @@
       "departments": [
         "men",
         "women"
-      ]
+      ],
+      "tier": "premium"
     },
     {
       "name": "De Bonne Facture",
@@ -124,7 +134,8 @@
       "blurb": "Paris brand reviving French workwear, made with small European workshops.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "premium"
     },
     {
       "name": "Colhay's",
@@ -135,7 +146,8 @@
       "blurb": "London knitwear specialist making vintage-inspired jumpers and cardigans.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "premium"
     },
     {
       "name": "Albam",
@@ -146,7 +158,8 @@
       "blurb": "British modern essentials with a utilitarian edge, made with long-standing factories.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Folk",
@@ -158,7 +171,8 @@
       "departments": [
         "men",
         "women"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Private White V.C.",
@@ -169,7 +183,8 @@
       "blurb": "Manchester-made outerwear and heritage pieces from their own historic factory.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "premium"
     },
     {
       "name": "Uskees",
@@ -181,7 +196,8 @@
       "departments": [
         "men",
         "women"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Peregrine",
@@ -193,7 +209,8 @@
       "departments": [
         "men",
         "women"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Howlin'",
@@ -204,7 +221,8 @@
       "blurb": "Belgian label making playful, colourful Scottish-knit wool jumpers.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Arpenteur",
@@ -215,7 +233,8 @@
       "blurb": "French brand making utilitarian, craft-led clothing in French workshops.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "premium"
     },
     {
       "name": "Nigel Cabourn",
@@ -226,7 +245,8 @@
       "blurb": "British designer known for vintage military and mountaineering-inspired pieces.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "premium"
     },
     {
       "name": "YMC",
@@ -238,7 +258,8 @@
       "departments": [
         "men",
         "women"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Studio Nicholson",
@@ -250,7 +271,8 @@
       "departments": [
         "men",
         "women"
-      ]
+      ],
+      "tier": "premium"
     },
     {
       "name": "Mfpen",
@@ -261,7 +283,8 @@
       "blurb": "Copenhagen label for clean, relaxed Scandinavian everyday clothing.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "premium"
     },
     {
       "name": "Aimé Leon Dore",
@@ -272,7 +295,8 @@
       "blurb": "New York label that mixes old-school prep and Ivy with modern streetwear.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "premium"
     },
     {
       "name": "Rowing Blazers",
@@ -284,7 +308,8 @@
       "departments": [
         "men",
         "women"
-      ]
+      ],
+      "tier": "premium"
     },
     {
       "name": "Anglo-Italian",
@@ -295,7 +320,8 @@
       "blurb": "London tailoring house blending English cloth with relaxed Italian cuts.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "premium"
     },
     {
       "name": "Taylor Stitch",
@@ -306,7 +332,8 @@
       "blurb": "San Francisco brand for durable, responsible workwear-inspired staples.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Spoke",
@@ -317,7 +344,8 @@
       "blurb": "London trouser specialist with a fit system for different builds: smart chinos, wool and cord trousers.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Todd Snyder",
@@ -328,7 +356,8 @@
       "blurb": "New York menswear spanning tailoring and casual Americana, with a big trouser range.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "premium"
     },
     {
       "name": "Sirplus",
@@ -339,7 +368,8 @@
       "blurb": "London smart-casual brand: shirts, trousers and tailoring for work-to-evening.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Spier & Mackay",
@@ -350,7 +380,8 @@
       "blurb": "Toronto tailoring brand known for well-priced suits, wool trousers and shirts.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Luca Faloni",
@@ -361,7 +392,8 @@
       "blurb": "Italian-made essentials: cashmere knits, linen and fine cotton in quiet colours.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "premium"
     },
     {
       "name": "Buck Mason",
@@ -372,7 +404,8 @@
       "blurb": "Los Angeles label for American wardrobe classics.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Saturdays NYC",
@@ -383,7 +416,8 @@
       "blurb": "New York brand with clean, surf-inspired city clothing.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Corridor",
@@ -394,7 +428,8 @@
       "blurb": "New York label known for textured shirts and relaxed, colourful classics.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "premium"
     },
     {
       "name": "Grenson",
@@ -405,7 +440,8 @@
       "blurb": "Northamptonshire shoemaker: brogues, loafers and boots.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "premium"
     },
     {
       "name": "Velasca",
@@ -416,7 +452,8 @@
       "blurb": "Milan brand making Italian-crafted shoes and leather goods.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "A Kind of Guise",
@@ -427,7 +464,8 @@
       "blurb": "Munich label for design-led, craft-focused menswear.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "premium"
     },
     {
       "name": "The Workers Club",
@@ -438,7 +476,8 @@
       "blurb": "British brand reworking workwear and military classics.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Berg & Berg",
@@ -449,7 +488,8 @@
       "blurb": "Oslo menswear house with classic, Italian-made tailoring and knitwear.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "premium"
     },
     {
       "name": "Asket",
@@ -460,7 +500,8 @@
       "blurb": "Stockholm label with a permanent, traceable collection of essentials.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Rixo",
@@ -471,7 +512,8 @@
       "blurb": "London label known for vintage-inspired printed dresses.",
       "departments": [
         "women"
-      ]
+      ],
+      "tier": "premium"
     },
     {
       "name": "Kitri",
@@ -482,7 +524,8 @@
       "blurb": "London brand for print-led, feminine pieces at accessible prices.",
       "departments": [
         "women"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Damson Madder",
@@ -493,7 +536,8 @@
       "blurb": "Playful London label with a responsible approach to making.",
       "departments": [
         "women"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Nobody's Child",
@@ -504,7 +548,8 @@
       "blurb": "London brand for accessible, responsibly made dresses and everyday pieces.",
       "departments": [
         "women"
-      ]
+      ],
+      "tier": "high-street"
     },
     {
       "name": "With Nothing Underneath",
@@ -515,7 +560,8 @@
       "blurb": "London label perfecting the oversized shirt and wardrobe basics.",
       "departments": [
         "women"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Navygrey",
@@ -526,7 +572,8 @@
       "blurb": "London knitwear brand making timeless British-wool jumpers.",
       "departments": [
         "women"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Lisou",
@@ -537,7 +584,8 @@
       "blurb": "London brand for printed silk shirts and dresses.",
       "departments": [
         "women"
-      ]
+      ],
+      "tier": "premium"
     },
     {
       "name": "Musier Paris",
@@ -548,7 +596,8 @@
       "blurb": "Paris label with feminine, effortless French style.",
       "departments": [
         "women"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Aligne",
@@ -559,7 +608,8 @@
       "blurb": "London brand for modern, minimal wardrobe pieces.",
       "departments": [
         "women"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Omnes",
@@ -570,7 +620,8 @@
       "blurb": "London label for accessible, more sustainable everyday clothing.",
       "departments": [
         "women"
-      ]
+      ],
+      "tier": "high-street"
     },
     {
       "name": "Paloma Wool",
@@ -581,7 +632,8 @@
       "blurb": "Barcelona label with artistic, sculptural knits and prints.",
       "departments": [
         "women"
-      ]
+      ],
+      "tier": "premium"
     },
     {
       "name": "Kowtow",
@@ -592,7 +644,8 @@
       "blurb": "New Zealand brand making relaxed organic cotton clothing.",
       "departments": [
         "women"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Rouje",
@@ -603,7 +656,8 @@
       "blurb": "Paris label for French-girl dresses, blouses and knits.",
       "departments": [
         "women"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "ME+EM",
@@ -614,7 +668,8 @@
       "blurb": "London brand for smart, modern clothes that work from office to evening.",
       "departments": [
         "women"
-      ]
+      ],
+      "tier": "premium"
     },
     {
       "name": "Never Fully Dressed",
@@ -625,7 +680,8 @@
       "blurb": "London label known for bold prints and statement skirts.",
       "departments": [
         "women"
-      ]
+      ],
+      "tier": "boutique"
     },
     {
       "name": "Anine Bing",
@@ -636,7 +692,8 @@
       "blurb": "Los Angeles label mixing Scandinavian minimalism with rock-and-roll cool.",
       "departments": [
         "women"
-      ]
+      ],
+      "tier": "premium"
     },
     {
       "name": "Faithfull the Brand",
@@ -647,7 +704,1010 @@
       "blurb": "Australian label for holiday linen and relaxed summer dresses.",
       "departments": [
         "women"
-      ]
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Réalisation Par",
+      "domain": "realisationpar.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "Silk slip dresses and printed skirts with a vintage, sensual feel.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Doen",
+      "domain": "shopdoen.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "California label for romantic, vintage-inspired dresses and blouses.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Staud",
+      "domain": "staud.clothing",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "Los Angeles brand known for playful, architectural bags and dresses.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Cult Gaia",
+      "domain": "cultgaia.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "Sculptural dresses and the famous Ark bag.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Self-Portrait",
+      "domain": "self-portrait.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London label for lace, polished party and occasion dresses.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Alémais",
+      "domain": "alemais.com",
+      "source": "shopify",
+      "currency": "AUD",
+      "favourite": false,
+      "blurb": "Australian label for colourful, print-led relaxed pieces.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Lirika Matoshi",
+      "domain": "lirikamatoshi.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "Whimsical tulle and strawberry-print dresses.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Sleeper",
+      "domain": "sleeper.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "Kyiv brand for feather-trimmed loungewear and evening pieces.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Hill House Home",
+      "domain": "hillhousehome.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "The 'Nap Dress' brand: smocked, pretty everyday dresses.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "With Jéan",
+      "domain": "withjean.com",
+      "source": "shopify",
+      "currency": "AUD",
+      "favourite": false,
+      "blurb": "Australian label for flirty, going-out tops and denim.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Posse",
+      "domain": "posse.com.au",
+      "source": "shopify",
+      "currency": "AUD",
+      "favourite": false,
+      "blurb": "Sydney label for effortless linen and summer dresses.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Bec + Bridge",
+      "domain": "becandbridge.com.au",
+      "source": "shopify",
+      "currency": "AUD",
+      "favourite": false,
+      "blurb": "Australian label for cut-out dresses and resort wear.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "St. Agni",
+      "domain": "stagni.com",
+      "source": "shopify",
+      "currency": "AUD",
+      "favourite": false,
+      "blurb": "Byron Bay label for minimal, sculptural shoes and clothing.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Matteau",
+      "domain": "matteau-store.com",
+      "source": "shopify",
+      "currency": "AUD",
+      "favourite": false,
+      "blurb": "Sydney brand for refined minimal swim and ready-to-wear.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Jesse Kamm",
+      "domain": "jessekamm.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "Los Angeles designer known for the Sailor wide-leg trouser.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Djerf Avenue",
+      "domain": "djerfavenue.com",
+      "source": "shopify",
+      "currency": "EUR",
+      "favourite": false,
+      "blurb": "Stockholm label for relaxed, feminine Scandi basics.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Skims",
+      "domain": "skims.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "Shapewear, loungewear and body-skimming basics.",
+      "departments": [
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "Pangaia",
+      "domain": "pangaia.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Material-science basics: colourful tracksuits and tees.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Saks Potts",
+      "domain": "sakspotts.com",
+      "source": "shopify",
+      "currency": "DKK",
+      "favourite": false,
+      "blurb": "Copenhagen label for colourful faux-fur and playful party pieces.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Stine Goya",
+      "domain": "stinegoya.com",
+      "source": "shopify",
+      "currency": "DKK",
+      "favourite": false,
+      "blurb": "Copenhagen label for bold prints and artistic colour.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Baum und Pferdgarten",
+      "domain": "baumundpferdgarten.com",
+      "source": "shopify",
+      "currency": "DKK",
+      "favourite": false,
+      "blurb": "Copenhagen label for quirky, print-mixing femininity.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Rotate",
+      "domain": "rotatebirgerchristensen.com",
+      "source": "shopify",
+      "currency": "EUR",
+      "favourite": false,
+      "blurb": "Copenhagen party wear: sequins, shine and going-out dresses.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Cecilie Bahnsen",
+      "domain": "ceciliebahnsen.com",
+      "source": "shopify",
+      "currency": "DKK",
+      "favourite": false,
+      "blurb": "Copenhagen designer of voluminous, quilted romantic dresses.",
+      "departments": [
+        "women"
+      ],
+      "tier": "luxury"
+    },
+    {
+      "name": "Maison Cléo",
+      "domain": "maisoncleo.com",
+      "source": "shopify",
+      "currency": "EUR",
+      "favourite": false,
+      "blurb": "Paris label making small-batch blouses from deadstock fabric.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "By Far",
+      "domain": "byfar.com",
+      "source": "shopify",
+      "currency": "EUR",
+      "favourite": false,
+      "blurb": "Bulgarian label for 90s-inspired leather bags and shoes.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Mother Denim",
+      "domain": "motherdenim.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "Los Angeles label for flattering, vintage-feel denim.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Agolde",
+      "domain": "agolde.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "Los Angeles denim with relaxed, vintage-inspired cuts.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Re/Done",
+      "domain": "shopredone.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "Reworked vintage Levi's and 90s-inspired basics.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Frame",
+      "domain": "frame-store.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "Denim and polished French-meets-LA wardrobe staples.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Khaite",
+      "domain": "khaite.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "New York luxury: sculpted knits, denim and leather.",
+      "departments": [
+        "women"
+      ],
+      "tier": "luxury"
+    },
+    {
+      "name": "Wray",
+      "domain": "wraynyc.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "New York label for joyful, colourful printed pieces.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Lisa Says Gah",
+      "domain": "lisasaysgah.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "San Francisco shop for colourful, playful independent labels.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Sister Jane",
+      "domain": "sisterjane.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London label for vintage-inspired, whimsical dresses.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Hush",
+      "domain": "www.hush-uk.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Relaxed British weekend-wear basics.",
+      "departments": [
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "Albaray",
+      "domain": "albaray.co.uk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Feminine, responsibly made British everyday clothing.",
+      "departments": [
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "Baukjen",
+      "domain": "baukjen.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London label for modern, considered workwear.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Mint Velvet",
+      "domain": "www.mintvelvet.co.uk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "British smart-casual womenswear.",
+      "departments": [
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "Finery London",
+      "domain": "finerylondon.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Print-led British womenswear.",
+      "departments": [
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "Monsoon",
+      "domain": "www.monsoon.co.uk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "British label for prints and occasion wear.",
+      "departments": [
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "Ghost",
+      "domain": "ghost.co.uk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London label known for floaty satin and occasion dresses.",
+      "departments": [
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "Dissh",
+      "domain": "dissh.com.au",
+      "source": "shopify",
+      "currency": "AUD",
+      "favourite": false,
+      "blurb": "Australian label for modern feminine everyday dresses.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Peppermayo",
+      "domain": "peppermayo.com",
+      "source": "shopify",
+      "currency": "AUD",
+      "favourite": false,
+      "blurb": "Australian label for trend-led party and holiday pieces.",
+      "departments": [
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "Princess Polly",
+      "domain": "www.princesspolly.com",
+      "source": "shopify",
+      "currency": "AUD",
+      "favourite": false,
+      "blurb": "Australian label for affordable trend-led going-out pieces.",
+      "departments": [
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "Meshki",
+      "domain": "www.meshki.co.uk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Body-con and going-out dresses.",
+      "departments": [
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "Oh Polly",
+      "domain": "www.ohpolly.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Glasgow brand for sculpted going-out dresses.",
+      "departments": [
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "House of CB",
+      "domain": "www.houseofcb.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London label for corset-style evening dresses.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Kemi Telford",
+      "domain": "kemitelford.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London label for joyful, colourful print dresses.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Beyond Nine",
+      "domain": "beyondnine.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Comfortable tailored trousers for women.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Wyse London",
+      "domain": "wyselondon.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Cashmere-blend knits and statement collars.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Cefinn",
+      "domain": "cefinn.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Modern British workwear and smart separates.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Rejina Pyo",
+      "domain": "rejinapyo.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London designer for sculptural, colourful modern pieces.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Paris Georgia",
+      "domain": "parisgeorgia.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "Body-conscious, sculpted minimal pieces.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Loulou de Saison",
+      "domain": "louloudesaison.com",
+      "source": "shopify",
+      "currency": "EUR",
+      "favourite": false,
+      "blurb": "Paris label for sensual, minimal French pieces.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Sessùn",
+      "domain": "www.sessun.com",
+      "source": "shopify",
+      "currency": "EUR",
+      "favourite": false,
+      "blurb": "French label for bohemian, artisanal pieces.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Soeur",
+      "domain": "www.soeur.fr",
+      "source": "shopify",
+      "currency": "EUR",
+      "favourite": false,
+      "blurb": "Paris label for preppy, polished French classics.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Marfa Stance",
+      "domain": "marfastance.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Modular, reversible outerwear.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Gestuz",
+      "domain": "gestuz.com",
+      "source": "shopify",
+      "currency": "DKK",
+      "favourite": false,
+      "blurb": "Copenhagen label for relaxed, feminine Scandi style.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Samsøe Samsøe",
+      "domain": "www.samsoe.com",
+      "source": "shopify",
+      "currency": "DKK",
+      "favourite": false,
+      "blurb": "Copenhagen label for everyday Scandi essentials.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Holzweiler",
+      "domain": "holzweiler.com",
+      "source": "shopify",
+      "currency": "NOK",
+      "favourite": false,
+      "blurb": "Oslo label for cosy knit scarves and relaxed tailoring.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Envelope 1976",
+      "domain": "envelope1976.com",
+      "source": "shopify",
+      "currency": "SEK",
+      "favourite": false,
+      "blurb": "Swedish label for tailored, minimal investment pieces.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Rodebjer",
+      "domain": "rodebjer.com",
+      "source": "shopify",
+      "currency": "SEK",
+      "favourite": false,
+      "blurb": "Stockholm label for bold, sculptural feminine pieces.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Hope Stockholm",
+      "domain": "hope-sthlm.com",
+      "source": "shopify",
+      "currency": "SEK",
+      "favourite": false,
+      "blurb": "Stockholm label for intellectual, relaxed minimalism.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Nanushka",
+      "domain": "www.nanushka.com",
+      "source": "shopify",
+      "currency": "EUR",
+      "favourite": false,
+      "blurb": "Budapest label for vegan leather and soft tailoring.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Vince",
+      "domain": "www.vince.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "Effortless luxury basics in cashmere and silk.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Naadam",
+      "domain": "naadam.co",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "Accessible Mongolian cashmere.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Jenni Kayne",
+      "domain": "www.jennikayne.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "California casual: cashmere and relaxed classics.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Kotn",
+      "domain": "kotn.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "Egyptian-cotton basics.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Quince",
+      "domain": "www.quince.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "Affordable cashmere, silk and linen basics.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "Lemaire",
+      "domain": "www.lemaire.fr",
+      "source": "shopify",
+      "currency": "EUR",
+      "favourite": false,
+      "blurb": "Paris house for fluid, quietly luxurious minimalism.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "luxury"
+    },
+    {
+      "name": "Totême",
+      "domain": "toteme-studio.com",
+      "source": "shopify",
+      "currency": "EUR",
+      "favourite": false,
+      "blurb": "Stockholm label for precise, minimal luxury.",
+      "departments": [
+        "women"
+      ],
+      "tier": "luxury"
+    },
+    {
+      "name": "The Frankie Shop",
+      "domain": "thefrankieshop.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "Paris/NY label for oversized blazers and cool tailoring.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Wales Bonner",
+      "domain": "walesbonner.net",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London designer merging tailoring with Afro-Atlantic heritage.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "luxury"
+    },
+    {
+      "name": "Bode",
+      "domain": "bode.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "New York label for one-of-a-kind pieces from antique textiles.",
+      "departments": [
+        "men"
+      ],
+      "tier": "luxury"
+    },
+    {
+      "name": "Story mfg.",
+      "domain": "storymfg.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Hand-dyed, hand-stitched slow-made clothing.",
+      "departments": [
+        "men"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Kartik Research",
+      "domain": "kartikresearch.com",
+      "source": "shopify",
+      "currency": "EUR",
+      "favourite": false,
+      "blurb": "Hand-embroidered Indian craft on modern menswear.",
+      "departments": [
+        "men"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Casablanca",
+      "domain": "casablancaparis.com",
+      "source": "shopify",
+      "currency": "EUR",
+      "favourite": false,
+      "blurb": "Paris label for après-tennis silk shirts and colourful luxury.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "luxury"
+    },
+    {
+      "name": "Goodhood",
+      "domain": "goodhoodstore.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London concept store for independent and design-led labels.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Kith",
+      "domain": "kith.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "New York store for elevated streetwear and collaborations.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Stüssy",
+      "domain": "www.stussy.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "The original Californian surf-streetwear label.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Daily Paper",
+      "domain": "www.dailypaperclothing.com",
+      "source": "shopify",
+      "currency": "EUR",
+      "favourite": false,
+      "blurb": "Amsterdam label rooted in African heritage and streetwear.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Represent",
+      "domain": "representclo.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Manchester label for luxury streetwear.",
+      "departments": [
+        "men"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Dover Street Market",
+      "domain": "shop.doverstreetmarket.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "The Comme des Garçons-run store stocking avant-garde and luxury labels.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "luxury"
     },
     {
       "name": "Ralph Lauren",
@@ -659,7 +1719,8 @@
       "departments": [
         "men",
         "women"
-      ]
+      ],
+      "tier": "premium"
     },
     {
       "name": "Reiss",
@@ -671,7 +1732,8 @@
       "departments": [
         "men",
         "women"
-      ]
+      ],
+      "tier": "high-street"
     },
     {
       "name": "Arket",
@@ -683,7 +1745,8 @@
       "departments": [
         "men",
         "women"
-      ]
+      ],
+      "tier": "high-street"
     },
     {
       "name": "COS",
@@ -695,7 +1758,8 @@
       "departments": [
         "men",
         "women"
-      ]
+      ],
+      "tier": "high-street"
     },
     {
       "name": "Suitsupply",
@@ -706,7 +1770,161 @@
       "blurb": "Amsterdam tailoring house for well-cut suits, blazers and smart separates.",
       "departments": [
         "men"
-      ]
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "H&M",
+      "domain": "www2.hm.com",
+      "source": "affiliate",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "Uniqlo",
+      "domain": "www.uniqlo.com",
+      "source": "affiliate",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "Zara",
+      "domain": "www.zara.com",
+      "source": "affiliate",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "Mango",
+      "domain": "shop.mango.com",
+      "source": "affiliate",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "& Other Stories",
+      "domain": "www.stories.com",
+      "source": "affiliate",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "Massimo Dutti",
+      "domain": "www.massimodutti.com",
+      "source": "affiliate",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "Net-a-Porter (Miu Miu, Prada, Loewe…)",
+      "domain": "www.net-a-porter.com",
+      "source": "affiliate",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "luxury"
+    },
+    {
+      "name": "Mr Porter",
+      "domain": "www.mrporter.com",
+      "source": "affiliate",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men"
+      ],
+      "tier": "luxury"
+    },
+    {
+      "name": "Mytheresa",
+      "domain": "www.mytheresa.com",
+      "source": "affiliate",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "luxury"
+    },
+    {
+      "name": "Farfetch",
+      "domain": "www.farfetch.com",
+      "source": "affiliate",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "luxury"
+    },
+    {
+      "name": "Selfridges",
+      "domain": "www.selfridges.com",
+      "source": "affiliate",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "luxury"
+    },
+    {
+      "name": "Liberty London",
+      "domain": "www.libertylondon.com",
+      "source": "affiliate",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
     }
   ],
   "fx_to_gbp": {
@@ -721,5 +1939,11 @@
     "CAD": 0.57,
     "NOK": 0.071,
     "NZD": 0.47
+  },
+  "_tiers": {
+    "high-street": "High street",
+    "boutique": "Independent & boutique",
+    "premium": "Premium & designer",
+    "luxury": "Luxury"
   }
 }

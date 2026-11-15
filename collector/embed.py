@@ -114,7 +114,7 @@ def build_profile(enc, profile: dict) -> dict:
     surprise = enc.text(profile.get("surprise_prompts") or ["x"])
     vec = lambda m: [round(float(x), 5) for x in unit(m.mean(0))]
     return {
-        **{k: profile.get(k) for k in ("id", "name", "department", "sizes", "budget", "vibes", "surprise_vibes", "brands")},
+        **{k: profile.get(k) for k in ("id", "name", "department", "sizes", "budget", "vibes", "surprise_vibes", "brands", "tiers")},
         "taste": vec(taste),
         "avoid": vec(avoid),
         "surprise": vec(surprise),
@@ -139,11 +139,16 @@ def run(fake: bool = False) -> None:
     proj = vt[:k].T.astype(np.float32)                      # 512 x k
     low = mat @ proj
     scale = float(np.abs(low).max()) or 1.0
-    (DATA / "vectors.bin").write_bytes(np.clip(np.round(low / scale * 127), -127, 127).astype(np.int8).tobytes())
+    q = np.clip(np.round(low / scale * 127), -127, 127).astype(np.int8)
     (DATA / "projection.bin").write_bytes(proj.tobytes())  # float32, row-major 512 x k
-    (DATA / "vectors_meta.json").write_text(json.dumps(
-        {"model": "fake" if fake else MODEL_NAME, "dim": DIM, "k": k, "scale": scale, "ids": [it["id"] for it in items]}))
-    (DATA / "vectors.json").unlink(missing_ok=True)
+    # one shard per department (unisex pieces go in both) so a phone only downloads what it shows
+    for dept in ("men", "women"):
+        rows = [i for i, it in enumerate(items) if it.get("department") in (dept, "unisex")]
+        (DATA / f"vectors-{dept}.bin").write_bytes(q[rows].tobytes())
+        (DATA / f"meta-{dept}.json").write_text(json.dumps(
+            {"model": "fake" if fake else MODEL_NAME, "dim": DIM, "k": k, "scale": scale, "ids": [items[i]["id"] for i in rows]}))
+    for old in ("vectors.json", "vectors.bin", "vectors_meta.json"):
+        (DATA / old).unlink(missing_ok=True)
     (DATA / "profiles").mkdir(exist_ok=True)
     for pf in sorted((CONFIG / "profiles").glob("*.json")):
         prof = build_profile(enc, json.loads(pf.read_text()))
@@ -163,9 +168,19 @@ def run(fake: bool = False) -> None:
          "vec": [round(float(x), 5) for x in unit(unit(enc.text(r["more"]).mean(0)) - unit(enc.text(r["less"]).mean(0)))]}
         for r in refiners
     ]))
-    brands = json.loads((CONFIG / "brands.json").read_text())["brands"]
-    (DATA / "brands.json").write_text(json.dumps(
-        [{k: b.get(k) for k in ("name", "domain", "source", "blurb", "departments")} for b in brands], ensure_ascii=False))
+    cfg = json.loads((CONFIG / "brands.json").read_text())
+    report = json.loads((DATA / "collect_report.json").read_text())["brands"] if (DATA / "collect_report.json").exists() else {}
+    out = []
+    for b in cfg["brands"]:
+        cur = (report.get(b["name"]) or {}).get("currency") or b.get("currency", "GBP")
+        out.append({**{k: b.get(k) for k in ("name", "domain", "source", "blurb", "departments")},
+                    "currency": cur, "fx": cfg["fx_to_gbp"].get(cur, 1.0),
+                    "tier": b.get("tier", "boutique"),
+                    "live": (report.get(b["name"]) or {}).get("status") == "ok"})
+    (DATA / "brands.json").write_text(json.dumps(out, ensure_ascii=False))
+    live = CONFIG / "live.json"
+    if live.exists():
+        (DATA / "live.json").write_text(live.read_text())
     index = [p.stem for p in sorted((CONFIG / "profiles").glob("*.json"))]
     (DATA / "profiles" / "index.json").write_text(json.dumps(index))
 

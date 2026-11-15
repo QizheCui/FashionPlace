@@ -71,9 +71,8 @@
   }
   // Items arrive already shrunk to k dims; anything made at full size (text, photos, vibes)
   // is projected with the same matrix so it lands on the same map.
-  function decodeVectors(meta, buf, projBuf) {
+  function decodeVectors(meta, buf) {
     const q = new Int8Array(buf), k = meta.k;
-    S.k = k; S.proj = new Float32Array(projBuf);
     meta.ids.forEach((id, r) => { S.vecs[id] = norm(Array.from(q.subarray(r * k, (r + 1) * k), (x) => (x / 127) * meta.scale)); });
   }
   const projCache = new WeakMap();
@@ -86,6 +85,29 @@
     out = norm(out); projCache.set(v, out); return out;
   }
 
+  // ---------- catalogue shards (men / women), loaded on demand ----------
+  S.loaded = {};
+  function ensureShard(dept) {
+    const depts = dept === "any" ? ["men", "women"] : [dept];
+    return Promise.all(depts.map((d) => (S.loaded[d] ||= (async () => {
+      const [items, meta, buf] = await Promise.all([getJSON(`items-${d}.json`), getJSON(`meta-${d}.json`), getBin(`vectors-${d}.bin`)]);
+      S.model = meta.model; S.updated = items.updated;
+      for (const it of items.items) if (!S.byId[it.id] || S.byId[it.id].live) { S.byId[it.id] = it; S.items.push(it); }
+      decodeVectors(meta, buf);
+      rebuildBrands();
+    })())));
+  }
+  function rebuildBrands() {
+    const groups = {};
+    for (const it of S.items) if (S.vecs[it.id] && it.category !== "underwear") (groups[it.brand] ||= []).push(S.vecs[it.id]);
+    S.brandCentroid = {}; S.brandCount = {};
+    for (const [b, rows] of Object.entries(groups)) { S.brandCentroid[b] = norm(mean(rows)); S.brandCount[b] = rows.length; }
+    S.globalCentroid = norm(mean(Object.values(S.brandCentroid)));
+    S.summaryCache = {};
+    const n = Object.keys(groups).length;
+    $("#foot").textContent = `${S.items.length.toLocaleString()} pieces from ${n} brands · updated ${S.updated}` + (S.model === "fake" ? " · demo data" : "");
+  }
+
   // ---------- profiles ----------
   function profileFromBuiltin(b) {
     return {
@@ -93,7 +115,7 @@
       sizes: b.sizes || ["M"],
       price: { min: (b.budget && b.budget.min_gbp) || 0, max: (b.budget && b.budget.hard_max_gbp) || 300 },
       vibes: b.vibes || [], avoidVibes: [], surpriseVibes: b.surprise_vibes || [],
-      brands: b.brands || [],
+      brands: b.brands || [], tiers: b.tiers || [],
       words: (b.facets || []).map((f) => ({ label: f.label, vec: f.vec })),
       avoidWords: b.avoid ? [{ label: "loud logos, fast fashion, shiny sportswear", vec: b.avoid }] : [],
       liked: [], disliked: [], saved: {}, setupDone: true,
@@ -102,7 +124,7 @@
   function newProfile(name) {
     return {
       id: `p-${uid()}`, name, department: "men", sizes: ["M"], price: { min: 0, max: 250 },
-      vibes: [], avoidVibes: [], surpriseVibes: ["bold-colour", "texture", "vintage"], brands: [],
+      vibes: [], avoidVibes: [], surpriseVibes: ["bold-colour", "texture", "vintage"], brands: [], tiers: [],
       words: [], avoidWords: [], liked: [], disliked: [], saved: {}, setupDone: false,
     };
   }
@@ -111,13 +133,15 @@
     for (const b of S.builtins) if (!S.profiles[b.id]) list.unshift(profileFromBuiltin(b));
     return list;
   }
-  function useProfile(p) {
+  async function useProfile(p) {
+    await ensureShard(p.department);
     if (!S.profiles[p.id]) {
       S.profiles[p.id] = p;
       if (p.id === "qizhe" && S.pendingOldFeedback) { p.liked = S.pendingOldFeedback.liked || []; p.disliked = S.pendingOldFeedback.disliked || []; }
     }
     S.current = S.profiles[p.id];
     S.current.saved ||= {};
+    for (const [id, x] of Object.entries(S.current.extra || {})) { S.byId[id] ||= x.item; if (x.vec && !S.vecs[id]) S.vecs[id] = pv(x.vec); }
     S.brand = null; S.category = "all"; S.query = null; S.steer = { nudges: {}, words: [] };
     recompute(); saveStore();
     $("#whoName").textContent = S.current.name;
@@ -168,6 +192,7 @@
   function fits(it, p, { ignoreCategory = false, ignorePrice = false } = {}) {
     if (p.department !== "any" && it.department !== "unisex" && it.department !== p.department) return false;
     if (!it.in_stock || it.category === "underwear") return false;
+    if (p.tiers && p.tiers.length && !it.live) { const b = S.brandInfo[it.brand]; if (b && b.tier && !p.tiers.includes(b.tier)) return false; }
     if (it.letter_sized && p.sizes.length && !it.letter_sizes.some((s) => p.sizes.includes(s))) return false;
     if (p.waist && p.waist.length && it.waist_sizes && it.waist_sizes.length && !it.waist_sizes.some((w) => p.waist.includes(w))) return false;
     if (p.shoe && p.shoe.length && it.shoe_sizes && it.shoe_sizes.length && !it.shoe_sizes.some((w) => p.shoe.includes(w) || p.shoe.includes(w - 0.5))) return false;
@@ -322,7 +347,7 @@
       return `<button class="bcard ${S.brand === c.brand ? "on" : ""}" data-brand="${esc(c.brand)}">
         <div class="bimg" style="background:${tint(c.brand)}">${c.cover.image ? `<img src="${esc(c.cover.image)}" alt="" loading="lazy" onerror="this.remove()">` : ""}</div>
         <div class="btxt"><div class="bn">${esc(c.brand)} <span>${c.matches} matches</span></div>
-        <p class="bb">${esc(info.blurb || "")}</p><p class="bw">${why}</p><span class="bgo">${S.brand === c.brand ? "Showing their pieces ✓" : "See their pieces →"}</span></div></button>`;
+        <p class="bb">${esc(info.blurb || brandSummary(c.brand))}</p><p class="bw">${why}</p><span class="bgo">${S.brand === c.brand ? "Showing their pieces ✓" : "See their pieces →"}</span></div></button>`;
     }).join("")}</div>`;
   }
 
@@ -367,7 +392,7 @@
     const p = P(), l = leans(S.taste);
     $("#tastebar").hidden = S.tab === "saved";
     $("#tastebar").innerHTML = `
-      <form class="search" id="searchForm"><input id="q" placeholder="Search by feeling — “Sunday in Copenhagen in October”" value="${S.query ? esc(S.query.text) : ""}" maxlength="140">${S.query ? `<button type="button" class="ghost sm" id="qClear">Clear</button>` : ""}</form>
+      <form class="search" id="searchForm"><input id="q" placeholder="Search by feeling — “Sunday in Copenhagen in October”${S.live ? " (searches every shop live too)" : ""}" value="${S.query ? esc(S.query.text) : ""}" maxlength="140">${S.query ? `<button type="button" class="ghost sm" id="qClear">Clear</button>` : ""}</form>
       <div class="tasterow"><div class="leans"><span class="lbl">Your feed leans</span>${l.map(([n, pc]) => `<span class="lean"><b>${esc(n)}</b> ${pc}%</span>`).join("")}</div>
       <div class="learn">${p.liked.length + p.disliked.length ? `Learning from ${p.liked.length} ♥ and ${p.disliked.length} ✕` : "♥ and ✕ pieces to teach it"}</div>
       <button class="ghost sm" data-open="tune">Tune my taste</button></div>
@@ -400,7 +425,7 @@
     $("#controls").hidden = S.tab === "saved";
     document.querySelectorAll(".tabs button").forEach((b) => b.classList.toggle("active", !S.query && b.dataset.tab === S.tab));
     $("#savedCount").textContent = P().liked.length || "";
-    renderTastebar(); renderBrandsRow(); renderChips(); renderPrice();
+    renderTastebar(); renderBrandsRow(); renderChips(); renderPrice(); renderLive();
     const list = build().slice(0, 120);
     $("#grid").innerHTML = list.map(card).join("");
     $("#empty").hidden = list.length > 0;
@@ -417,6 +442,7 @@
   }
 
   // ---------- taste editor (setup + tuning) ----------
+  const TIERS = { "high-street": "High street", boutique: "Independent & boutique", premium: "Premium & designer", luxury: "Luxury" };
   const STEPS = ["Basics", "Vibes", "Words & photos", "Brands", "Tap what you'd wear"];
   const vibesFor = (dept) => S.vibes.filter((v) => !v.for || v.for === "any" || dept === "any" || v.for === dept);
   const brandFitsDept = (b, dept) => dept === "any" || !b.departments || b.departments.includes(dept);
@@ -437,6 +463,7 @@
       body.innerHTML = `<h2>${ED.onboarding ? "Let's set you up" : "Basics"}</h2>
         <label class="field">Name<input id="fName" value="${esc(d.name)}" maxlength="30" placeholder="Your name"></label>
         <div class="field">Shopping for<div class="seg">${[["men", "Menswear"], ["women", "Womenswear"], ["any", "Both"]].map(([v, l]) => `<button data-dept="${v}" class="${d.department === v ? "on" : ""}">${l}</button>`).join("")}</div></div>
+        <div class="field">Kinds of brands <small>tap all you shop</small><div class="seg">${Object.entries(TIERS).map(([v, l]) => `<button data-tier="${v}" class="${!d.tiers.length || d.tiers.includes(v) ? "on" : ""}">${l}</button>`).join("")}</div></div>
         <div class="field">Your sizes <small>tap all that fit</small><div class="seg">${LETTERS.map((s) => `<button data-size="${s}" class="${d.sizes.includes(s) ? "on" : ""}">${s}</button>`).join("")}</div></div>
         <div class="field">Waist <small>for trousers — optional</small><div class="seg">${[28, 29, 30, 31, 32, 33, 34, 36, 38].map((w) => `<button data-waist="${w}" class="${(d.waist || []).includes(w) ? "on" : ""}">${w}</button>`).join("")}</div></div>
         <div class="field">Shoe size (UK) <small>optional</small><div class="seg">${[6, 7, 8, 9, 10, 11, 12].map((w) => `<button data-shoe="${w}" class="${(d.shoe || []).includes(w) ? "on" : ""}">${w}</button>`).join("")}</div></div>
@@ -474,19 +501,33 @@
       fillPicks();
     }
   }
+  function brandSummary(name) { // for brands without a written blurb: describe them from their own catalogue
+    if ((S.summaryCache ||= {})[name] !== undefined) return S.summaryCache[name];
+    return (S.summaryCache[name] = brandSummaryRaw(name));
+  }
+  function brandSummaryRaw(name) {
+    const its = S.items.filter((i) => i.brand === name && i.in_stock);
+    if (!its.length) return "";
+    const cats = {}; for (const i of its) if (i.category !== "other") cats[i.category] = (cats[i.category] || 0) + 1;
+    const top = Object.entries(cats).sort((a, b) => b[1] - a[1]).slice(0, 2).map(([c]) => (c === "tshirts" ? "T-shirts" : c));
+    const pr = its.map((i) => i.price_gbp);
+    return `Mostly ${top.join(" & ")}, usually ${money(quantile(pr, 0.2))}–${money(quantile(pr, 0.8))}.`;
+  }
   function brandStepCards(d) {
     const t = tasteFrom(d, { withFeedback: false });
     const hasTaste = d.vibes.length || d.words.length;
     const sources = [...d.vibes.map((id) => S.vibeById[id]).filter(Boolean).map((v) => [v.label, v.vec]), ...d.words.map((w) => [w.thumb ? "your photos" : `“${w.label}”`, pv(w.vec)])];
-    const list = S.brands.filter((b) => S.brandCentroid[b.name] && brandFitsDept(b, d.department)).map((b) => {
+    const tierOk = (b) => !d.tiers.length || d.tiers.includes(b.tier);
+    const list = S.brands.filter((b) => S.brandCentroid[b.name] && brandFitsDept(b, d.department) && tierOk(b)).map((b) => {
       const c = S.brandCentroid[b.name];
       const because = sources.map(([l, v]) => [l, dot(c, v)]).sort((a, x) => x[1] - a[1])[0];
       return { b, s: hasTaste ? dot(c, t) : 0, because: because && because[0] };
     }).sort((a, x) => x.s - a.s);
     return list.map(({ b, because }, i) => `<button class="bp ${d.brands.includes(b.name) ? "on" : ""}" data-pickbrand="${esc(b.name)}">
       <b>${esc(b.name)}</b>${hasTaste && i < 6 ? `<span class="top">Top match</span>` : ""}
-      <small>${esc(b.blurb || "")}</small>${hasTaste && because ? `<em>Fits ${esc(because.toLowerCase().startsWith("“") ? because : because.toLowerCase())}</em>` : ""}</button>`).join("")
-      + (S.brands.some((b) => !S.brandCentroid[b.name] && brandFitsDept(b, d.department)) ? `<p class="sub" style="grid-column:1/-1">Coming soon: ${S.brands.filter((b) => !S.brandCentroid[b.name] && brandFitsDept(b, d.department)).map((b) => esc(b.name)).join(", ")}.</p>` : "");
+      <small>${esc(b.blurb || brandSummary(b.name))}</small><span class="tierlbl">${esc(TIERS[b.tier] || "")} · ${S.brandCount[b.name]} pieces</span>${hasTaste && because ? `<em>Fits ${esc(because.toLowerCase().startsWith("“") ? because : because.toLowerCase())}</em>` : ""}</button>`).join("")
+      + (() => { const soon = S.brands.filter((b) => !S.brandCentroid[b.name] && b.source !== "shopify" && brandFitsDept(b, d.department) && tierOk(b));
+        return soon.length ? `<p class="sub" style="grid-column:1/-1"><b>Coming with partner feeds:</b> ${soon.map((b) => esc(b.name)).join(", ")}.</p>` : ""; })();
   }
   function syncEdPrice() {
     const d = ED.draft, a = +$("#fMin").value, b = +$("#fMax").value;
@@ -525,7 +566,9 @@
     for (const id of d.liked) if (!d.saved[id] && S.byId[id]) d.saved[id] = { price: S.byId[id].price_gbp, date: today() };
     const wasOnboarding = ED.onboarding;
     if (!S.current || S.current.id !== d.id) S.steer = { nudges: {}, words: [] }; // nudges belong to whoever made them
-    S.profiles[d.id] = d; S.current = d; recompute(); saveStore();
+    S.profiles[d.id] = d; S.current = d;
+    ensureShard(d.department).then(() => { recompute(); render(); });
+    recompute(); saveStore();
     $("#whoName").textContent = d.name; $("#editor").hidden = true; $("#welcome").hidden = true;
     if (wasOnboarding) S.tab = "foryou";
     render(); window.scrollTo({ top: 0 });
@@ -593,11 +636,57 @@
       st.textContent = S.model === "fake" ? "Word matching works on the live site." : `Couldn't load the style model (${e.message}). Try again in a moment.`;
     }
   }
+  // ---------- live search across every shop (needs the worker in worker/) ----------
+  async function encodeTexts(texts) {
+    const out = [];
+    for (let i = 0; i < texts.length; i += 24) {
+      const inputs = clipText.tok(texts.slice(i, i + 24), { padding: true, truncation: true });
+      const { text_embeds } = await clipText.model(inputs);
+      const [n, d] = text_embeds.dims;
+      for (let r = 0; r < n; r++) out.push(norm(Array.from(text_embeds.data.slice(r * d, (r + 1) * d))));
+    }
+    return out;
+  }
+  async function liveSearch(text, qvec) {
+    if (!S.live || !S.live.search_url) return;
+    const p = P(), token = (S.liveToken = (S.liveToken || 0) + 1);
+    S.liveResults = { text, loading: true, items: [] }; renderLive();
+    try {
+      const r = await fetch(`${S.live.search_url}/?q=${encodeURIComponent(text)}&dept=${p.department}`);
+      const d = await r.json();
+      const perBrand = {};
+      let items = (d.items || []).filter((it) => it.available && it.image && it.price_gbp && !S.byId[it.id] &&
+        it.price_gbp >= p.price.min && (p.price.max >= 1000 || it.price_gbp <= p.price.max) &&
+        (perBrand[it.brand] = (perBrand[it.brand] || 0) + 1) <= 5);
+      if (token !== S.liveToken) return;
+      const vecs = await encodeTexts(items.map((it) => `a photo of ${it.title}`));
+      const qv = pv(qvec);
+      items = items.map((it, i) => {
+        const v = pv(vecs[i]);
+        return { it: { ...it, category: "other", department: p.department, in_stock: true, live: true }, v, full: vecs[i], s: 0.65 * dot(v, qv) + 0.35 * dot(v, S.taste) };
+      }).sort((a, b) => b.s - a.s).slice(0, 24);
+      for (const x of items) { S.byId[x.it.id] = x.it; S.vecs[x.it.id] = x.v; S.liveVec = { ...(S.liveVec || {}), [x.it.id]: x.full }; }
+      if (token !== S.liveToken) return;
+      S.liveResults = { text, loading: false, items: items.map((x) => ({ it: x.it, why: `Live from ${x.it.brand}` })), brands: d.brands };
+    } catch (e) {
+      S.liveResults = { text, loading: false, items: [], error: e.message };
+    }
+    renderLive();
+  }
+  function renderLive() {
+    const el = $("#liveRow"); if (!el) return;
+    const L = S.liveResults;
+    if (!S.query || !L || L.text !== S.query.text) { el.hidden = true; return; }
+    el.hidden = false;
+    el.innerHTML = `<h2>Live from the shops <span>${L.loading ? "searching every brand right now…" : L.error ? "couldn't reach the shops just now" : `${L.items.length} fresh matches across ${L.brands || "all"} brands`}</span></h2>
+      <div class="grid live">${L.items.map(card).join("")}</div>`;
+  }
   async function runSearch(text) {
     const st = $("#qStatus");
     try {
       const vec = await encodeText(text, st);
       S.query = { text, vec }; S.brand = null; render(); window.scrollTo({ top: 0 });
+      liveSearch(text, vec);
     } catch (e) {
       st.textContent = S.model === "fake" ? "Search by feeling works on the live site." : `Couldn't load the style model (${e.message}).`;
     }
@@ -621,6 +710,7 @@
       if (act.dataset.act === "like" && !wasLiked) {
         p.liked.unshift(id);
         p.saved[id] = { price: it.price_gbp, date: today(), outOfSize: !!(it.letter_sized && !it.letter_sizes.some((s) => p.sizes.includes(s))) };
+        if (it.live) { p.extra ||= {}; p.extra[id] = { item: it, vec: (S.liveVec || {})[id] }; }
         toast("Saved — more like this");
       } else delete p.saved[id];
       if (act.dataset.act === "pass") { p.disliked.push(id); toast("Got it — less like this"); }
@@ -649,7 +739,8 @@
       const p = allPeople().find((x) => x.id === person.dataset.person);
       $("#welcome").hidden = true;
       if (!p.setupDone) { openEditor(p, true); return; }
-      useProfile(p); render(); window.scrollTo({ top: 0 }); return;
+      $("#intro").innerHTML = `<h1>Loading…</h1>`;
+      useProfile(p).then(() => { render(); window.scrollTo({ top: 0 }); }); return;
     }
     const del = t.closest("[data-delperson]");
     if (del) {
@@ -659,7 +750,7 @@
       if (S.current && S.current.id === id) S.current = null;
       saveStore(); openWelcome(); return;
     }
-    if (t.closest("#newProfile")) { openEditor(newProfile(""), true); return; }
+    if (t.closest("#newProfile")) { const np = newProfile(""); ensureShard(np.department); openEditor(np, true); return; }
 
     // editor
     if (t.closest("#edClose")) { $("#editor").hidden = true; if (!P()) openWelcome(); return; }
@@ -672,7 +763,15 @@
       $("#edBody").scrollTop = 0; return;
     }
     const st = t.closest("[data-step]"); if (st && !st.disabled) { ED.step = +st.dataset.step; renderEditor(); return; }
-    const dept = t.closest("[data-dept]"); if (dept) { ED.draft.department = dept.dataset.dept; renderEditor(); return; }
+    const dept = t.closest("[data-dept]");
+    if (dept) { ED.draft.department = dept.dataset.dept; renderEditor(); ensureShard(ED.draft.department).then(() => { if (!$("#editor").hidden) renderEditor(); }); return; }
+    const tr = t.closest("[data-tier]");
+    if (tr) {
+      const v = tr.dataset.tier, all = Object.keys(TIERS), cur = ED.draft.tiers.length ? ED.draft.tiers : all;
+      let next = cur.includes(v) ? cur.filter((x) => x !== v) : [...cur, v];
+      if (!next.length) next = [v];
+      ED.draft.tiers = next.length === all.length ? [] : next; renderEditor(); return;
+    }
     const sz = t.closest("[data-size]");
     if (sz) { const s = sz.dataset.size, a = ED.draft.sizes; ED.draft.sizes = a.includes(s) ? a.filter((x) => x !== s) : [...a, s]; renderEditor(); return; }
     const wb = t.closest("[data-waist], [data-shoe]");
@@ -731,27 +830,20 @@
   // ---------- boot ----------
   (async function boot() {
     try {
-      const [items, meta, vibes, brands, index, vbuf, pbuf] = await Promise.all([
-        ...["items.json", "vectors_meta.json", "vibes.json", "brands.json", "profiles/index.json"].map(getJSON),
-        getBin("vectors.bin"), getBin("projection.bin")]);
-      S.items = items.items; S.model = meta.model;
-      for (const it of S.items) S.byId[it.id] = it;
-      decodeVectors(meta, vbuf, pbuf);
+      const [vibes, brands, index, pbuf] = await Promise.all([
+        ...["vibes.json", "brands.json", "profiles/index.json"].map(getJSON), getBin("projection.bin")]);
+      S.proj = new Float32Array(pbuf); S.k = S.proj.length / 512;
       S.vibes = vibes.map((v) => ({ ...v, vec: pv(v.vec) })); for (const v of S.vibes) S.vibeById[v.id] = v;
       for (const b of brands) S.brandInfo[b.name] = b;
-      const groups = {};
-      for (const it of S.items) if (S.vecs[it.id] && it.category !== "underwear") (groups[it.brand] ||= []).push(S.vecs[it.id]);
-      for (const [b, rows] of Object.entries(groups)) S.brandCentroid[b] = norm(mean(rows));
-      S.globalCentroid = norm(mean(Object.values(S.brandCentroid)));
-      S.brands = brands.filter((b) => groups[b.name] || b.source !== "shopify");
+      S.brands = brands;
       S.brandStats = await getJSON("brand_stats.json").catch(() => ({}));
       S.refiners = (await getJSON("refiners.json").catch(() => [])).map((r) => ({ ...r, vec: pv(r.vec) }));
       for (const r of S.refiners) S.refinerById[r.id] = r;
+      S.live = await getJSON("live.json").catch(() => null);
       S.builtins = await Promise.all(index.map((id) => getJSON(`profiles/${id}.json`)));
       loadStore();
-      $("#foot").textContent = `${S.items.length} pieces from ${Object.keys(groups).length} brands · updated ${items.updated}` + (S.model === "fake" ? " · demo data" : "");
       const last = S.lastId && S.profiles[S.lastId];
-      if (last && last.setupDone) { useProfile(last); render(); } else openWelcome();
+      if (last && last.setupDone) { await useProfile(last); render(); } else openWelcome();
     } catch (err) {
       console.error(err);
       $("#intro").innerHTML = `<h1>No data yet</h1><p>The daily collector hasn't run yet (${esc(err.message)}).</p>`;

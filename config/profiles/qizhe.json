@@ -53,5 +53,9 @@
     "a menswear piece in a rich bold colour that still looks elegant",
     "an interesting textured fabric such as boucle, mohair or chunky cable knit",
     "a vintage inspired patterned piece with character"
+  ],
+  "tiers": [
+    "boutique",
+    "premium"
   ]
 }

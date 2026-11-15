@@ -8,6 +8,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from collector import shopify
@@ -16,6 +17,7 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
 CONFIG = ROOT / "config"
 HISTORY_DAYS = 90
+MAX_PER_BRAND = 400
 
 
 def load_json(path: Path, default):
@@ -81,30 +83,33 @@ def run(only: str | None = None, fixture_dir: Path | None = None, today: str | N
     history = load_json(DATA / "price_history.json", {})
     report, items = {"date": today, "brands": {}}, []
 
-    for brand in cfg["brands"]:
-        if only and brand["name"] != only:
-            continue
+    def one(brand: dict) -> tuple[dict, list[dict], dict]:
         if brand["source"] != "shopify":
-            report["brands"][brand["name"]] = {"status": "skipped", "reason": f"source={brand['source']} (needs feed)"}
-            continue
+            return brand, [], {"status": "skipped", "reason": f"source={brand['source']} (needs feed)"}
         try:
             raw = load_fixture(fixture_dir, brand) if fixture_dir else shopify.fetch_store(brand["domain"])
             if not fixture_dir:
                 cur = shopify.detect_currency(brand["domain"])
                 if cur and cur in fx and cur != brand.get("currency"):
-                    print(f"  {brand['name']}: store currency is {cur}, not {brand.get('currency')}")
                     brand = {**brand, "currency": cur}
         except shopify.FetchError as e:
             # keep yesterday's items for this brand so one bad day doesn't empty the feed
             kept = [it for it in previous.values() if it["brand"] == brand["name"]]
-            items.extend(kept)
-            report["brands"][brand["name"]] = {"status": "failed", "reason": str(e), "kept_previous": len(kept)}
-            print(f"✗ {brand['name']}: {e}")
-            continue
+            return brand, kept, {"status": "failed", "reason": str(e)[:200], "kept_previous": len(kept)}
         norm = [n for n in (shopify.normalise(p, brand, fx) for p in raw) if n]
-        items.extend(norm)
-        report["brands"][brand["name"]] = {"status": "ok", "products": len(norm), "currency": brand.get("currency")}
-        print(f"✓ {brand['name']}: {len(norm)} products")
+        # keep each brand to its newest in-stock pieces so one giant catalogue can't drown the rest
+        norm.sort(key=lambda n: (n["in_stock"], n.get("published_at") or ""), reverse=True)
+        total = len(norm)
+        norm = norm[:MAX_PER_BRAND]
+        return brand, norm, {"status": "ok", "products": len(norm), "catalogue": total, "currency": brand.get("currency")}
+
+    chosen = [b for b in cfg["brands"] if not only or b["name"] == only]
+    # different shops in parallel; each shop is still visited one page at a time
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        for brand, got, rep in pool.map(one, chosen):
+            items.extend(got)
+            report["brands"][brand["name"]] = rep
+            print(("✓" if rep["status"] == "ok" else "·" if rep["status"] == "skipped" else "✗"), brand["name"], rep.get("products", rep.get("reason", "")))
 
     update_history(history, items, today)
     for it in items:

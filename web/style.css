@@ -259,3 +259,11 @@ button, select, input { font: inherit; color: inherit; }
 .bp.on { border-color: var(--wine); background: #f6eeec; }
 .bp.on b::after { content: "  ♥"; color: var(--wine); }
 @media (max-width: 700px) { .steerform { flex-basis: 100%; } .bpick { grid-template-columns: 1fr; } }
+
+.live-row { padding: 6px 0 0; }
+.live-row h2 { font: 500 26px/1.1 var(--serif); margin: 0 40px 12px; }
+.live-row h2 span { font: 400 13px var(--sans); color: var(--muted); margin-left: 8px; }
+.live-row .grid { padding-bottom: 28px; border-bottom: 1px solid var(--line); margin-bottom: 24px; }
+@media (max-width: 700px) { .live-row h2 { margin: 0 18px 12px; } }
+
+.bp .tierlbl { font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; }
