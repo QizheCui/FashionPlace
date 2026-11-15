@@ -98,6 +98,126 @@
       "blurb": "London knitwear specialist making vintage-inspired jumpers and cardigans."
     },
     {
+      "name": "Albam",
+      "domain": "albamclothing.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "British modern essentials with a utilitarian edge, made with long-standing factories."
+    },
+    {
+      "name": "Folk",
+      "domain": "www.folkclothing.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London label for considered, texture-rich everyday clothing with subtle design details."
+    },
+    {
+      "name": "Private White V.C.",
+      "domain": "privatewhitevc.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Manchester-made outerwear and heritage pieces from their own historic factory."
+    },
+    {
+      "name": "Uskees",
+      "domain": "www.uskees.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "British workwear-inspired brand: chore jackets, overalls and sturdy organic cotton."
+    },
+    {
+      "name": "Peregrine",
+      "domain": "www.peregrineclothing.co.uk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Family-run English knitwear maker: classic jumpers made in their own mill."
+    },
+    {
+      "name": "Howlin'",
+      "domain": "howlinbymorrison.com",
+      "source": "shopify",
+      "currency": "EUR",
+      "favourite": false,
+      "blurb": "Belgian label making playful, colourful Scottish-knit wool jumpers."
+    },
+    {
+      "name": "Arpenteur",
+      "domain": "www.arpenteur.com",
+      "source": "shopify",
+      "currency": "EUR",
+      "favourite": false,
+      "blurb": "French brand making utilitarian, craft-led clothing in French workshops."
+    },
+    {
+      "name": "Nigel Cabourn",
+      "domain": "www.nigelcabourn.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "British designer known for vintage military and mountaineering-inspired pieces."
+    },
+    {
+      "name": "YMC",
+      "domain": "www.youmustcreate.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London label (You Must Create) with relaxed, slightly offbeat modern classics."
+    },
+    {
+      "name": "Studio Nicholson",
+      "domain": "www.studionicholson.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London brand for relaxed, precise minimalism: wide trousers and fine fabrics."
+    },
+    {
+      "name": "Mfpen",
+      "domain": "www.mfpen.com",
+      "source": "shopify",
+      "currency": "EUR",
+      "favourite": false,
+      "blurb": "Copenhagen label for clean, relaxed Scandinavian everyday clothing."
+    },
+    {
+      "name": "Aimé Leon Dore",
+      "domain": "www.aimeleondore.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "New York label that mixes old-school prep and Ivy with modern streetwear."
+    },
+    {
+      "name": "Rowing Blazers",
+      "domain": "rowingblazers.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "New York brand reviving preppy, sporting heritage with a playful twist."
+    },
+    {
+      "name": "Anglo-Italian",
+      "domain": "angloitalian.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London tailoring house blending English cloth with relaxed Italian cuts."
+    },
+    {
+      "name": "Taylor Stitch",
+      "domain": "www.taylorstitch.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "San Francisco brand for durable, responsible workwear-inspired staples."
+    },
+    {
       "name": "Ralph Lauren",
       "domain": "www.ralphlauren.co.uk",
       "source": "affiliate",
@@ -141,6 +261,13 @@
   "fx_to_gbp": {
     "GBP": 1.0,
     "USD": 0.79,
-    "EUR": 0.85
+    "EUR": 0.85,
+    "DKK": 0.114,
+    "SEK": 0.073,
+    "JPY": 0.0052,
+    "CHF": 0.89,
+    "AUD": 0.52,
+    "CAD": 0.57,
+    "NOK": 0.071
   }
 }

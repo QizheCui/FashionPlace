@@ -89,6 +89,11 @@ def run(only: str | None = None, fixture_dir: Path | None = None, today: str | N
             continue
         try:
             raw = load_fixture(fixture_dir, brand) if fixture_dir else shopify.fetch_store(brand["domain"])
+            if not fixture_dir:
+                cur = shopify.detect_currency(brand["domain"])
+                if cur and cur in fx and cur != brand.get("currency"):
+                    print(f"  {brand['name']}: store currency is {cur}, not {brand.get('currency')}")
+                    brand = {**brand, "currency": cur}
         except shopify.FetchError as e:
             # keep yesterday's items for this brand so one bad day doesn't empty the feed
             kept = [it for it in previous.values() if it["brand"] == brand["name"]]
@@ -98,7 +103,7 @@ def run(only: str | None = None, fixture_dir: Path | None = None, today: str | N
             continue
         norm = [n for n in (shopify.normalise(p, brand, fx) for p in raw) if n]
         items.extend(norm)
-        report["brands"][brand["name"]] = {"status": "ok", "products": len(norm)}
+        report["brands"][brand["name"]] = {"status": "ok", "products": len(norm), "currency": brand.get("currency")}
         print(f"✓ {brand['name']}: {len(norm)} products")
 
     update_history(history, items, today)
@@ -107,6 +112,17 @@ def run(only: str | None = None, fixture_dir: Path | None = None, today: str | N
         prev = previous.get(it["id"])
         it["first_seen"] = history[it["id"]]["first_seen"]
         it["is_new"] = prev is None and bool(previous)
+
+    # how often each brand marks things down, day by day -> powers "buy now or wait?"
+    stats = load_json(DATA / "brand_stats.json", {})
+    by_brand: dict[str, list] = {}
+    for it in items:
+        by_brand.setdefault(it["brand"], []).append(it)
+    for b, its in by_brand.items():
+        share = round(sum(1 for i in its if i.get("compare_at_gbp")) / len(its), 3)
+        days = [d for d in stats.get(b, {}).get("days", []) if d[0] != today][-180:]
+        stats[b] = {"days": days + [[today, share]]}
+    (DATA / "brand_stats.json").write_text(json.dumps(stats, separators=(",", ":")))
 
     (DATA / "items.json").write_text(json.dumps({"updated": today, "items": items}, ensure_ascii=False))
     (DATA / "price_history.json").write_text(json.dumps(history, separators=(",", ":")))

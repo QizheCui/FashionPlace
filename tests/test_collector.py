@@ -78,3 +78,12 @@ def test_letter_sizes_normalised():
     assert it["letter_sized"] and it["letter_sizes"] == ["S", "M", "L"]
     shoe = shopify.normalise(raw("Loafer", "Shoes", sizes=("8", "9")), BRAND, FX)
     assert shoe["letter_sized"] is False and shoe["letter_sizes"] == []
+
+
+def test_numeric_sizes():
+    assert [shopify.numeric_size(x) for x in ["32", "W32", "32R", "32/32", "9.5", "UK 9", "EU 43", "M", "One Size"]] == \
+        [32, 32, 32, 32, 9.5, 9, 43, None, None]
+    tr = shopify.normalise(raw("Pleated Trouser", "Trousers", sizes=("30", "32", "34")), BRAND, FX)
+    assert tr["waist_sizes"] == [30, 32, 34] and tr["shoe_sizes"] == []
+    sh = shopify.normalise(raw("Suede Loafer", "Shoes", sizes=("EU 42", "EU 43")), BRAND, FX)
+    assert sh["shoe_sizes"] == [8, 9]

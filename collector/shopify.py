@@ -62,6 +62,14 @@ def allowed_by_robots(domain: str) -> bool:
     return rp.can_fetch(USER_AGENT, f"https://{domain}/products.json")
 
 
+def detect_currency(domain: str) -> str | None:
+    """Shopify's cart endpoint reports the store's currency, so we don't have to guess."""
+    try:
+        return _get_json(f"https://{domain}/cart.js").get("currency")
+    except Exception:
+        return None
+
+
 def fetch_store(domain: str) -> list[dict]:
     """Return raw Shopify products for a store. Raises FetchError if it isn't a usable Shopify store."""
     if not allowed_by_robots(domain):
@@ -110,6 +118,24 @@ def detect_category(p: dict) -> str:
     return "other"
 
 
+NUM_SIZE_RE = re.compile(r"^\s*(?:W\s*)?(\d{1,2}(?:\.5)?)\s*(?:\"|in|R|S|L|UK|EU|/\s*\d{2}|\s*[x(].*)?\s*$", re.I)
+
+
+def numeric_size(value: str) -> float | None:
+    """'32', 'W32', '32R', '32/32', '9.5', 'UK 9', 'EU 43' -> number; anything else -> None."""
+    v = re.sub(r"^(UK|EU|US)\s*", "", value.strip(), flags=re.I)
+    m = NUM_SIZE_RE.match(v)
+    if not m:
+        return None
+    n = float(m.group(1))
+    return n if 4 <= n <= 50 else None
+
+
+def eu_to_uk(n: float) -> float:
+    """Shoe sizes >= 35 are EU; UK ~= EU - 34 (rounded to the half size)."""
+    return round((n - 34) * 2) / 2 if n >= 35 else n
+
+
 def _size_option_index(p: dict) -> int | None:
     for i, opt in enumerate(p.get("options") or []):
         name = (opt.get("name") if isinstance(opt, dict) else str(opt)).strip().lower()
@@ -135,7 +161,7 @@ def normalise(p: dict, brand: dict, fx: dict) -> dict | None:
         return None
     rate = fx.get(brand.get("currency", "GBP"), 1.0)
     idx = _size_option_index(p)
-    sizes_available, letter_sizes = [], set()
+    sizes_available, letter_sizes, num_sizes = [], set(), set()
     letter_sized = False
     for v in variants:
         value = (v.get(f"option{idx + 1}") if idx is not None else v.get("title")) or ""
@@ -145,12 +171,16 @@ def normalise(p: dict, brand: dict, fx: dict) -> dict | None:
             sizes_available.append(value)
             if letter:
                 letter_sizes.add(letter)
+            n = numeric_size(value)
+            if n is not None:
+                num_sizes.add(n)
 
     available = [v for v in variants if v.get("available")] or variants
     price = min(float(v["price"]) for v in available if v.get("price"))
     compare = max((float(v["compare_at_price"]) for v in available if v.get("compare_at_price")), default=0.0)
     images = [i.get("src") for i in (p.get("images") or []) if i.get("src")]
 
+    cat = detect_category(p)
     return {
         "id": f"{brand['domain']}:{p['id']}",
         "brand": brand["name"],
@@ -159,7 +189,7 @@ def normalise(p: dict, brand: dict, fx: dict) -> dict | None:
         "url": f"https://{brand['domain']}/products/{p.get('handle')}",
         "image": _shopify_img(images[0]) if images else "",
         "images": [_shopify_img(s) for s in images[:4]],
-        "category": detect_category(p),
+        "category": cat,
         "department": detect_department(p),
         "price_gbp": round(price * rate, 2),
         "compare_at_gbp": round(compare * rate, 2) if compare > price else None,
@@ -169,6 +199,9 @@ def normalise(p: dict, brand: dict, fx: dict) -> dict | None:
         # letter sizes in stock, normalised (XS..XXL); [] with letter_sized=False means waist/shoe/one-size
         "letter_sized": letter_sized,
         "letter_sizes": sorted(letter_sizes, key=LETTER_ORDER.index),
+        # waist sizes for trousers/denim, UK sizes for shoes (EU converted); empty if not numeric
+        "waist_sizes": sorted(num_sizes) if cat in ("trousers", "denim", "shorts") else [],
+        "shoe_sizes": sorted({eu_to_uk(n) for n in num_sizes}) if cat == "shoes" else [],
         # kept for older app versions
         "size_m_available": ("M" in letter_sizes) if letter_sized else None,
         "published_at": p.get("published_at"),

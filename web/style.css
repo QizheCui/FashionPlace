@@ -225,3 +225,12 @@ button, select, input { font: inherit; color: inherit; }
   .price { width: 100%; }
   .range2 { flex: 1; }
 }
+
+.prow { display: flex; gap: 8px; align-items: stretch; }
+.prow .person { flex: 1; }
+.pdel { background: none; border: 1px solid transparent; color: var(--muted); font-size: 12px; cursor: pointer; border-radius: 6px; padding: 0 10px; }
+.pdel:hover, .pdel[data-confirm="1"] { border-color: var(--wine); color: var(--wine); }
+
+.advice { margin-top: 6px; font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 999px; display: inline-block; background: #ebe3d6; }
+.advice.buy { background: #eef0e4; color: var(--olive); }
+.advice.wait { background: #f4e8dc; color: var(--accent); }

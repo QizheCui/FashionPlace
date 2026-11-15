@@ -14,7 +14,7 @@
   const S = {
     tab: "foryou", category: "all", brand: null, surprise: 0.4, query: null,
     items: [], byId: {}, vecs: {}, vibes: [], vibeById: {}, brands: [], brandInfo: {}, brandCentroid: {},
-    builtins: [], model: "", profiles: {}, current: null, taste: null, avoid: null, twist: null,
+    builtins: [], model: "", brandStats: {}, profiles: {}, current: null, taste: null, avoid: null, twist: null,
   };
 
   // ---------- small helpers ----------
@@ -132,6 +132,8 @@
     if (p.department !== "any" && it.department !== "unisex" && it.department !== p.department) return false;
     if (!it.in_stock || it.category === "underwear") return false;
     if (it.letter_sized && p.sizes.length && !it.letter_sizes.some((s) => p.sizes.includes(s))) return false;
+    if (p.waist && p.waist.length && it.waist_sizes && it.waist_sizes.length && !it.waist_sizes.some((w) => p.waist.includes(w))) return false;
+    if (p.shoe && p.shoe.length && it.shoe_sizes && it.shoe_sizes.length && !it.shoe_sizes.some((w) => p.shoe.includes(w) || p.shoe.includes(w - 0.5))) return false;
     if (!ignorePrice && (it.price_gbp < p.price.min || (p.price.max < 1000 && it.price_gbp > p.price.max))) return false;
     if (!ignoreCategory && S.category !== "all" && it.category !== S.category) return false;
     if (S.brand && it.brand !== S.brand) return false;
@@ -147,10 +149,17 @@
     const cands = [
       ...p.vibes.map((id) => S.vibeById[id]).filter(Boolean).map((x) => [x.label, x.vec]),
       ...p.words.map((w) => [w.label, w.vec]),
-    ].map(([l, vec]) => [l, dot(v, vec)]).sort((a, b) => b[1] - a[1]);
+    ].filter(([l]) => facetFits(l, it.category)).map(([l, vec]) => [l, dot(v, vec)]).sort((a, b) => b[1] - a[1]);
     const top = cands[0] ? shorten(cands[0][0]) : (leans(S.taste)[0] || ["your taste"])[0];
     if (mode === "explore" && S.twist && dot(v, S.twist) > dot(v, S.taste) * 0.92) return `${cap(top)}, with a bolder twist`;
     return `Matches: ${top}`;
+  }
+  // don't say a jumper "matches: pleated trousers" — a description that names a garment only explains that garment
+  const FACET_CATS = [[/trouser|chino|\bpants?\b/i, ["trousers", "denim"]], [/jumper|knit|cardigan|sweater/i, ["knitwear"]],
+    [/overshirt|chore jacket|jacket|coat|blazer/i, ["outerwear", "tailoring"]], [/\bshirt/i, ["shirts", "outerwear"]], [/shoe|loafer|boot/i, ["shoes"]]];
+  function facetFits(label, cat) {
+    const named = FACET_CATS.filter(([re]) => re.test(label));
+    return !named.length || named.some(([, cats]) => cats.includes(cat));
   }
   const shortTitle = (t) => t.split(/ - | \| /)[0];
   const shorten = (s) => s.replace(/^(a|an) /i, "").split(",")[0].replace(/ menswear| men's/g, "").slice(0, 56);
@@ -165,6 +174,28 @@
       out.push(pool.splice(idx, 1)[0]);
     }
     return out;
+  }
+
+  // ---------- buy now or wait? ----------
+  function blackFriday(year) { // the day after the 4th Thursday of November
+    const d = new Date(Date.UTC(year, 10, 1)); const firstThu = (4 - d.getUTCDay() + 7) % 7 + 1;
+    return new Date(Date.UTC(year, 10, firstThu + 21 + 1));
+  }
+  function advice(it, p) {
+    const d = it.deal || {}, now = new Date(), stats = (S.brandStats[it.brand] || {}).days || [];
+    if (d.verdict === "real_drop") return { cls: "buy", text: `Buy now — genuinely ${d.discount_pct}% below what we've seen` };
+    if (d.verdict === "on_sale_unverified") return { cls: "buy", text: `On sale now (−${d.discount_pct}%)` };
+    const mine = it.letter_sized ? it.letter_sizes.filter((x) => p.sizes.includes(x)) : [];
+    if (it.letter_sized && it.letter_sizes.length <= 2 && mine.length) return { cls: "buy", text: "Few sizes left — may not last" };
+    const rarely = stats.length >= 30 && Math.max(...stats.map((x) => x[1])) < 0.05;
+    if (rarely) return { cls: "", text: `${it.brand} rarely discounts — buy when you're ready` };
+    const bf = blackFriday(now.getUTCFullYear()), days = Math.ceil((bf - now) / 864e5);
+    if (days >= 1 && days <= 24) return { cls: "wait", text: `Wait? Black Friday is in ${days} day${days > 1 ? "s" : ""}` };
+    if (days <= 0 && days > -4) return { cls: "wait", text: "Black Friday weekend — check the brand's site for codes" };
+    const m = now.getUTCMonth(), day = now.getUTCDate();
+    if (m === 11 && day <= 24) return { cls: "wait", text: "Wait? Winter sales usually start around Boxing Day" };
+    if ((m === 5 && day >= 10) || m === 6) return { cls: "wait", text: "Summer sales are on or close — worth checking" };
+    return null;
   }
 
   function savedStatus(it, p) {
@@ -182,20 +213,21 @@
     if (S.tab === "saved") {
       return p.liked.map((id) => S.byId[id]).filter(Boolean).map((it) => {
         const st = savedStatus(it, p);
-        return { it, status: st, why: p.saved[it.id] ? `Saved ${p.saved[it.id].date} at ${money(p.saved[it.id].price)}` : "" };
+        return { it, status: st, advice: advice(it, p), why: p.saved[it.id] ? `Saved ${p.saved[it.id].date} at ${money(p.saved[it.id].price)}` : "" };
       }).sort((a, b) => (b.status && b.status.cls === "deal") - (a.status && a.status.cls === "deal"));
     }
     const base = S.items.filter((it) => fits(it, p)).map((it) => ({ it, s: score(it) }));
     const seen = new Set([...p.liked, ...p.disliked]);
 
     if (S.query) { // search by feeling: the query leads, your taste breaks ties
-      return base.map((x) => ({ ...x, q: 0.75 * dot(S.vecs[x.it.id], S.query.vec) + 0.25 * x.s }))
-        .sort((a, b) => b.q - a.q).slice(0, 200).map((x) => ({ ...x, why: `For “${S.query.text}”` }));
+      const ranked = base.map((x) => ({ ...x, q: 0.75 * dot(S.vecs[x.it.id], S.query.vec) + 0.25 * x.s }))
+        .sort((a, b) => b.q - a.q).slice(0, 240);
+      return diversify(ranked, 2).map((x) => ({ ...x, why: reason(x.it, "search") }));
     }
     if (S.tab === "deals") {
       const cutoff = quantile(base.map((x) => x.s), 0.35);
       return base.filter((x) => x.it.deal && x.it.deal.verdict && x.it.deal.verdict !== "always_on_sale" && x.s >= cutoff)
-        .sort((a, b) => b.s - a.s).map((x) => ({ ...x, why: reason(x.it, "deals") }));
+        .sort((a, b) => b.s - a.s).map((x) => ({ ...x, why: reason(x.it, "deals"), advice: advice(x.it, p) }));
     }
     if (S.tab === "explore") {
       const k = S.surprise, mine = new Set(p.brands);
@@ -269,7 +301,7 @@
     if (S.tab === "explore" && !P().brands.includes(it.brand)) b.push(`<span class="badge new">New brand to you</span>`);
     return b.join("");
   }
-  function card({ it, why, status }) {
+  function card({ it, why, status, advice: adv }) {
     const liked = P().liked.includes(it.id);
     return `<article class="card" data-id="${esc(it.id)}">
       <div class="photo">
@@ -286,6 +318,7 @@
         <div class="t"><a href="${esc(it.url)}" target="_blank" rel="noopener">${esc(it.title)}</a></div>
         <div class="price">${money(it.price_gbp)}${it.compare_at_gbp ? `<s>${money(it.compare_at_gbp)}</s>` : ""}</div>
         ${why ? `<div class="why">${esc(why)}</div>` : ""}
+        ${adv ? `<div class="advice ${adv.cls}">${esc(adv.text)}</div>` : ""}
       </div>
     </article>`;
   }
@@ -328,10 +361,10 @@
 
   // ---------- who's shopping ----------
   function openWelcome() {
-    $("#people").innerHTML = allPeople().map((p) => `<button class="person" data-person="${esc(p.id)}">
+    $("#people").innerHTML = allPeople().map((p) => `<div class="prow"><button class="person" data-person="${esc(p.id)}">
         <span class="av" style="background:${tint(p.name)}">${esc((p.name || "?")[0])}</span>
         <span><b>${esc(p.name)}</b><small>${p.setupDone ? `${p.vibes.length} vibes · ${p.liked.length} ♥ · ${priceLabel(p.price)}` : "Not set up yet"}</small></span>
-      </button>`).join("");
+      </button>${S.profiles[p.id] ? `<button class="pdel" data-delperson="${esc(p.id)}" title="${p.builtin ? "Reset to the original taste" : "Remove this profile"}">${p.builtin ? "Reset" : "Remove"}</button>` : ""}</div>`).join("");
     $("#welcome").hidden = false;
   }
 
@@ -355,6 +388,8 @@
         <label class="field">Name<input id="fName" value="${esc(d.name)}" maxlength="30" placeholder="Your name"></label>
         <div class="field">Shopping for<div class="seg">${[["men", "Menswear"], ["women", "Womenswear"], ["any", "Both"]].map(([v, l]) => `<button data-dept="${v}" class="${d.department === v ? "on" : ""}">${l}</button>`).join("")}</div></div>
         <div class="field">Your sizes <small>tap all that fit</small><div class="seg">${LETTERS.map((s) => `<button data-size="${s}" class="${d.sizes.includes(s) ? "on" : ""}">${s}</button>`).join("")}</div></div>
+        <div class="field">Waist <small>for trousers — optional</small><div class="seg">${[28, 29, 30, 31, 32, 33, 34, 36, 38].map((w) => `<button data-waist="${w}" class="${(d.waist || []).includes(w) ? "on" : ""}">${w}</button>`).join("")}</div></div>
+        <div class="field">Shoe size (UK) <small>optional</small><div class="seg">${[6, 7, 8, 9, 10, 11, 12].map((w) => `<button data-shoe="${w}" class="${(d.shoe || []).includes(w) ? "on" : ""}">${w}</button>`).join("")}</div></div>
         <div class="field">Price range per item <b id="fPriceVal"></b>
           <div class="range2 wide"><input type="range" id="fMin" min="0" max="1000" step="10" value="${d.price.min}" aria-label="Minimum price"><input type="range" id="fMax" min="0" max="1000" step="10" value="${d.price.max}" aria-label="Maximum price"><div class="fill" id="fFill"></div></div></div>`;
       syncEdPrice();
@@ -486,12 +521,21 @@
     }
     if (t.closest("[data-open=tune]")) { openEditor(P(), false, 1); return; }
     if (t.closest("#whoBtn")) { openWelcome(); return; }
+    if (t.id === "welcome" && P()) { $("#welcome").hidden = true; return; } // click outside closes it
     const person = t.closest("[data-person]");
     if (person) {
       const p = allPeople().find((x) => x.id === person.dataset.person);
       $("#welcome").hidden = true;
       if (!p.setupDone) { openEditor(p, true); return; }
       useProfile(p); render(); window.scrollTo({ top: 0 }); return;
+    }
+    const del = t.closest("[data-delperson]");
+    if (del) {
+      const id = del.dataset.delperson, p = S.profiles[id];
+      if (del.dataset.confirm !== "1") { del.dataset.confirm = "1"; del.textContent = p.builtin ? "Reset? Likes will be lost" : "Remove? Tap again"; return; }
+      delete S.profiles[id];
+      if (S.current && S.current.id === id) S.current = null;
+      saveStore(); openWelcome(); return;
     }
     if (t.closest("#newProfile")) { openEditor(newProfile(""), true); return; }
 
@@ -509,6 +553,11 @@
     const dept = t.closest("[data-dept]"); if (dept) { ED.draft.department = dept.dataset.dept; renderEditor(); return; }
     const sz = t.closest("[data-size]");
     if (sz) { const s = sz.dataset.size, a = ED.draft.sizes; ED.draft.sizes = a.includes(s) ? a.filter((x) => x !== s) : [...a, s]; renderEditor(); return; }
+    const wb = t.closest("[data-waist], [data-shoe]");
+    if (wb) {
+      const k = wb.dataset.waist ? "waist" : "shoe", n = +(wb.dataset.waist || wb.dataset.shoe), a = ED.draft[k] || [];
+      ED.draft[k] = a.includes(n) ? a.filter((x) => x !== n) : [...a, n]; renderEditor(); return;
+    }
     const sp = t.closest("[data-spark]");
     if (sp) { const id = sp.dataset.spark, a = ED.draft.surpriseVibes; ED.draft.surpriseVibes = a.includes(id) ? a.filter((x) => x !== id) : [...a, id]; renderEditor(); return; }
     const vb = t.closest("[data-vibe]");
@@ -563,6 +612,7 @@
       for (const [b, rows] of Object.entries(groups)) S.brandCentroid[b] = norm(mean(rows));
       S.globalCentroid = norm(mean(Object.values(S.brandCentroid)));
       S.brands = brands.filter((b) => groups[b.name] || b.source !== "shopify");
+      S.brandStats = await getJSON("brand_stats.json").catch(() => ({}));
       S.builtins = await Promise.all(index.map((id) => getJSON(`profiles/${id}.json`)));
       loadStore();
       $("#foot").textContent = `${S.items.length} pieces from ${Object.keys(groups).length} brands · updated ${items.updated}` + (S.model === "fake" ? " · demo data" : "");
