@@ -214,7 +214,7 @@
     },
     {
       "name": "Howlin'",
-      "domain": "howlinbymorrison.com",
+      "domain": "howlin.be",
       "source": "shopify",
       "currency": "EUR",
       "favourite": false,
@@ -226,7 +226,7 @@
     },
     {
       "name": "Arpenteur",
-      "domain": "www.arpenteur.com",
+      "domain": "arpenteur.com",
       "source": "shopify",
       "currency": "EUR",
       "favourite": false,
@@ -238,7 +238,7 @@
     },
     {
       "name": "Nigel Cabourn",
-      "domain": "www.nigelcabourn.com",
+      "domain": "www.cabourn.com",
       "source": "shopify",
       "currency": "GBP",
       "favourite": false,

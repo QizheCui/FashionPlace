@@ -74,6 +74,21 @@ def detect_currency(domain: str) -> str | None:
 
 
 def fetch_store(domain: str) -> list[dict]:
+    """Like _fetch_store, but if the address is wrong (no DNS, bad certificate, 404) try it with/without 'www.'."""
+    try:
+        return _fetch_store(domain)
+    except FetchError as e:
+        msg = str(e)
+        if "robots" in msg or not any(k in msg for k in ("Name or service", "CERTIFICATE", "404", "not JSON", "handshake", "HANDSHAKE")):
+            raise
+        alt = domain[4:] if domain.startswith("www.") else f"www.{domain}"
+        try:
+            return _fetch_store(alt)
+        except FetchError:
+            raise e from None
+
+
+def _fetch_store(domain: str) -> list[dict]:
     """Return raw Shopify products for a store. Raises FetchError if it isn't a usable Shopify store."""
     if not allowed_by_robots(domain):
         raise FetchError("robots.txt disallows /products.json")
