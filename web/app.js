@@ -239,8 +239,18 @@
   const score = (it) => { const v = S.vecs[it.id]; return dot(v, S.taste) - (S.avoid ? 0.35 * dot(v, S.avoid) : 0) - 0.7 * (S.bias[it.id] || 0); };
   // Typed searches: closeness to the words, minus how close the photo is to *every* sentence, then
   // a second pass that also leans towards the best first-pass matches (keeps the results coherent).
-  function semantic(pool, qvec) {
-    const q = pv(qvec), b = (it) => S.bias[it.id] || 0;
+  function semantic(pool, qvec, text = "") {
+    let q = pv(qvec);
+    // fashion terms the photo model doesn't know well ('quiet luxury', 'old money') borrow the matching
+    // vibe's richer description
+    const t = text.toLowerCase();
+    const vibe = S.vibes.find((v) => t.includes(v.label.toLowerCase().replace(/ &.*/, ""))) ||
+      S.vibes.map((v) => [v, dot(v.vec, q)]).filter(([, s]) => s > 0.9).sort((a, c) => c[1] - a[1]).map(([v]) => v)[0];
+    if (vibe) q = norm(q.map((x, j) => x + 1.5 * vibe.vec[j]));
+    // brands carry a look: a piece from a label whose whole range fits the words gets a lift
+    const bs = {}; for (const [bname, c] of Object.entries(S.brandCentroid)) bs[bname] = dot(c, q);
+    const bAvg = Object.values(bs).reduce((a, c) => a + c, 0) / (Object.keys(bs).length || 1);
+    const b = (it) => (S.bias[it.id] || 0) - 0.7 * ((bs[it.brand] ?? bAvg) - bAvg);
     const first = pool.map((x) => ({ ...x, m: dot(S.vecs[x.it.id], q) - b(x.it) })).sort((a, c) => c.m - a.m);
     const top = first.slice(0, 25).map((x) => S.vecs[x.it.id]);
     if (top.length < 5) return first;
@@ -347,7 +357,7 @@
       }
       const res = matchQuery(base, q, off);
       S.query.dropped = res.dropped;
-      base = semantic(res.list, S.query.vec);
+      base = semantic(res.list, S.query.vec, S.query.text);
       const zq = zs(base.map((x) => x.m));
       const ranked = base.map((x, i) => ({ ...x, q: zq[i] + 0.3 * x.s }))
         .sort((a, b) => b.q - a.q).slice(0, 240);
@@ -626,12 +636,13 @@
         && !["underwear", "other", "lifestyle"].includes(it.category) && (named || !["accessories", "bags"].includes(it.category)))
         .map((it) => ({ it }));
       const res = matchQuery(all, q);
-      const pool = semantic(res.list, vec).slice(0, 400);
+      const pool = semantic(res.list, vec, text).slice(0, 400);
       // a mix: no more than two in a row from one brand, three of one kind of garment
       const perCat = {}, top = [];
-      for (const x of diversify(pool, 2)) {
-        if ((perCat[x.it.category] || 0) >= (named ? 12 : 3)) continue;
-        perCat[x.it.category] = (perCat[x.it.category] || 0) + 1; top.push(x.it);
+      const perBrand = {};
+      for (const x of pool) {
+        if ((perCat[x.it.category] || 0) >= (named ? 12 : 3) || (perBrand[x.it.brand] || 0) >= 2) continue;
+        perCat[x.it.category] = (perCat[x.it.category] || 0) + 1; perBrand[x.it.brand] = (perBrand[x.it.brand] || 0) + 1; top.push(x.it);
         if (top.length >= 12) break;
       }
       const men = pool.slice(0, 40).filter((x) => x.it.department === "men").length, women = pool.slice(0, 40).filter((x) => x.it.department === "women").length;
