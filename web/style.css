@@ -287,8 +287,7 @@ button, select, input { font: inherit; color: inherit; }
 
 /* ---------- landing ---------- */
 button.brandmark { background: none; border: 0; padding: 0; cursor: pointer; color: inherit; }
-.brandmark { letter-spacing: .04em; }
-.brandmark em { font-style: normal; font-weight: 500; }
+.brandmark { letter-spacing: .01em; }
 body.on-landing > :not(#landing):not(.overlay):not(.toast):not(script) { display: none !important; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .landing { min-height: 100vh; display: flex; flex-direction: column; }

@@ -490,7 +490,7 @@
       const men = pool.slice(0, 40).filter((x) => x.it.department === "men").length, women = pool.slice(0, 40).filter((x) => x.it.department === "women").length;
       S.landingQuery = { text, vec, max, dept: men > women * 2 ? "men" : women > men * 2 ? "women" : "any" };
       st.textContent = "";
-      $("#lResHead").innerHTML = `<h2>For “${esc(text)}”</h2><p class="l-sub">${pool.length >= 400 ? "Hundreds of matches" : `${pool.length} matches`} across ${new Set(pool.map((x) => x.it.brand)).size} brands. Save it and SU keeps finding more, in your size.</p><button class="l-cta" id="lSave">Make this my taste →</button>`;
+      $("#lResHead").innerHTML = `<h2>For “${esc(text)}”</h2><p class="l-sub">${pool.length >= 400 ? "Hundreds of matches" : `${pool.length} matches`} across ${new Set(pool.map((x) => x.it.brand)).size} brands. Save it and we'll keep finding more, in your size.</p><button class="l-cta" id="lSave">Make this my taste →</button>`;
       $("#lGrid").innerHTML = top.map(lcard).join("");
       $("#lResHead").scrollIntoView({ behavior: "smooth", block: "start" });
     } catch (e) {
