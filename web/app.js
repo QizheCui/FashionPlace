@@ -405,7 +405,7 @@
       <div class="tasterow"><div class="leans"><span class="lbl">Your feed leans</span>${l.map(([n, pc]) => `<span class="lean"><b>${esc(n)}</b> ${pc}%</span>`).join("")}</div>
       <div class="learn">${p.liked.length + p.disliked.length ? `Learning from ${p.liked.length} ♥ and ${p.disliked.length} ✕` : "♥ and ✕ pieces to teach it"}</div>
       <button class="ghost sm" data-open="tune">Tune my taste</button></div>
-      <div class="steer"><span class="lbl">Not quite right?</span>
+      <div class="steer ${S.steerOpen || steering() ? "open" : ""}"><button class="lbl steertoggle" id="steerToggle">Not quite right? <span>▾</span></button>
         ${S.refiners.map((r) => { const n = S.steer.nudges[r.id] || 0, saved = (p.nudges || {})[r.id] || 0;
           return `<button class="nudge ${n ? "on" : ""}" data-nudge="${r.id}" title="${saved ? `Already in your taste ×${saved}` : "Nudge the feed"}">${esc(r.label)}${n > 1 ? ` ×${n}` : ""}${saved ? " ·" : ""}</button>`; }).join("")}
         <form class="steerform" id="steerForm"><input id="steerText" placeholder="…or tell me: “darker trousers for work and a dinner date”" maxlength="140"><button class="ghost sm">Apply</button></form>
@@ -416,7 +416,9 @@
   }
   function renderChips() {
     const p = P();
-    const cats = ["all", ...new Set(S.items.filter((i) => fits(i, p, { ignoreCategory: true })).map((i) => i.category))].filter((c) => c !== "other" && c !== "underwear");
+    const counts = {};
+    for (const i of S.items) if (fits(i, p, { ignoreCategory: true })) counts[i.category] = (counts[i.category] || 0) + 1;
+    const cats = ["all", ...Object.entries(counts).filter(([c, n]) => n >= 8 && c !== "other" && c !== "underwear").sort((a, b) => b[1] - a[1]).map(([c]) => c)];
     $("#chips").innerHTML = (S.brand ? `<button class="chip on" data-clearbrand>${esc(S.brand)} ✕</button>` : "") + cats.map((c) =>
       `<button class="chip ${c === S.category ? "on" : ""}" data-cat="${c}">${c === "tshirts" ? "T-shirts" : c}</button>`).join("");
   }
@@ -725,6 +727,7 @@
       if (act.dataset.act === "pass") { p.disliked.push(id); toast("Got it — less like this"); }
       recompute(); saveStore(); render(); return;
     }
+    if (t.closest("#steerToggle")) { S.steerOpen = !S.steerOpen; t.closest(".steer").classList.toggle("open", S.steerOpen); return; }
     const nd = t.closest("[data-nudge]");
     if (nd) {
       const id = nd.dataset.nudge, opp = { darker: "lighter", lighter: "darker", smarter: "casual", casual: "smarter", slimmer: "wider", wider: "slimmer", plainer: "bolder", bolder: "plainer" }[id];

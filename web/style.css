@@ -268,3 +268,19 @@ button, select, input { font: inherit; color: inherit; }
 
 .bp .tierlbl { font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; }
 .meta .b .via { text-transform: none; letter-spacing: 0; font-weight: 400; }
+
+.steertoggle { background: none; border: 0; padding: 0; cursor: default; font: inherit; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; }
+.steertoggle span { display: none; }
+@media (max-width: 700px) {
+  .chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 -18px; padding: 0 18px; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip { flex: 0 0 auto; }
+  .steer:not(.open) > :not(.steertoggle) { display: none; }
+  .steer:not(.open) { padding: 8px 12px; }
+  .steertoggle { cursor: pointer; width: 100%; text-align: left; }
+  .steertoggle span { display: inline; float: right; }
+  .steer.open .steertoggle span { transform: rotate(180deg); display: inline-block; }
+  .intro { padding-top: 22px; }
+  .intro p { font-size: 14px; }
+  .tastebar { gap: 8px; }
+}
