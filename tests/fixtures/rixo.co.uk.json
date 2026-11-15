@@ -1,0 +1,208 @@
+{
+ "products": [
+  {
+   "id": 1000,
+   "title": "Clarice Midi Dress - Ditsy Floral",
+   "handle": "clarice-midi-dress-ditsy-floral",
+   "product_type": "Dresses",
+   "tags": [
+    "womens"
+   ],
+   "options": [
+    {
+     "name": "Size",
+     "position": 1
+    }
+   ],
+   "images": [
+    {
+     "src": "https://cdn.shopify.com/s/files/test/clarice-midi-dress-ditsy-floral.jpg"
+    }
+   ],
+   "variants": [
+    {
+     "title": "S",
+     "option1": "S",
+     "price": "245.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "M",
+     "option1": "M",
+     "price": "245.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "L",
+     "option1": "L",
+     "price": "245.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "XL",
+     "option1": "XL",
+     "price": "245.00",
+     "compare_at_price": null,
+     "available": true
+    }
+   ],
+   "published_at": "2026-11-01T10:00:00+00:00"
+  },
+  {
+   "id": 1001,
+   "title": "Sabine Silk Blouse - Ivory",
+   "handle": "sabine-silk-blouse-ivory",
+   "product_type": "Tops",
+   "tags": [
+    "womens"
+   ],
+   "options": [
+    {
+     "name": "Size",
+     "position": 1
+    }
+   ],
+   "images": [
+    {
+     "src": "https://cdn.shopify.com/s/files/test/sabine-silk-blouse-ivory.jpg"
+    }
+   ],
+   "variants": [
+    {
+     "title": "S",
+     "option1": "S",
+     "price": "165.00",
+     "compare_at_price": "210.00",
+     "available": true
+    },
+    {
+     "title": "M",
+     "option1": "M",
+     "price": "165.00",
+     "compare_at_price": "210.00",
+     "available": true
+    },
+    {
+     "title": "L",
+     "option1": "L",
+     "price": "165.00",
+     "compare_at_price": "210.00",
+     "available": true
+    },
+    {
+     "title": "XL",
+     "option1": "XL",
+     "price": "165.00",
+     "compare_at_price": "210.00",
+     "available": true
+    }
+   ],
+   "published_at": "2026-11-01T10:00:00+00:00"
+  },
+  {
+   "id": 1002,
+   "title": "Laura Knit Cardigan - Chocolate",
+   "handle": "laura-knit-cardigan-chocolate",
+   "product_type": "Knitwear",
+   "tags": [
+    "womens"
+   ],
+   "options": [
+    {
+     "name": "Size",
+     "position": 1
+    }
+   ],
+   "images": [
+    {
+     "src": "https://cdn.shopify.com/s/files/test/laura-knit-cardigan-chocolate.jpg"
+    }
+   ],
+   "variants": [
+    {
+     "title": "S",
+     "option1": "S",
+     "price": "175.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "M",
+     "option1": "M",
+     "price": "175.00",
+     "compare_at_price": null,
+     "available": false
+    },
+    {
+     "title": "L",
+     "option1": "L",
+     "price": "175.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "XL",
+     "option1": "XL",
+     "price": "175.00",
+     "compare_at_price": null,
+     "available": true
+    }
+   ],
+   "published_at": "2026-11-01T10:00:00+00:00"
+  },
+  {
+   "id": 1003,
+   "title": "Rosie Wide Leg Trouser - Black",
+   "handle": "rosie-wide-leg-trouser-black",
+   "product_type": "Trousers",
+   "tags": [
+    "womens"
+   ],
+   "options": [
+    {
+     "name": "Size",
+     "position": 1
+    }
+   ],
+   "images": [
+    {
+     "src": "https://cdn.shopify.com/s/files/test/rosie-wide-leg-trouser-black.jpg"
+    }
+   ],
+   "variants": [
+    {
+     "title": "S",
+     "option1": "S",
+     "price": "155.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "M",
+     "option1": "M",
+     "price": "155.00",
+     "compare_at_price": null,
+     "available": false
+    },
+    {
+     "title": "L",
+     "option1": "L",
+     "price": "155.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "XL",
+     "option1": "XL",
+     "price": "155.00",
+     "compare_at_price": null,
+     "available": true
+    }
+   ],
+   "published_at": "2026-11-01T10:00:00+00:00"
+  }
+ ]
+}

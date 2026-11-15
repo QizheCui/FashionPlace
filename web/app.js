@@ -14,7 +14,8 @@
   const S = {
     tab: "foryou", category: "all", brand: null, surprise: 0.4, query: null,
     items: [], byId: {}, vecs: {}, vibes: [], vibeById: {}, brands: [], brandInfo: {}, brandCentroid: {},
-    builtins: [], model: "", brandStats: {}, profiles: {}, current: null, taste: null, avoid: null, twist: null,
+    builtins: [], model: "", brandStats: {}, refiners: [], refinerById: {},
+    steer: { nudges: {}, words: [] }, steerVec: null, profiles: {}, current: null, taste: null, avoid: null, twist: null,
   };
 
   // ---------- small helpers ----------
@@ -96,7 +97,7 @@
     }
     S.current = S.profiles[p.id];
     S.current.saved ||= {};
-    S.brand = null; S.category = "all"; S.query = null;
+    S.brand = null; S.category = "all"; S.query = null; S.steer = { nudges: {}, words: [] };
     recompute(); saveStore();
     $("#whoName").textContent = S.current.name;
   }
@@ -115,8 +116,23 @@
     ]);
     return t || S.globalCentroid;
   }
+  // "Not quite right?" — nudges (directions) and words, from this session + saved in the profile
+  const NUDGE_W = 0.22, WORD_W = 0.6;
+  function steerVector(p) {
+    const parts = [];
+    const nudges = { ...(p.nudges || {}) };
+    for (const [id, n] of Object.entries(S.steer.nudges)) nudges[id] = (nudges[id] || 0) + n;
+    for (const [id, n] of Object.entries(nudges)) { const r = S.refinerById[id]; if (r && n) parts.push([r.vec, NUDGE_W * n]); }
+    for (const w of [...(p.steerWords || []), ...S.steer.words]) parts.push([w.vec, WORD_W]);
+    if (!parts.length) return null;
+    const out = new Array(parts[0][0].length).fill(0);
+    for (const [v, w] of parts) for (let i = 0; i < v.length; i++) out[i] += w * v[i];
+    return out;
+  }
+  const steering = () => Object.keys(S.steer.nudges).length + S.steer.words.length;
   function recompute() {
     const p = P();
+    S.steerVec = steerVector(p);
     S.taste = tasteFrom(p);
     S.avoid = blend([[mean(vibeVecs(p.avoidVibes)), 1], [mean(p.avoidWords.map((w) => w.vec)), 1]]);
     S.twist = blend([[mean(vibeVecs(p.surpriseVibes.length ? p.surpriseVibes : ["bold-colour", "texture", "vintage"])), 1]]);
@@ -139,7 +155,10 @@
     if (S.brand && it.brand !== S.brand) return false;
     return !!S.vecs[it.id];
   }
-  const score = (it) => { const v = S.vecs[it.id]; return dot(v, S.taste) - (S.avoid ? 0.35 * dot(v, S.avoid) : 0); };
+  const score = (it) => {
+    const v = S.vecs[it.id];
+    return dot(v, S.taste) - (S.avoid ? 0.35 * dot(v, S.avoid) : 0) + (S.steerVec ? dot(v, S.steerVec) : 0);
+  };
 
   function reason(it, mode) {
     const v = S.vecs[it.id], p = P();
@@ -330,6 +349,13 @@
       <div class="tasterow"><div class="leans"><span class="lbl">Your feed leans</span>${l.map(([n, pc]) => `<span class="lean"><b>${esc(n)}</b> ${pc}%</span>`).join("")}</div>
       <div class="learn">${p.liked.length + p.disliked.length ? `Learning from ${p.liked.length} ♥ and ${p.disliked.length} ✕` : "♥ and ✕ pieces to teach it"}</div>
       <button class="ghost sm" data-open="tune">Tune my taste</button></div>
+      <div class="steer"><span class="lbl">Not quite right?</span>
+        ${S.refiners.map((r) => { const n = S.steer.nudges[r.id] || 0, saved = (p.nudges || {})[r.id] || 0;
+          return `<button class="nudge ${n ? "on" : ""}" data-nudge="${r.id}" title="${saved ? `Already in your taste ×${saved}` : "Nudge the feed"}">${esc(r.label)}${n > 1 ? ` ×${n}` : ""}${saved ? " ·" : ""}</button>`; }).join("")}
+        <form class="steerform" id="steerForm"><input id="steerText" placeholder="…or tell me: “darker trousers for work and a dinner date”" maxlength="140"><button class="ghost sm">Apply</button></form>
+        ${S.steer.words.map((w, i) => `<span class="word">“${esc(w.label)}” <button data-unsteer="${i}" aria-label="Remove">✕</button></span>`).join("")}
+        ${steering() ? `<button class="solid sm" id="steerKeep">Keep in my taste</button><button class="link" id="steerReset">Reset</button>` : ""}
+      </div>
       <p class="status" id="qStatus"></p>`;
   }
   function renderChips() {
@@ -369,7 +395,9 @@
   }
 
   // ---------- taste editor (setup + tuning) ----------
-  const STEPS = ["Basics", "Vibes", "Your words", "Tap what you'd wear"];
+  const STEPS = ["Basics", "Vibes", "Words & photos", "Brands", "Tap what you'd wear"];
+  const vibesFor = (dept) => S.vibes.filter((v) => !v.for || v.for === "any" || dept === "any" || v.for === dept);
+  const brandFitsDept = (b, dept) => dept === "any" || !b.departments || b.departments.includes(dept);
   const ED = { step: 0, draft: null, onboarding: false, shown: new Set() };
 
   function openEditor(p, onboarding, step = 0) {
@@ -396,27 +424,47 @@
     } else if (ED.step === 1) {
       body.innerHTML = `<h2>Which vibes feel like you?</h2>
         <p class="sub">Tap once for <b>♥ love</b>, again for <b>✕ not me</b>, again to clear. Tap <b>✦</b> on anything you'd like to be <i>surprised</i> by in Explore.</p>
-        <div class="vibes">${S.vibes.map((v) => {
+        <div class="vibes">${vibesFor(d.department).map((v) => {
           const st = d.vibes.includes(v.id) ? "love" : d.avoidVibes.includes(v.id) ? "avoid" : "";
           return `<div class="vibe ${st}" data-vibe="${v.id}" role="button" tabindex="0"><b>${esc(v.label)}</b><small>${esc(v.desc)}</small>
             <span class="vstate">${st === "love" ? "♥ Love" : st === "avoid" ? "✕ Not me" : ""}</span>
             <button class="spark ${d.surpriseVibes.includes(v.id) ? "on" : ""}" data-spark="${v.id}" title="Surprise me with this">✦</button></div>`;
-        }).join("")}</div>
-        <h3>Brands you already love <small>optional — Explore will introduce you to others</small></h3>
-        <div class="chips">${S.brands.map((b) => `<button class="chip ${d.brands.includes(b.name) ? "on" : ""}" data-pickbrand="${esc(b.name)}">${esc(b.name)}</button>`).join("")}</div>`;
+        }).join("")}</div>`;
     } else if (ED.step === 2) {
       const demo = S.model === "fake";
       body.innerHTML = `<h2>Describe it in your own words</h2>
         <p class="sub">Feelings work best — a place, a season, a person, a mood. e.g. <i>“Sunday in Copenhagen in October”</i>, <i>“what a well-dressed architect wears”</i>.${demo ? "<br><b>Word matching works on the live site, not in this demo.</b>" : ""}</p>
         <div class="addrow"><input id="fWord" placeholder="Describe a feeling or a look…" maxlength="140"><button class="solid" id="fAddLove">+ Love</button><button class="ghost" id="fAddAvoid">+ Avoid</button></div>
         <p class="status" id="fStatus"></p>
-        <div class="words">${d.words.map((w, i) => `<span class="word">♥ ${esc(w.label)} <button data-delword="${i}" aria-label="Remove">✕</button></span>`).join("")}
+        <div class="words">${d.words.map((w, i) => w.thumb ? "" : `<span class="word">♥ ${esc(w.label)} <button data-delword="${i}" aria-label="Remove">✕</button></span>`).join("")}
         ${d.avoidWords.map((w, i) => `<span class="word avoid">✕ ${esc(w.label)} <button data-delavoid="${i}" aria-label="Remove">✕</button></span>`).join("")}</div>
+        <h3>Outfit photos <small>screenshots, saved posts, your own outfits</small></h3>
+        <label class="upload"><input type="file" id="fPhotos" accept="image/*" multiple hidden>＋ Add photos you love</label>
+        <div class="thumbs">${d.words.filter((w) => w.thumb).map((w) => `<span class="thumb"><img src="${w.thumb}" alt=""><button data-delword="${d.words.indexOf(w)}" aria-label="Remove">✕</button></span>`).join("")}</div>
+        ${Object.keys(d.nudges || {}).length || (d.steerWords || []).length ? `<h3>Saved nudges</h3><div class="words">
+          ${Object.entries(d.nudges || {}).map(([id, n]) => `<span class="word">${esc((S.refinerById[id] || { label: id }).label)}${n > 1 ? ` ×${n}` : ""} <button data-delnudge="${id}" aria-label="Remove">✕</button></span>`).join("")}
+          ${(d.steerWords || []).map((w, i) => `<span class="word">“${esc(w.label)}” <button data-delsteer="${i}" aria-label="Remove">✕</button></span>`).join("")}</div>` : ""}
         ${!d.words.length && !d.avoidWords.length ? `<p class="sub">Optional — skip if the vibes say it all.</p>` : ""}`;
+    } else if (ED.step === 3) {
+      body.innerHTML = `<h2>Brands for you</h2><p class="sub">Ranked by everything you've told us so far — tap ♥ on the ones you already love. The rest are ones Explore will introduce you to.</p><div class="bpick">${brandStepCards(d)}</div>`;
     } else {
       body.innerHTML = `<h2>Tap what you'd wear</h2><p class="sub">Pick anything that catches your eye — even a few helps. <button class="link" id="fMore">Show me others</button></p><div class="pickgrid" id="pickGrid"></div>`;
       fillPicks();
     }
+  }
+  function brandStepCards(d) {
+    const t = tasteFrom(d, { withFeedback: false });
+    const hasTaste = d.vibes.length || d.words.length;
+    const sources = [...d.vibes.map((id) => S.vibeById[id]).filter(Boolean).map((v) => [v.label, v.vec]), ...d.words.map((w) => [w.thumb ? "your photos" : `“${w.label}”`, w.vec])];
+    const list = S.brands.filter((b) => S.brandCentroid[b.name] && brandFitsDept(b, d.department)).map((b) => {
+      const c = S.brandCentroid[b.name];
+      const because = sources.map(([l, v]) => [l, dot(c, v)]).sort((a, x) => x[1] - a[1])[0];
+      return { b, s: hasTaste ? dot(c, t) : 0, because: because && because[0] };
+    }).sort((a, x) => x.s - a.s);
+    return list.map(({ b, because }, i) => `<button class="bp ${d.brands.includes(b.name) ? "on" : ""}" data-pickbrand="${esc(b.name)}">
+      <b>${esc(b.name)}</b>${hasTaste && i < 6 ? `<span class="top">Top match</span>` : ""}
+      <small>${esc(b.blurb || "")}</small>${hasTaste && because ? `<em>Fits ${esc(because.toLowerCase().startsWith("“") ? because : because.toLowerCase())}</em>` : ""}</button>`).join("")
+      + (S.brands.some((b) => !S.brandCentroid[b.name] && brandFitsDept(b, d.department)) ? `<p class="sub" style="grid-column:1/-1">Coming soon: ${S.brands.filter((b) => !S.brandCentroid[b.name] && brandFitsDept(b, d.department)).map((b) => esc(b.name)).join(", ")}.</p>` : "");
   }
   function syncEdPrice() {
     const d = ED.draft, a = +$("#fMin").value, b = +$("#fMax").value;
@@ -454,6 +502,7 @@
     const d = ED.draft; d.setupDone = true; d.name = d.name.trim() || "Me"; d.saved ||= {};
     for (const id of d.liked) if (!d.saved[id] && S.byId[id]) d.saved[id] = { price: S.byId[id].price_gbp, date: today() };
     const wasOnboarding = ED.onboarding;
+    if (!S.current || S.current.id !== d.id) S.steer = { nudges: {}, words: [] }; // nudges belong to whoever made them
     S.profiles[d.id] = d; S.current = d; recompute(); saveStore();
     $("#whoName").textContent = d.name; $("#editor").hidden = true; $("#welcome").hidden = true;
     if (wasOnboarding) S.tab = "foryou";
@@ -475,6 +524,42 @@
     const inputs = clipText.tok([text], { padding: true, truncation: true });
     const { text_embeds } = await clipText.model(inputs);
     return norm(Array.from(text_embeds.data));
+  }
+  let clipVision = null;
+  async function encodeImage(file, statusEl) {
+    if (S.model === "fake") throw new Error("demo mode");
+    if (!clipVision) {
+      statusEl.textContent = "Loading the photo model (one-time download, ~90 MB)…";
+      const T = await import("https://cdn.jsdelivr.net/npm/@huggingface/transformers@3");
+      const id = "Xenova/clip-vit-base-patch32";
+      clipVision = { T, proc: await T.AutoProcessor.from_pretrained(id), model: await T.CLIPVisionModelWithProjection.from_pretrained(id) };
+    }
+    const img = await clipVision.T.RawImage.fromBlob(file);
+    const { image_embeds } = await clipVision.model(await clipVision.proc(img));
+    return norm(Array.from(image_embeds.data));
+  }
+  function thumbOf(file) {
+    return new Promise((res) => {
+      const url = URL.createObjectURL(file), im = new Image();
+      im.onload = () => { const c = document.createElement("canvas"), k = 96 / Math.max(im.width, im.height);
+        c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
+        c.getContext("2d").drawImage(im, 0, 0, c.width, c.height); URL.revokeObjectURL(url); res(c.toDataURL("image/jpeg", 0.7)); };
+      im.onerror = () => res("");
+      im.src = url;
+    });
+  }
+  async function addPhotos(files) {
+    const st = $("#fStatus");
+    let n = 0;
+    for (const f of [...files].slice(0, 12)) {
+      try {
+        st.textContent = `Reading photo ${n + 1} of ${Math.min(files.length, 12)}…`;
+        const vec = await encodeImage(f, st);
+        ED.draft.words.push({ label: f.name.replace(/\.[a-z]+$/i, "").slice(0, 40) || "photo", vec: vec.map((x) => Math.round(x * 1e5) / 1e5), thumb: await thumbOf(f) });
+        n++;
+      } catch (e) { st.textContent = S.model === "fake" ? "Photos work on the live site." : `Couldn't read that photo (${e.message}).`; return; }
+    }
+    renderEditor(); $("#fStatus").textContent = `Added ${n} photo${n === 1 ? "" : "s"} — your brand suggestions now use them.`;
   }
   async function addWord(kind) {
     const inp = $("#fWord"), text = inp.value.trim(), st = $("#fStatus"); if (!text) return;
@@ -518,6 +603,21 @@
       } else delete p.saved[id];
       if (act.dataset.act === "pass") { p.disliked.push(id); toast("Got it — less like this"); }
       recompute(); saveStore(); render(); return;
+    }
+    const nd = t.closest("[data-nudge]");
+    if (nd) {
+      const id = nd.dataset.nudge, opp = { darker: "lighter", lighter: "darker", smarter: "casual", casual: "smarter", slimmer: "wider", wider: "slimmer", plainer: "bolder", bolder: "plainer" }[id];
+      if (opp && S.steer.nudges[opp]) delete S.steer.nudges[opp];
+      S.steer.nudges[id] = Math.min(3, (S.steer.nudges[id] || 0) + 1);
+      recompute(); render(); toast(`${nd.textContent.replace(/ ×\d| ·/g, "")} — re-ranked`); return;
+    }
+    const us = t.closest("[data-unsteer]"); if (us) { S.steer.words.splice(+us.dataset.unsteer, 1); recompute(); render(); return; }
+    if (t.closest("#steerReset")) { S.steer = { nudges: {}, words: [] }; recompute(); render(); return; }
+    if (t.closest("#steerKeep")) {
+      const p = P(); p.nudges ||= {}; p.steerWords ||= [];
+      for (const [id, n] of Object.entries(S.steer.nudges)) p.nudges[id] = Math.min(3, (p.nudges[id] || 0) + n);
+      p.steerWords.push(...S.steer.words);
+      S.steer = { nudges: {}, words: [] }; recompute(); saveStore(); render(); toast("Saved to your taste"); return;
     }
     if (t.closest("[data-open=tune]")) { openEditor(P(), false, 1); return; }
     if (t.closest("#whoBtn")) { openWelcome(); return; }
@@ -569,7 +669,9 @@
       renderEditor(); return;
     }
     const pb = t.closest("[data-pickbrand]");
-    if (pb) { const b = pb.dataset.pickbrand, a = ED.draft.brands; ED.draft.brands = a.includes(b) ? a.filter((x) => x !== b) : [...a, b]; renderEditor(); return; }
+    if (pb) { const b = pb.dataset.pickbrand, a = ED.draft.brands; ED.draft.brands = a.includes(b) ? a.filter((x) => x !== b) : [...a, b]; pb.classList.toggle("on"); return; }
+    const dn = t.closest("[data-delnudge]"); if (dn) { delete ED.draft.nudges[dn.dataset.delnudge]; renderEditor(); return; }
+    const dsw = t.closest("[data-delsteer]"); if (dsw) { ED.draft.steerWords.splice(+dsw.dataset.delsteer, 1); renderEditor(); return; }
     if (t.closest("#fAddLove")) { addWord("love"); return; }
     if (t.closest("#fAddAvoid")) { addWord("avoid"); return; }
     const dw = t.closest("[data-delword]"); if (dw) { ED.draft.words.splice(+dw.dataset.delword, 1); renderEditor(); return; }
@@ -578,9 +680,16 @@
     if (pk) { const id = pk.dataset.pick, d = ED.draft; d.liked = d.liked.includes(id) ? d.liked.filter((x) => x !== id) : [id, ...d.liked]; pk.classList.toggle("on"); return; }
     if (t.closest("#fMore")) { fillPicks(); return; }
   });
-  document.addEventListener("submit", (e) => {
+  document.addEventListener("submit", async (e) => {
+    if (e.target.id === "steerForm") {
+      e.preventDefault(); const text = $("#steerText").value.trim(); if (!text) return;
+      try { const vec = await encodeText(text, $("#qStatus")); S.steer.words.push({ label: text, vec }); recompute(); render(); toast("Re-ranked with your note"); }
+      catch (err) { $("#qStatus").textContent = S.model === "fake" ? "Notes work on the live site." : `Couldn't load the style model (${err.message}).`; }
+      return;
+    }
     if (e.target.id === "searchForm") { e.preventDefault(); const q = $("#q").value.trim(); if (q) runSearch(q); else { S.query = null; render(); } }
   });
+  document.addEventListener("change", (e) => { if (e.target.id === "fPhotos" && e.target.files.length) addPhotos(e.target.files); });
   document.addEventListener("input", (e) => {
     if (e.target.id === "fName") { ED.draft.name = e.target.value; e.target.classList.remove("err"); }
     if (e.target.id === "fMin" || e.target.id === "fMax") syncEdPrice();
@@ -613,6 +722,7 @@
       S.globalCentroid = norm(mean(Object.values(S.brandCentroid)));
       S.brands = brands.filter((b) => groups[b.name] || b.source !== "shopify");
       S.brandStats = await getJSON("brand_stats.json").catch(() => ({}));
+      S.refiners = await getJSON("refiners.json").catch(() => []); for (const r of S.refiners) S.refinerById[r.id] = r;
       S.builtins = await Promise.all(index.map((id) => getJSON(`profiles/${id}.json`)));
       loadStore();
       $("#foot").textContent = `${S.items.length} pieces from ${Object.keys(groups).length} brands · updated ${items.updated}` + (S.model === "fake" ? " · demo data" : "");

@@ -10,7 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 WEB, DATA, OUT = ROOT / "web", ROOT / "data", ROOT / "_site"
-FILES = ["items.json", "vectors.json", "vibes.json", "brands.json", "brand_stats.json", "profiles/index.json"]
+FILES = ["items.json", "vectors.json", "vibes.json", "brands.json", "brand_stats.json", "refiners.json", "profiles/index.json"]
 
 
 def main(inline: bool) -> None:

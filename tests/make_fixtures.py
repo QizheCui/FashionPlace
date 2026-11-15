@@ -39,6 +39,12 @@ CATALOGUE = {
         ("Tapered Chino - Stone Cotton Twill", "Trousers", 110, None, "men"),
         ("Leather Tote Bag - Tan", "Bags", 185, None, "men"),
     ],
+    "rixo.co.uk": [
+        ("Clarice Midi Dress - Ditsy Floral", "Dresses", 245, None, "women"),
+        ("Sabine Silk Blouse - Ivory", "Tops", 165, 210, "women"),
+        ("Laura Knit Cardigan - Chocolate", "Knitwear", 175, None, "women"),
+        ("Rosie Wide Leg Trouser - Black", "Trousers", 155, None, "women"),
+    ],
     "www.colhays.com": [
         ("Shawl Collar Cardigan - Bottle Green Cashmere Blend", "Knitwear", 245, None, "men"),
         ("Fair Isle Crew - Oatmeal Vintage Pattern", "Knitwear", 185, None, "men"),

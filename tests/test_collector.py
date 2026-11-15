@@ -94,3 +94,12 @@ def test_single_department_brand_claims_untagged_items():
     assert shopify.normalise(raw("Oxford Shirt", tags=()), menswear, FX)["department"] == "men"
     both = {**BRAND, "departments": ["men", "women"]}
     assert shopify.normalise(raw("Oxford Shirt", tags=()), both, FX)["department"] == "unisex"
+
+
+def test_womenswear_categories():
+    cat = lambda t, pt="": shopify.normalise(raw(t, pt), BRAND, FX)["category"]
+    assert cat("Clarice Midi Dress", "Dresses") == "dresses"
+    assert cat("Sabine Silk Blouse", "Tops") == "tops"
+    assert cat("Pleated Midi Skirt", "Skirts") == "skirts"
+    assert cat("Poplin Dress Shirt", "Shirts") == "shirts"
+    assert cat("Wool Suit Jacket", "Tailoring") == "tailoring"

@@ -141,8 +141,16 @@ def run(fake: bool = False) -> None:
     # style moods offered during setup, each as a vector on the same style map
     vibes = json.loads((CONFIG / "vibes.json").read_text())["vibes"]
     (DATA / "vibes.json").write_text(json.dumps([
-        {"id": v["id"], "label": v["label"], "desc": v["desc"], "vec": [round(float(x), 5) for x in unit(enc.text(v["prompts"]).mean(0))]}
+        {"id": v["id"], "label": v["label"], "desc": v["desc"], "for": v.get("for", "any"),
+         "vec": [round(float(x), 5) for x in unit(enc.text(v["prompts"]).mean(0))]}
         for v in vibes
+    ]))
+    # "Not quite right?" nudges: a direction from 'less' towards 'more'
+    refiners = json.loads((CONFIG / "refiners.json").read_text())["refiners"]
+    (DATA / "refiners.json").write_text(json.dumps([
+        {"id": r["id"], "label": r["label"],
+         "vec": [round(float(x), 5) for x in unit(unit(enc.text(r["more"]).mean(0)) - unit(enc.text(r["less"]).mean(0)))]}
+        for r in refiners
     ]))
     brands = json.loads((CONFIG / "brands.json").read_text())["brands"]
     (DATA / "brands.json").write_text(json.dumps(

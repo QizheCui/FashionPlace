@@ -1,37 +1,233 @@
 {
   "_comment": "Style moods people pick during setup. 'prompts' are what the AI matches against product photos; 'desc' is what people read.",
   "vibes": [
-    {"id": "old-money",     "label": "Old money",        "desc": "Heritage fabrics, quiet polish, nothing shouts",
-     "prompts": ["old money style clothing, understated heritage elegance", "classic cashmere and wool pieces in navy, camel and cream"]},
-    {"id": "ivy-prep",      "label": "Ivy & prep",       "desc": "Oxford shirts, rugby stripes, varsity knits",
-     "prompts": ["vintage ivy league preppy clothing", "oxford button down shirt, rugby shirt, varsity cardigan"]},
-    {"id": "quiet-luxury",  "label": "Quiet luxury",     "desc": "Beautiful materials, no logos",
-     "prompts": ["quiet luxury minimalist clothing in premium natural fabrics", "logo-free refined knitwear and tailoring"]},
-    {"id": "scandi-min",    "label": "Scandi minimal",   "desc": "Clean lines, muted palette, functional",
-     "prompts": ["scandinavian minimalist clothing, clean lines and muted colours", "functional minimal copenhagen style"]},
-    {"id": "workwear",      "label": "Workwear",         "desc": "Chore jackets, canvas, cord, built to last",
-     "prompts": ["heritage workwear, chore jacket, canvas and corduroy", "rugged utility clothing with patch pockets"]},
-    {"id": "parisian",      "label": "Parisian casual",  "desc": "Effortless, a bit undone, very chic",
-     "prompts": ["effortless parisian casual style", "french casual chic clothing, breton stripe and relaxed tailoring"]},
-    {"id": "soft-tailoring","label": "Soft tailoring",   "desc": "Unstructured blazers, pleats, relaxed suiting",
-     "prompts": ["unstructured relaxed blazer and pleated trousers", "soft italian tailoring, smart casual"]},
-    {"id": "euro-autumn",   "label": "European autumn",  "desc": "Wool, suede, corduroy, warm earth tones",
-     "prompts": ["european autumn clothing in wool, suede and corduroy", "warm earthy tones, brown, olive, rust and camel"]},
-    {"id": "japanese-amer", "label": "Japanese Americana","desc": "Selvedge denim, vintage cuts, craft detail",
-     "prompts": ["japanese americana, selvedge denim and vintage workwear", "craft details, indigo, vintage american cuts"]},
-    {"id": "coastal",       "label": "Coastal & sailing", "desc": "Fishermen knits, linen, navy and white",
-     "prompts": ["coastal sailing style, fisherman knit and linen", "navy and white nautical clothing"]},
-    {"id": "outdoor",       "label": "Outdoor & technical","desc": "Shells, fleeces, trail-ready but clean",
-     "prompts": ["technical outdoor clothing, waterproof shell jacket and fleece", "gorpcore hiking style"]},
-    {"id": "street",        "label": "Streetwear",       "desc": "Graphics, hoodies, oversized, logos",
-     "prompts": ["streetwear with graphic print hoodie and oversized fit", "logo heavy urban street fashion"]},
-    {"id": "bold-colour",   "label": "Bold colour",      "desc": "Rich colour that still looks elegant",
-     "prompts": ["rich bold colour clothing that still looks elegant", "statement colour knitwear in burgundy, cobalt or bottle green"]},
-    {"id": "texture",       "label": "Texture",          "desc": "Bouclé, mohair, cable knit, suede",
-     "prompts": ["interesting textured fabric such as boucle, mohair or chunky cable knit", "suede and brushed wool textures"]},
-    {"id": "vintage",       "label": "Vintage character","desc": "Patterns and pieces with a past",
-     "prompts": ["vintage inspired patterned clothing with character", "fair isle, retro stripes and archive details"]},
-    {"id": "evening",       "label": "Evening & smart",  "desc": "Dinner, events, sharper pieces",
-     "prompts": ["smart evening wear, dark tailoring and fine knit polo", "elegant dinner outfit"]}
+    {
+      "id": "old-money",
+      "label": "Old money",
+      "desc": "Heritage fabrics, quiet polish, nothing shouts",
+      "prompts": [
+        "old money style clothing, understated heritage elegance",
+        "classic cashmere and wool pieces in navy, camel and cream"
+      ]
+    },
+    {
+      "id": "ivy-prep",
+      "label": "Ivy & prep",
+      "desc": "Oxford shirts, rugby stripes, varsity knits",
+      "prompts": [
+        "vintage ivy league preppy clothing",
+        "oxford button down shirt, rugby shirt, varsity cardigan"
+      ],
+      "for": "men"
+    },
+    {
+      "id": "quiet-luxury",
+      "label": "Quiet luxury",
+      "desc": "Beautiful materials, no logos",
+      "prompts": [
+        "quiet luxury minimalist clothing in premium natural fabrics",
+        "logo-free refined knitwear and tailoring"
+      ]
+    },
+    {
+      "id": "scandi-min",
+      "label": "Scandi minimal",
+      "desc": "Clean lines, muted palette, functional",
+      "prompts": [
+        "scandinavian minimalist clothing, clean lines and muted colours",
+        "functional minimal copenhagen style"
+      ]
+    },
+    {
+      "id": "workwear",
+      "label": "Workwear",
+      "desc": "Chore jackets, canvas, cord, built to last",
+      "prompts": [
+        "heritage workwear, chore jacket, canvas and corduroy",
+        "rugged utility clothing with patch pockets"
+      ],
+      "for": "men"
+    },
+    {
+      "id": "parisian",
+      "label": "Parisian casual",
+      "desc": "Effortless, a bit undone, very chic",
+      "prompts": [
+        "effortless parisian casual style",
+        "french casual chic clothing, breton stripe and relaxed tailoring"
+      ]
+    },
+    {
+      "id": "soft-tailoring",
+      "label": "Soft tailoring",
+      "desc": "Unstructured blazers, pleats, relaxed suiting",
+      "prompts": [
+        "unstructured relaxed blazer and pleated trousers",
+        "soft italian tailoring, smart casual"
+      ],
+      "for": "men"
+    },
+    {
+      "id": "euro-autumn",
+      "label": "European autumn",
+      "desc": "Wool, suede, corduroy, warm earth tones",
+      "prompts": [
+        "european autumn clothing in wool, suede and corduroy",
+        "warm earthy tones, brown, olive, rust and camel"
+      ]
+    },
+    {
+      "id": "japanese-amer",
+      "label": "Japanese Americana",
+      "desc": "Selvedge denim, vintage cuts, craft detail",
+      "prompts": [
+        "japanese americana, selvedge denim and vintage workwear",
+        "craft details, indigo, vintage american cuts"
+      ],
+      "for": "men"
+    },
+    {
+      "id": "coastal",
+      "label": "Coastal & sailing",
+      "desc": "Fishermen knits, linen, navy and white",
+      "prompts": [
+        "coastal sailing style, fisherman knit and linen",
+        "navy and white nautical clothing"
+      ]
+    },
+    {
+      "id": "outdoor",
+      "label": "Outdoor & technical",
+      "desc": "Shells, fleeces, trail-ready but clean",
+      "prompts": [
+        "technical outdoor clothing, waterproof shell jacket and fleece",
+        "gorpcore hiking style"
+      ]
+    },
+    {
+      "id": "street",
+      "label": "Streetwear",
+      "desc": "Graphics, hoodies, oversized, logos",
+      "prompts": [
+        "streetwear with graphic print hoodie and oversized fit",
+        "logo heavy urban street fashion"
+      ]
+    },
+    {
+      "id": "bold-colour",
+      "label": "Bold colour",
+      "desc": "Rich colour that still looks elegant",
+      "prompts": [
+        "rich bold colour clothing that still looks elegant",
+        "statement colour knitwear in burgundy, cobalt or bottle green"
+      ]
+    },
+    {
+      "id": "texture",
+      "label": "Texture",
+      "desc": "Bouclé, mohair, cable knit, suede",
+      "prompts": [
+        "interesting textured fabric such as boucle, mohair or chunky cable knit",
+        "suede and brushed wool textures"
+      ]
+    },
+    {
+      "id": "vintage",
+      "label": "Vintage character",
+      "desc": "Patterns and pieces with a past",
+      "prompts": [
+        "vintage inspired patterned clothing with character",
+        "fair isle, retro stripes and archive details"
+      ]
+    },
+    {
+      "id": "evening",
+      "label": "Evening & smart",
+      "desc": "Dinner, events, sharper pieces",
+      "prompts": [
+        "smart evening wear, dark tailoring and fine knit polo",
+        "elegant dinner outfit"
+      ]
+    },
+    {
+      "id": "romantic",
+      "label": "Romantic & feminine",
+      "desc": "Florals, ruffles, soft and pretty",
+      "for": "women",
+      "prompts": [
+        "romantic feminine dress with florals and ruffles",
+        "soft pretty womenswear in delicate fabrics"
+      ]
+    },
+    {
+      "id": "minimal-chic",
+      "label": "Minimal chic",
+      "desc": "Clean shapes, neutral, polished",
+      "for": "women",
+      "prompts": [
+        "minimal chic womenswear in neutral colours",
+        "clean polished modern women's outfit"
+      ]
+    },
+    {
+      "id": "french-girl",
+      "label": "French girl",
+      "desc": "Tea dresses, knits, red lip energy",
+      "for": "women",
+      "prompts": [
+        "french girl style, tea dress and cardigan",
+        "parisienne effortless womenswear"
+      ]
+    },
+    {
+      "id": "power-tailoring",
+      "label": "Power tailoring",
+      "desc": "Sharp blazers, wide trousers",
+      "for": "women",
+      "prompts": [
+        "women's sharp tailored blazer and wide leg trousers",
+        "confident power suiting for women"
+      ]
+    },
+    {
+      "id": "boho",
+      "label": "Boho",
+      "desc": "Flowing, earthy, a bit free",
+      "for": "women",
+      "prompts": [
+        "bohemian flowing maxi dress",
+        "earthy relaxed boho womenswear"
+      ]
+    },
+    {
+      "id": "going-out",
+      "label": "Going out",
+      "desc": "Party tops, slip dresses, shine",
+      "for": "women",
+      "prompts": [
+        "going out party dress and satin slip dress",
+        "glamorous evening womenswear with shine"
+      ]
+    },
+    {
+      "id": "cosy-knits",
+      "label": "Cosy knits",
+      "desc": "Chunky cardigans, soft layers",
+      "for": "women",
+      "prompts": [
+        "cosy chunky knitted cardigan for women",
+        "soft layered knitwear"
+      ]
+    },
+    {
+      "id": "print-lover",
+      "label": "Print lover",
+      "desc": "Bold prints and pattern clashing",
+      "for": "women",
+      "prompts": [
+        "bold printed womenswear with colourful patterns",
+        "pattern clashing dress and blouse"
+      ]
+    }
   ]
 }
