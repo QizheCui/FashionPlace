@@ -17,7 +17,7 @@ FILES = ["meta-men.json", "meta-women.json", "vibes.json", "brands.json", "brand
 
 BINS = ["vectors-men.bin", "vectors-women.bin", "projection.bin"]
 KEEP = ["id", "brand", "title", "url", "image", "category", "department", "price_gbp", "compare_at_gbp", "in_stock",
-        "letter_sized", "letter_sizes", "waist_sizes", "shoe_sizes", "deal", "tier", "retailer"]
+        "letter_sized", "letter_sizes", "waist_sizes", "shoe_sizes", "deal", "tier", "retailer", "colour", "materials", "ptype"]
 DEAL_KEEP = ["verdict", "discount_pct", "is_lowest_price", "tracked_days"]
 
 

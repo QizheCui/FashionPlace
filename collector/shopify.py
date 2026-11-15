@@ -25,7 +25,8 @@ NON_SIZE_OPTIONS = {"color", "colour", "style", "material", "title"}
 
 CATEGORY_RULES = [
     ("underwear", r"boxer|\bbriefs?\b|\btrunks\b|underwear|undershirt|vest top|pyjama|pajama|lounge pant|robe\b|gift card|gift voucher"),
-    ("shoes", r"shoe|boot|loafer|sneaker|trainer|derby|sandal|mule|slipper"),
+    ("lifestyle", r"eau de|parfum|perfume|fragrance|cologne|candle|incense|\bsoap\b|skincare|serum|\bbook\b|magazine|\bmug\b|ceramic|poster|gift ?card|sticker|key ?ring|lighter|towel|blanket|cushion|\btray\b|\bvase\b|fabric swatch|shirt fabric"),
+    ("shoes", r"\bshoes?\b|\bboots?\b|loafer|sneaker|trainer|derby (shoe|boot)|sandal|\bmules?\b|slipper|espadrille|brogue|oxford shoe"),
     ("bags", r"\bbag|tote|backpack|holdall|duffle|pouch|wallet|card holder"),
     ("accessories", r"\bhats?\b|beanie|\bcaps?\b|scarf|scarves|glove|\bbelts?\b|\bties?\b|\bsocks?\b|sunglass|umbrella|jewel|\brings?\b|necklace"),
     ("sweats", r"sweatshirt|hoodie|sweat\b|sweatpants?|jogger|track ?pants?|fleece"),
@@ -203,6 +204,45 @@ def _shopify_img(src: str, width: int = 600) -> str:
     return f"{src}{sep}width={width}"
 
 
+COLOURS = {  # canonical colour -> words that mean it
+    "black": ["black", "noir", "jet", "onyx", "ink"], "white": ["white", "optic white", "snow"],
+    "cream": ["cream", "ecru", "ivory", "off white", "off-white", "oat", "oatmeal", "natural", "bone", "vanilla"],
+    "grey": ["grey", "gray", "charcoal", "slate", "graphite", "anthracite", "heather", "silver", "stone"],
+    "navy": ["navy", "midnight", "marine", "dark blue", "indigo"],
+    "blue": ["blue", "cobalt", "sky", "denim blue", "royal", "azure", "teal", "petrol"],
+    "green": ["green", "forest", "bottle", "emerald", "sage", "mint", "moss", "pine", "loden"],
+    "olive": ["olive", "khaki", "army", "military"],
+    "brown": ["brown", "chocolate", "coffee", "espresso", "tobacco", "mocha", "truffle", "walnut", "chestnut", "rust", "cognac"],
+    "beige": ["beige", "camel", "tan", "sand", "taupe", "fawn", "biscuit", "nude", "mushroom"],
+    "red": ["red", "scarlet", "cherry", "tomato"], "burgundy": ["burgundy", "wine", "bordeaux", "oxblood", "maroon", "plum"],
+    "pink": ["pink", "rose", "blush", "fuchsia", "magenta"], "purple": ["purple", "lilac", "lavender", "violet"],
+    "yellow": ["yellow", "mustard", "lemon", "butter", "gold"], "orange": ["orange", "terracotta", "burnt orange", "apricot"],
+}
+MATERIALS = ["cashmere", "merino", "lambswool", "wool", "mohair", "alpaca", "cotton", "linen", "silk", "satin", "velvet",
+             "leather", "suede", "shearling", "denim", "corduroy", "cord", "tweed", "flannel", "fleece", "nylon",
+             "polyester", "recycled", "organic", "jersey", "boucle", "bouclé", "seersucker", "gore-tex", "down"]
+_COLOUR_RE = [(c, re.compile(r"\b(" + "|".join(map(re.escape, ws)) + r")\b", re.I)) for c, ws in COLOURS.items()]
+
+
+def colour_of(p: dict, idx_colour: int | None) -> str | None:
+    """Colour from the shop's Colour option if it has one, else from the title."""
+    texts = []
+    if idx_colour is not None:
+        texts += [v.get(f"option{idx_colour + 1}") or "" for v in (p.get("variants") or [])[:1]]
+    texts.append(p.get("title", ""))
+    for t in texts:
+        for c, rx in _COLOUR_RE:
+            if rx.search(t):
+                return c
+    return None
+
+
+def materials_of(p: dict) -> list[str]:
+    text = " ".join([p.get("title", ""), re.sub(r"<[^>]+>", " ", p.get("body_html") or "")[:3000]]).lower()
+    found = [m for m in MATERIALS if re.search(rf"\b{re.escape(m)}\b", text)]
+    return [m for m in found if not (m == "wool" and any(x in found for x in ("merino", "lambswool")) and "wool" not in p.get("title", "").lower())][:5]
+
+
 def normalise(p: dict, brand: dict, fx: dict) -> dict | None:
     variants = p.get("variants") or []
     if not variants:
@@ -224,7 +264,10 @@ def normalise(p: dict, brand: dict, fx: dict) -> dict | None:
                 num_sizes.add(n)
 
     available = [v for v in variants if v.get("available")] or variants
-    price = min(float(v["price"]) for v in available if v.get("price"))
+    prices = [float(v["price"]) for v in available if v.get("price") and float(v["price"]) > 0]
+    if not prices:
+        return None  # free samples, swatches and placeholders aren't products
+    price = min(prices)
     compare = max((float(v["compare_at_price"]) for v in available if v.get("compare_at_price")), default=0.0)
     images = [i.get("src") for i in (p.get("images") or []) if i.get("src")]
 
@@ -240,6 +283,10 @@ def normalise(p: dict, brand: dict, fx: dict) -> dict | None:
         "tier": brand.get("tier"),
         "favourite_brand": bool(brand.get("favourite")),
         "title": p.get("title", "").strip(),
+        "colour": colour_of(p, next((i for i, o in enumerate(p.get("options") or [])
+                                     if isinstance(o, dict) and (o.get("name") or "").lower() in ("color", "colour")), None)),
+        "materials": materials_of(p),
+        "ptype": (p.get("product_type") or "").strip()[:40],
         "url": f"https://{brand['domain']}/products/{p.get('handle')}",
         "image": _shopify_img(images[0]) if images else "",
         "images": [_shopify_img(s) for s in images[:4]],

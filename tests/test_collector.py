@@ -114,3 +114,24 @@ def test_multibrand_store_keeps_the_label():
     r["vendor"] = "ADIDAS ORIGINALS"
     assert shopify.normalise(r, store, FX)["brand"] == "adidas"
     assert shopify.normalise(raw("High Rise Running Tights", "Bottoms"), BRAND, FX)["category"] == "activewear"
+
+
+def test_colour_and_materials():
+    r = raw("Pleated Trouser - Charcoal", "Trousers")
+    r["body_html"] = "<p>Made from 100% virgin wool with a cotton lining.</p>"
+    it = shopify.normalise(r, BRAND, FX)
+    assert it["colour"] == "grey" and it["materials"] == ["wool", "cotton"]
+    r2 = raw("Fisherman Cardigan", "Knitwear")
+    r2["options"] = [{"name": "Colour"}, {"name": "Size"}]
+    for v in r2["variants"]:
+        v["option1"], v["option2"] = "Navy", v["option1"]
+    assert shopify.normalise(r2, BRAND, FX)["colour"] == "navy"
+
+
+def test_tricky_titles():
+    cat = lambda t, pt="": shopify.normalise(raw(t, pt), BRAND, FX)["category"]
+    assert cat("Relaxed Bootcut Jeans") == "denim"
+    assert cat("Derby Seersucker Shirt in Washed Navy") == "shirts"
+    assert cat("L:A Bruket Disir Eau de Parfum - 50ML", "Dresses") == "lifestyle"
+    assert cat("Chelsea Boot in Suede") == "shoes"
+    assert shopify.normalise(raw("Shirt Fabric", price="0.00"), BRAND, FX) is None

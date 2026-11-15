@@ -221,7 +221,7 @@
   // ---------- filtering & scoring ----------
   function fits(it, p, { ignoreCategory = false, ignorePrice = false } = {}) {
     if (p.department !== "any" && it.department !== "unisex" && it.department !== p.department) return false;
-    if (!it.in_stock || it.category === "underwear") return false;
+    if (!it.in_stock || it.category === "underwear" || it.category === "lifestyle" || !(it.price_gbp > 0)) return false;
     if (p.tiers && p.tiers.length && !it.live) { const tier = it.tier || (S.brandInfo[it.brand] || {}).tier; if (tier && !p.tiers.includes(tier)) return false; }
     if (it.letter_sized && p.sizes.length && !(it.letter_sizes || []).some((s) => p.sizes.includes(s))) return false;
     if (p.waist && p.waist.length && it.waist_sizes && it.waist_sizes.length && !it.waist_sizes.some((w) => p.waist.includes(w))) return false;
@@ -321,9 +321,19 @@
     let base = steerPool(S.items.filter((it) => fits(it, p)).map((it) => ({ it, s: score(it) })));
     const seen = new Set([...p.liked, ...p.disliked]);
 
-    if (S.query) { // search by feeling: the query leads, your taste breaks ties
-      const qv = pv(S.query.vec), onlyBrand = brandInQuery(S.query.text);
-      if (onlyBrand) base = base.filter((x) => x.it.brand === onlyBrand);
+    if (S.query) { // a specific request: hard filters for what was named, then meaning + your taste
+      const qv = pv(S.query.vec);
+      const q = S.query.parsed || (S.query.parsed = parseQuery(S.query.text));
+      const off = S.query.off || (S.query.off = new Set());
+      // an explicit price or department in the request beats the profile's defaults
+      const usePrice = q.facets.some((f) => f.key === "price" && !off.has("price")), useDept = q.facets.some((f) => f.key === "dept" && !off.has("dept"));
+      if (usePrice || useDept) {
+        const p2 = { ...p, price: usePrice ? { min: 0, max: 1e9 } : p.price, department: useDept ? "any" : p.department };
+        base = steerPool(S.items.filter((it) => fits(it, p2)).map((it) => ({ it, s: score(it) })));
+      }
+      const res = matchQuery(base, q, off);
+      S.query.dropped = res.dropped;
+      base = res.list;
       const zq = zs(base.map((x) => dot(S.vecs[x.it.id], qv)));
       const ranked = base.map((x, i) => ({ ...x, q: zq[i] + 0.35 * x.s }))
         .sort((a, b) => b.q - a.q).slice(0, 240);
@@ -431,7 +441,8 @@
     const p = P(), l = leans(S.taste);
     $("#tastebar").hidden = S.tab === "saved";
     $("#tastebar").innerHTML = `
-      <form class="search" id="searchForm"><input id="q" placeholder="Search by feeling — “Sunday in Copenhagen in October”${S.live ? " (searches every shop live too)" : ""}" value="${S.query ? esc(S.query.text) : ""}" maxlength="140">${S.query ? `<button type="button" class="ghost sm" id="qClear">Clear</button>` : ""}</form>
+      <form class="search" id="searchForm"><input id="q" placeholder="Search anything — “black wool trousers for work under £150” or a feeling" value="${S.query ? esc(S.query.text) : ""}" maxlength="140">${S.query ? `<button type="button" class="ghost sm" id="qClear">Clear</button>` : ""}</form>
+      ${S.query ? facetChips(S.query.parsed || parseQuery(S.query.text), S.query.dropped || [], S.query.off || new Set()) : ""}
       <div class="tasterow"><div class="leans"><span class="lbl">Your feed leans</span>${l.map(([n, pc]) => `<span class="lean"><b>${esc(n)}</b> ${pc}%</span>`).join("")}</div>
       <div class="learn">${p.liked.length + p.disliked.length ? `Learning from ${p.liked.length} ♥ and ${p.disliked.length} ✕` : "♥ and ✕ pieces to teach it"}</div>
       <button class="ghost sm" data-open="tune">Tune my taste</button></div>
@@ -460,14 +471,15 @@
   }
   function render() {
     if (!P()) return;
-    const [h, sub] = S.query ? ["Search", "Matched on your words first, then nudged by your taste."] : INTROS[S.tab];
+    const [h, sub] = S.query ? ["Search", "What you asked for first, then ranked by your taste."] : INTROS[S.tab];
     $("#intro").innerHTML = `<h1>${h}</h1><p>${sub}</p>`;
     $("#surpriseWrap").hidden = S.tab !== "explore" || !!S.query;
     $("#controls").hidden = S.tab === "saved";
     document.querySelectorAll(".tabs button").forEach((b) => b.classList.toggle("active", !S.query && b.dataset.tab === S.tab));
     $("#savedCount").textContent = P().liked.length || "";
+    const full = build(), list = full.slice(0, 120);
     renderTastebar(); renderBrandsRow(); renderChips(); renderPrice(); renderLive();
-    const list = build().slice(0, 120);
+    if (S.query) $("#intro p").textContent = full.length ? `${full.length >= 240 ? "240+" : full.length} pieces · what you asked for first, then ranked by your taste.` : "Nothing matches that in our brands yet — try removing a filter above.";
     $("#grid").innerHTML = list.map(card).join("");
     $("#empty").hidden = list.length > 0;
     $("#empty").textContent = S.tab === "saved" ? "Nothing saved yet — tap ♥ on anything you love." : "Nothing here — try widening the price range or sizes.";
@@ -499,6 +511,82 @@
     $("#lq").focus({ preventScroll: true });
     if (!S.landingQuery) { $("#lResHead").innerHTML = `<p class="l-eyebrow">Today in the feed</p>`; $("#lGrid").innerHTML = LAND.picks.map(lcard).join(""); }
   }
+  // ---------- understanding a specific request: "black wool trousers for work under £150" ----------
+  const Q_CATS = [
+    [/\b(trousers?|pants|chinos?|slacks)\b/, "trousers", null, "Trousers"], [/\bjeans?\b/, "denim", null, "Jeans"],
+    [/\b(scarf|scarves)\b/, "accessories", /scarf|scarves/, "Scarves"], [/\b(beanie|hat|cap)s?\b/, "accessories", /beanie|hat\b|cap\b/, "Hats"],
+    [/\bgloves?\b/, "accessories", /glove/, "Gloves"], [/\bbelts?\b/, "accessories", /belt/, "Belts"],
+    [/\bcardigans?\b/, "knitwear", /cardigan/, "Cardigans"], [/\b(jumpers?|sweaters?|knits?|knitwear)\b/, "knitwear", null, "Knitwear"],
+    [/\b(coats?|overcoats?|parkas?|trench)\b/, "outerwear", /coat|parka|trench/, "Coats"], [/\bjackets?\b/, "outerwear", null, "Jackets"],
+    [/\bblazers?\b/, "tailoring", /blazer|jacket/, "Blazers"], [/\bsuits?\b/, "tailoring", null, "Suits"],
+    [/\b(t-?shirts?|tees?)\b/, "tshirts", null, "T-shirts"], [/\bpolos?\b/, null, /polo/, "Polos"],
+    [/\bshirts?\b/, "shirts", null, "Shirts"], [/\b(hoodies?|sweatshirts?|joggers?)\b/, "sweats", null, "Sweats"],
+    [/\bdress(es)?\b/, "dresses", null, "Dresses"], [/\bskirts?\b/, "skirts", null, "Skirts"], [/\b(tops?|blouses?|camis?)\b/, "tops", null, "Tops"],
+    [/\bboots?\b/, "shoes", /boot/, "Boots"], [/\bloafers?\b/, "shoes", /loafer/, "Loafers"],
+    [/\b(trainers?|sneakers?|running shoes?|runners?)\b/, "shoes", null, "Trainers"], [/\b(shoes?|footwear)\b/, "shoes", null, "Shoes"],
+    [/\b(bags?|totes?|backpacks?|handbags?)\b/, "bags", null, "Bags"], [/\bshorts\b/, "shorts", null, "Shorts"],
+    [/\b(leggings?|sports? bras?|activewear|gym)\b/, "activewear", null, "Activewear"],
+  ];
+  const Q_COLOURS = { black: ["black"], white: ["white"], cream: ["cream", "ivory", "ecru", "off-white", "off white", "oatmeal"],
+    grey: ["grey", "gray", "charcoal"], navy: ["navy"], blue: ["blue"], green: ["green"], olive: ["olive", "khaki"],
+    brown: ["brown", "chocolate", "tobacco"], beige: ["beige", "camel", "tan", "sand"], red: ["red"], burgundy: ["burgundy", "wine", "bordeaux", "oxblood"],
+    pink: ["pink"], purple: ["purple", "lilac"], yellow: ["yellow", "mustard"], orange: ["orange", "rust"] };
+  const COLOUR_OK = { blue: ["blue", "navy"], navy: ["navy", "blue"], cream: ["cream", "white", "beige"], white: ["white", "cream"],
+    brown: ["brown", "beige"], beige: ["beige", "brown", "cream"], burgundy: ["burgundy", "red"], olive: ["olive", "green"], green: ["green", "olive"] };
+  const Q_MATERIALS = { wool: ["wool", "merino", "lambswool", "cashmere", "mohair", "alpaca", "tweed", "flannel"], cashmere: ["cashmere"], merino: ["merino"],
+    cotton: ["cotton"], linen: ["linen"], silk: ["silk", "satin"], leather: ["leather"], suede: ["suede"], denim: ["denim"],
+    corduroy: ["corduroy", "cord"], cord: ["corduroy", "cord"], mohair: ["mohair"], tweed: ["tweed"], velvet: ["velvet"], fleece: ["fleece"], satin: ["satin", "silk"] };
+  function parseQuery(text) {
+    const t = text.toLowerCase(), q = { text, facets: [] };
+    for (const [re, cat, sub, label] of Q_CATS) if (re.test(t)) { q.facets.push({ key: "cat", cat, sub, label }); break; }
+    for (const [c, words] of Object.entries(Q_COLOURS)) if (words.some((w) => new RegExp(`\\b${w}\\b`).test(t))) { q.facets.push({ key: "colour", colour: c, label: c[0].toUpperCase() + c.slice(1) }); break; }
+    for (const [m, ok] of Object.entries(Q_MATERIALS)) if (new RegExp(`\\b${m}\\b`).test(t)) { q.facets.push({ key: "material", ok, label: m[0].toUpperCase() + m.slice(1) }); break; }
+    let m;
+    if ((m = t.match(/£?\s*(\d{2,4})\s*(?:-|–|to)\s*£?\s*(\d{2,4})/))) q.facets.push({ key: "price", min: +m[1], max: +m[2], label: `£${m[1]}–£${m[2]}` });
+    else if ((m = t.match(/(?:under|below|less than|max|up to|cheaper than)\s*£?\s*(\d{2,4})/))) q.facets.push({ key: "price", min: 0, max: +m[1], label: `Under £${m[1]}` });
+    else if ((m = t.match(/(?:over|above|more than|from)\s*£\s*(\d{2,4})/))) q.facets.push({ key: "price", min: +m[1], max: Infinity, label: `Over £${m[1]}` });
+    if (/\b(women'?s|womens|ladies|for women|for her)\b/.test(t)) q.facets.push({ key: "dept", dept: "women", label: "Womenswear" });
+    else if (/\b(men'?s|mens|for men|for him)\b/.test(t)) q.facets.push({ key: "dept", dept: "men", label: "Menswear" });
+    const b = brandInQuery(text); if (b) q.facets.push({ key: "brand", brand: b, label: b });
+    q.outOfScope = /\b(costumes?|fancy dress|halloween|cosplay|onesie|wig|uniform|school uniform|workwear boots? steel)\b/.test(t);
+    return q;
+  }
+  function facetOk(it, f) {
+    const title = it.title.toLowerCase();
+    switch (f.key) {
+      case "cat": return (!f.cat || it.category === f.cat) && (!f.sub || f.sub.test(title) || f.sub.test((it.ptype || "").toLowerCase()));
+      case "colour": { const ok = COLOUR_OK[f.colour] || [f.colour]; return ok.includes(it.colour) || Q_COLOURS[f.colour].some((w) => title.includes(w)); }
+      case "material": return f.ok.some((x) => (it.materials || []).includes(x) || title.includes(x));
+      case "price": return it.price_gbp >= f.min && it.price_gbp <= f.max;
+      case "dept": return it.department === f.dept || it.department === "unisex";
+      case "brand": return it.brand === f.brand;
+    }
+    return true;
+  }
+  // Strict first; if nothing matches, loosen the least important part (material, then colour, then the exact garment)
+  function matchQuery(pool, q, off = new Set()) {
+    const active = q.facets.filter((f) => !off.has(f.key));
+    const strict = pool.filter((x) => active.every((f) => facetOk(x.it, f)));
+    if (strict.length || !active.length) return { list: strict, dropped: [] };
+    const dropped = [];
+    for (const k of ["material", "colour", "price", "cat"]) {
+      const f = active.find((x) => x.key === k); if (!f) continue;
+      dropped.push(f);
+      const rest = active.filter((x) => !dropped.includes(x));
+      const loose = pool.filter((x) => rest.every((g) => facetOk(x.it, g)));
+      if (loose.length) return { list: loose, dropped };
+    }
+    return { list: [], dropped };
+  }
+  function facetChips(q, dropped, off) {
+    const scope = q.outOfScope ? `<span class="qnote">We search fashion brands, so costumes and fancy dress are rare here — these are the closest pieces to build the look from.</span>` : "";
+    if (!q.facets.length) return scope ? `<div class="qchips">${scope}</div>` : "";
+    return `<div class="qchips"><span class="lbl">Looking for</span>${q.facets.map((f) => {
+      const isOff = off.has(f.key), isDropped = dropped.some((d) => d.key === f.key);
+      return `<button class="qchip ${isOff || isDropped ? "off" : ""}" data-qfacet="${f.key}" title="${isOff ? "Add back" : "Remove this filter"}">${esc(f.label)} ${isOff ? "+" : "✕"}</button>`;
+    }).join("")}${dropped.length ? `<span class="qnote">No exact match — showing the closest without ${dropped.map((d) => esc(d.label.toLowerCase())).join(" or ")}.</span>` : ""}${scope}</div>`;
+  }
+
   // "Nike running shoes" → only Nike pieces (when we have enough of them)
   function brandInQuery(text) {
     const t = ` ${text} `;
@@ -518,15 +606,18 @@
       const [vec] = await Promise.all([encodeText(text, st), ensureShard("any")]);
       st.textContent = "Searching every brand…";
       const qv = pv(vec);
-      const m = text.match(/under\s*£?\s*(\d{2,4})/i), max = m ? +m[1] : Infinity;
-      const onlyBrand = brandInQuery(text);
-      const pool = S.items.filter((it) => it.in_stock && it.image && S.vecs[it.id] && it.category !== "underwear" && it.category !== "other" && it.price_gbp <= max && (!onlyBrand || it.brand === onlyBrand))
-        .map((it) => ({ it, s: dot(S.vecs[it.id], qv) })).sort((a, b) => b.s - a.s).slice(0, 400);
+      const q = parseQuery(text), pf = q.facets.find((f) => f.key === "price"), max = pf ? pf.max : Infinity;
+      const all = S.items.filter((it) => it.in_stock && it.image && S.vecs[it.id] && it.category !== "underwear" && it.category !== "other")
+        .map((it) => ({ it, s: dot(S.vecs[it.id], qv) }));
+      const res = matchQuery(all, q);
+      const pool = res.list.sort((a, b) => b.s - a.s).slice(0, 400);
       const top = diversify(pool, 1).slice(0, 12).map((x) => x.it);
       const men = pool.slice(0, 40).filter((x) => x.it.department === "men").length, women = pool.slice(0, 40).filter((x) => x.it.department === "women").length;
       S.landingQuery = { text, vec, max, dept: men > women * 2 ? "men" : women > men * 2 ? "women" : "any" };
       st.textContent = "";
-      $("#lResHead").innerHTML = `<h2>For “${esc(text)}”</h2><p class="l-sub">${pool.length >= 400 ? "Hundreds of matches" : `${pool.length} matches`} across ${new Set(pool.map((x) => x.it.brand)).size} brands. Save it and we'll keep finding more, in your size.</p><button class="l-cta" id="lSave">Make this my taste →</button>`;
+      $("#lResHead").innerHTML = `<h2>For “${esc(text)}”</h2>${facetChips(q, res.dropped, new Set()).replace(/data-qfacet="[^"]*"/g, "disabled")}
+        <p class="l-sub">${!pool.length ? "Nothing in our brands matches that yet — try removing a word or two." : `${pool.length >= 400 ? "Hundreds of matches" : `${pool.length} match${pool.length === 1 ? "" : "es"}`} across ${new Set(pool.map((x) => x.it.brand)).size} brands. Save it and we'll keep finding more, in your size.`}</p>
+        ${pool.length ? `<button class="l-cta" id="lSave">Make this my taste →</button>` : ""}`;
       $("#lGrid").innerHTML = top.map(lcard).join("");
       $("#lResHead").scrollIntoView({ behavior: "smooth", block: "start" });
     } catch (e) {
@@ -798,8 +889,9 @@
   async function runSearch(text) {
     const st = $("#qStatus");
     try {
-      const vec = await encodeText(text, st);
-      S.query = { text, vec }; S.brand = null; render(); window.scrollTo({ top: 0 });
+      const parsed = parseQuery(text), dept = parsed.facets.find((f) => f.key === "dept");
+      const [vec] = await Promise.all([encodeText(text, st), dept && dept.dept !== P().department ? ensureShard("any") : null]);
+      S.query = { text, vec, parsed: parseQuery(text) }; S.brand = null; render(); window.scrollTo({ top: 0 });
       liveSearch(text, vec);
     } catch (e) {
       st.textContent = S.model === "fake" ? "Search by feeling works on the live site." : `Couldn't load the style model (${e.message}).`;
@@ -814,6 +906,8 @@
     if (t.closest("[data-cat]")) { S.category = t.closest("[data-cat]").dataset.cat; render(); return; }
     if (t.closest("[data-clearbrand]")) { S.brand = null; render(); return; }
     if (t.closest("#qClear")) { S.query = null; render(); return; }
+    const qf = t.closest("[data-qfacet]");
+    if (qf && S.query) { const k = qf.dataset.qfacet, off = S.query.off || (S.query.off = new Set()); off.has(k) ? off.delete(k) : off.add(k); render(); return; }
     const bc = t.closest("[data-brand]");
     if (bc) { S.brand = S.brand === bc.dataset.brand ? null : bc.dataset.brand; S.category = "all"; render(); if (S.brand) $("#controls").scrollIntoView({ behavior: "smooth" }); return; }
     const act = t.closest("[data-act]");
@@ -952,6 +1046,8 @@
     const p = S.builtins.length && unlockFromLink();
     if (p) { $("#welcome").hidden = true; showLanding(false); await useProfile(p); render(); }
   });
+
+  if (/[?&]debug=1/.test(location.search)) window.__fp = { S, parseQuery, matchQuery, render, pv, norm, mean }; // for automated tests
 
   // ---------- boot ----------
   (async function boot() {

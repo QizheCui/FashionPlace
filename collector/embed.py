@@ -153,6 +153,8 @@ def fix_categories(enc, items: list[dict], mat: np.ndarray) -> None:
         best = int(pr.argmax())
         # titles are right when they name the garment ('jean', 'scarf', 'sweatpant'); when the title is
         # just a name ('Calcata') the shop's product type can be off, so a confident photo wins
+        if it["category"] == "lifestyle":
+            continue  # perfume, candles, books: never turn them into clothes
         title_says = shopify.detect_category({"title": it["title"], "product_type": ""})
         if title_says == "other" and cats[best] != it["category"] and pr[best] > (0.4 if it["category"] == "other" else 0.6):
             it["category"] = cats[best]
@@ -168,18 +170,33 @@ def fix_categories(enc, items: list[dict], mat: np.ndarray) -> None:
             it["department"] = "men" if pr[0] > pr[1] else "women"
             moved += 1
     print(f"unisex pieces assigned from photos: {moved}")
-    by_id = {it["id"]: (it["category"], it.get("department")) for it in items}
+    # colour: the shop's own colour option/title wins; the photo fills in the rest
+    cols = list(shopify.COLOURS)
+    c = enc.text([f"a photo of {x} clothing" for x in cols])
+    cl = 100.0 * mat @ c.T
+    cp = np.exp(cl - cl.max(1, keepdims=True))
+    cp /= cp.sum(1, keepdims=True)
+    filled = 0
+    for it, pr in zip(items, cp):
+        if not it.get("colour") and pr.max() > 0.45:
+            it["colour"] = cols[int(pr.argmax())]
+            it["colour_from_photo"] = True
+            filled += 1
+    print(f"colours read from photos: {filled}")
+    by_id = {it["id"]: (it["category"], it.get("department"), it.get("colour"), it.get("colour_from_photo")) for it in items}
     full = json.loads((DATA / "items.json").read_text())
     for it in full["items"]:
         if it["id"] in by_id:
-            it["category"], it["department"] = by_id[it["id"]]
+            it["category"], it["department"], it["colour"], cfp = by_id[it["id"]]
+            if cfp:
+                it["colour_from_photo"] = True
     (DATA / "items.json").write_text(json.dumps(full, ensure_ascii=False))
     print(f"categories corrected from photos: {changed}")
 
 
 def run(fake: bool = False) -> None:
     items = [it for it in json.loads((DATA / "items.json").read_text())["items"]
-             if it.get("in_stock") and it.get("category") != "underwear"]
+             if it.get("in_stock") and it.get("category") not in ("underwear", "lifestyle")]
     enc = FakeEncoder() if fake else ClipEncoder()
     mat = enc.items(items).astype(np.float32)
     mat /= np.linalg.norm(mat, axis=1, keepdims=True) + 1e-9
