@@ -1,0 +1,259 @@
+{
+ "products": [
+  {
+   "id": 1000,
+   "title": "Grandad Collar Shirt - Navy Flannel",
+   "handle": "grandad-collar-shirt-navy-flannel",
+   "product_type": "Shirts",
+   "tags": [
+    "mens"
+   ],
+   "options": [
+    {
+     "name": "Size",
+     "position": 1
+    }
+   ],
+   "images": [
+    {
+     "src": "https://cdn.shopify.com/s/files/test/grandad-collar-shirt-navy-flannel.jpg"
+    }
+   ],
+   "variants": [
+    {
+     "title": "S",
+     "option1": "S",
+     "price": "125.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "M",
+     "option1": "M",
+     "price": "125.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "L",
+     "option1": "L",
+     "price": "125.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "XL",
+     "option1": "XL",
+     "price": "125.00",
+     "compare_at_price": null,
+     "available": true
+    }
+   ],
+   "published_at": "2026-11-01T10:00:00+00:00"
+  },
+  {
+   "id": 1001,
+   "title": "Fisherman Cardigan - Ecru Boucle",
+   "handle": "fisherman-cardigan-ecru-boucle",
+   "product_type": "Knitwear",
+   "tags": [
+    "mens"
+   ],
+   "options": [
+    {
+     "name": "Size",
+     "position": 1
+    }
+   ],
+   "images": [
+    {
+     "src": "https://cdn.shopify.com/s/files/test/fisherman-cardigan-ecru-boucle.jpg"
+    }
+   ],
+   "variants": [
+    {
+     "title": "S",
+     "option1": "S",
+     "price": "215.00",
+     "compare_at_price": "275.00",
+     "available": true
+    },
+    {
+     "title": "M",
+     "option1": "M",
+     "price": "215.00",
+     "compare_at_price": "275.00",
+     "available": false
+    },
+    {
+     "title": "L",
+     "option1": "L",
+     "price": "215.00",
+     "compare_at_price": "275.00",
+     "available": true
+    },
+    {
+     "title": "XL",
+     "option1": "XL",
+     "price": "215.00",
+     "compare_at_price": "275.00",
+     "available": true
+    }
+   ],
+   "published_at": "2026-11-01T10:00:00+00:00"
+  },
+  {
+   "id": 1002,
+   "title": "Relaxed Wool Trousers - Grey Herringbone",
+   "handle": "relaxed-wool-trousers-grey-herringbone",
+   "product_type": "Trousers",
+   "tags": [
+    "mens"
+   ],
+   "options": [
+    {
+     "name": "Size",
+     "position": 1
+    }
+   ],
+   "images": [
+    {
+     "src": "https://cdn.shopify.com/s/files/test/relaxed-wool-trousers-grey-herringbone.jpg"
+    }
+   ],
+   "variants": [
+    {
+     "title": "S",
+     "option1": "S",
+     "price": "165.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "M",
+     "option1": "M",
+     "price": "165.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "L",
+     "option1": "L",
+     "price": "165.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "XL",
+     "option1": "XL",
+     "price": "165.00",
+     "compare_at_price": null,
+     "available": true
+    }
+   ],
+   "published_at": "2026-11-01T10:00:00+00:00"
+  },
+  {
+   "id": 1003,
+   "title": "Buckland Jacket - Green Moleskin",
+   "handle": "buckland-jacket-green-moleskin",
+   "product_type": "Jackets",
+   "tags": [
+    "mens"
+   ],
+   "options": [
+    {
+     "name": "Size",
+     "position": 1
+    }
+   ],
+   "images": [
+    {
+     "src": "https://cdn.shopify.com/s/files/test/buckland-jacket-green-moleskin.jpg"
+    }
+   ],
+   "variants": [
+    {
+     "title": "S",
+     "option1": "S",
+     "price": "279.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "M",
+     "option1": "M",
+     "price": "279.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "L",
+     "option1": "L",
+     "price": "279.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "XL",
+     "option1": "XL",
+     "price": "279.00",
+     "compare_at_price": null,
+     "available": true
+    }
+   ],
+   "published_at": "2026-11-01T10:00:00+00:00"
+  },
+  {
+   "id": 1004,
+   "title": "Leather Loafers - Dark Brown Suede",
+   "handle": "leather-loafers-dark-brown-suede",
+   "product_type": "Shoes",
+   "tags": [
+    "mens"
+   ],
+   "options": [
+    {
+     "name": "Size",
+     "position": 1
+    }
+   ],
+   "images": [
+    {
+     "src": "https://cdn.shopify.com/s/files/test/leather-loafers-dark-brown-suede.jpg"
+    }
+   ],
+   "variants": [
+    {
+     "title": "8",
+     "option1": "8",
+     "price": "195.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "9",
+     "option1": "9",
+     "price": "195.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "10",
+     "option1": "10",
+     "price": "195.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "11",
+     "option1": "11",
+     "price": "195.00",
+     "compare_at_price": null,
+     "available": true
+    }
+   ],
+   "published_at": "2026-11-01T10:00:00+00:00"
+  }
+ ]
+}

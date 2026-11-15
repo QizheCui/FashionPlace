@@ -1,0 +1,28 @@
+{
+  "id": "qizhe",
+  "name": "Qizhe",
+  "department": "men",
+  "size": "M",
+  "budget": {"ideal_max_gbp": 200, "hard_max_gbp": 300},
+  "taste_prompts": [
+    "a relaxed fit men's outfit with old money style and a modern minimalist touch",
+    "understated classic menswear in navy, camel, cream, olive and brown",
+    "vintage ivy league preppy clothing, quietly elegant",
+    "european autumn menswear, wool, corduroy, suede and heavy cotton",
+    "smart casual menswear somewhere between casual and formal",
+    "a well made knitted jumper in a muted earthy colour",
+    "a relaxed overshirt or chore jacket in natural fabric",
+    "relaxed pleated trousers in wool or cotton twill"
+  ],
+  "avoid_prompts": [
+    "loud logo streetwear",
+    "cheap fast fashion high street clothing",
+    "shiny technical sportswear",
+    "a stiff formal business suit"
+  ],
+  "surprise_prompts": [
+    "a menswear piece in a rich bold colour that still looks elegant",
+    "an interesting textured fabric such as boucle, mohair or chunky cable knit",
+    "a vintage inspired patterned piece with character"
+  ]
+}

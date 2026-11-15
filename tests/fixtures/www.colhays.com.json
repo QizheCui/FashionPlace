@@ -1,0 +1,136 @@
+{
+ "products": [
+  {
+   "id": 1000,
+   "title": "Shawl Collar Cardigan - Bottle Green Cashmere Blend",
+   "handle": "shawl-collar-cardigan-bottle-green-cashmere-blend",
+   "product_type": "Knitwear",
+   "tags": [
+    "mens"
+   ],
+   "options": [
+    {
+     "name": "Size",
+     "position": 1
+    }
+   ],
+   "images": [
+    {
+     "src": "https://cdn.shopify.com/s/files/test/shawl-collar-cardigan-bottle-green-cashmere-blend.jpg"
+    }
+   ],
+   "variants": [
+    {
+     "title": "S",
+     "option1": "S",
+     "price": "245.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "M",
+     "option1": "M",
+     "price": "245.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "L",
+     "option1": "L",
+     "price": "245.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "XL",
+     "option1": "XL",
+     "price": "245.00",
+     "compare_at_price": null,
+     "available": true
+    }
+   ],
+   "published_at": "2026-11-01T10:00:00+00:00"
+  },
+  {
+   "id": 1001,
+   "title": "Fair Isle Crew - Oatmeal Vintage Pattern",
+   "handle": "fair-isle-crew-oatmeal-vintage-pattern",
+   "product_type": "Knitwear",
+   "tags": [
+    "mens"
+   ],
+   "options": [
+    {
+     "name": "Size",
+     "position": 1
+    }
+   ],
+   "images": [
+    {
+     "src": "https://cdn.shopify.com/s/files/test/fair-isle-crew-oatmeal-vintage-pattern.jpg"
+    }
+   ],
+   "variants": [
+    {
+     "title": "S",
+     "option1": "S",
+     "price": "185.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "M",
+     "option1": "M",
+     "price": "185.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "L",
+     "option1": "L",
+     "price": "185.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "XL",
+     "option1": "XL",
+     "price": "185.00",
+     "compare_at_price": null,
+     "available": true
+    }
+   ],
+   "published_at": "2026-11-01T10:00:00+00:00"
+  },
+  {
+   "id": 1002,
+   "title": "Lambswool Scarf - Camel",
+   "handle": "lambswool-scarf-camel",
+   "product_type": "Scarves",
+   "tags": [
+    "mens"
+   ],
+   "options": [
+    {
+     "name": "Size",
+     "position": 1
+    }
+   ],
+   "images": [
+    {
+     "src": "https://cdn.shopify.com/s/files/test/lambswool-scarf-camel.jpg"
+    }
+   ],
+   "variants": [
+    {
+     "title": "One Size",
+     "option1": "One Size",
+     "price": "65.00",
+     "compare_at_price": null,
+     "available": true
+    }
+   ],
+   "published_at": "2026-11-01T10:00:00+00:00"
+  }
+ ]
+}

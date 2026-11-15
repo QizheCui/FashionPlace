@@ -1,0 +1,187 @@
+{
+ "products": [
+  {
+   "id": 1000,
+   "title": "Inverness Overshirt - Moss Wool",
+   "handle": "inverness-overshirt-moss-wool",
+   "product_type": "Overshirts",
+   "tags": [
+    "mens"
+   ],
+   "options": [
+    {
+     "name": "Size",
+     "position": 1
+    }
+   ],
+   "images": [
+    {
+     "src": "https://cdn.shopify.com/s/files/test/inverness-overshirt-moss-wool.jpg"
+    }
+   ],
+   "variants": [
+    {
+     "title": "S",
+     "option1": "S",
+     "price": "165.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "M",
+     "option1": "M",
+     "price": "165.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "L",
+     "option1": "L",
+     "price": "165.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "XL",
+     "option1": "XL",
+     "price": "165.00",
+     "compare_at_price": null,
+     "available": true
+    }
+   ],
+   "published_at": "2026-11-01T10:00:00+00:00"
+  },
+  {
+   "id": 1001,
+   "title": "Crew Neck Jumper - Rust Lambswool",
+   "handle": "crew-neck-jumper-rust-lambswool",
+   "product_type": "Knitwear",
+   "tags": [
+    "mens"
+   ],
+   "options": [
+    {
+     "name": "Size",
+     "position": 1
+    }
+   ],
+   "images": [
+    {
+     "src": "https://cdn.shopify.com/s/files/test/crew-neck-jumper-rust-lambswool.jpg"
+    }
+   ],
+   "variants": [
+    {
+     "title": "S",
+     "option1": "S",
+     "price": "115.00",
+     "compare_at_price": "145.00",
+     "available": true
+    },
+    {
+     "title": "M",
+     "option1": "M",
+     "price": "115.00",
+     "compare_at_price": "145.00",
+     "available": true
+    },
+    {
+     "title": "L",
+     "option1": "L",
+     "price": "115.00",
+     "compare_at_price": "145.00",
+     "available": true
+    },
+    {
+     "title": "XL",
+     "option1": "XL",
+     "price": "115.00",
+     "compare_at_price": "145.00",
+     "available": true
+    }
+   ],
+   "published_at": "2026-11-01T10:00:00+00:00"
+  },
+  {
+   "id": 1002,
+   "title": "Tapered Chino - Stone Cotton Twill",
+   "handle": "tapered-chino-stone-cotton-twill",
+   "product_type": "Trousers",
+   "tags": [
+    "mens"
+   ],
+   "options": [
+    {
+     "name": "Size",
+     "position": 1
+    }
+   ],
+   "images": [
+    {
+     "src": "https://cdn.shopify.com/s/files/test/tapered-chino-stone-cotton-twill.jpg"
+    }
+   ],
+   "variants": [
+    {
+     "title": "S",
+     "option1": "S",
+     "price": "110.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "M",
+     "option1": "M",
+     "price": "110.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "L",
+     "option1": "L",
+     "price": "110.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "XL",
+     "option1": "XL",
+     "price": "110.00",
+     "compare_at_price": null,
+     "available": true
+    }
+   ],
+   "published_at": "2026-11-01T10:00:00+00:00"
+  },
+  {
+   "id": 1003,
+   "title": "Leather Tote Bag - Tan",
+   "handle": "leather-tote-bag-tan",
+   "product_type": "Bags",
+   "tags": [
+    "mens"
+   ],
+   "options": [
+    {
+     "name": "Size",
+     "position": 1
+    }
+   ],
+   "images": [
+    {
+     "src": "https://cdn.shopify.com/s/files/test/leather-tote-bag-tan.jpg"
+    }
+   ],
+   "variants": [
+    {
+     "title": "One Size",
+     "option1": "One Size",
+     "price": "185.00",
+     "compare_at_price": null,
+     "available": true
+    }
+   ],
+   "published_at": "2026-11-01T10:00:00+00:00"
+  }
+ ]
+}

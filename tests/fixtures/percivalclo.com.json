@@ -1,0 +1,310 @@
+{
+ "products": [
+  {
+   "id": 1000,
+   "title": "Oxford Button Down Shirt - Ecru",
+   "handle": "oxford-button-down-shirt-ecru",
+   "product_type": "Shirts",
+   "tags": [
+    "mens"
+   ],
+   "options": [
+    {
+     "name": "Size",
+     "position": 1
+    }
+   ],
+   "images": [
+    {
+     "src": "https://cdn.shopify.com/s/files/test/oxford-button-down-shirt-ecru.jpg"
+    }
+   ],
+   "variants": [
+    {
+     "title": "S",
+     "option1": "S",
+     "price": "95.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "M",
+     "option1": "M",
+     "price": "95.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "L",
+     "option1": "L",
+     "price": "95.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "XL",
+     "option1": "XL",
+     "price": "95.00",
+     "compare_at_price": null,
+     "available": true
+    }
+   ],
+   "published_at": "2026-11-01T10:00:00+00:00"
+  },
+  {
+   "id": 1001,
+   "title": "Varsity Cardigan - Burgundy Mohair",
+   "handle": "varsity-cardigan-burgundy-mohair",
+   "product_type": "Knitwear",
+   "tags": [
+    "mens"
+   ],
+   "options": [
+    {
+     "name": "Size",
+     "position": 1
+    }
+   ],
+   "images": [
+    {
+     "src": "https://cdn.shopify.com/s/files/test/varsity-cardigan-burgundy-mohair.jpg"
+    }
+   ],
+   "variants": [
+    {
+     "title": "S",
+     "option1": "S",
+     "price": "175.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "M",
+     "option1": "M",
+     "price": "175.00",
+     "compare_at_price": null,
+     "available": false
+    },
+    {
+     "title": "L",
+     "option1": "L",
+     "price": "175.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "XL",
+     "option1": "XL",
+     "price": "175.00",
+     "compare_at_price": null,
+     "available": true
+    }
+   ],
+   "published_at": "2026-11-01T10:00:00+00:00"
+  },
+  {
+   "id": 1002,
+   "title": "Pleated Corduroy Trousers - Tobacco Brown",
+   "handle": "pleated-corduroy-trousers-tobacco-brown",
+   "product_type": "Trousers",
+   "tags": [
+    "mens"
+   ],
+   "options": [
+    {
+     "name": "Size",
+     "position": 1
+    }
+   ],
+   "images": [
+    {
+     "src": "https://cdn.shopify.com/s/files/test/pleated-corduroy-trousers-tobacco-brown.jpg"
+    }
+   ],
+   "variants": [
+    {
+     "title": "S",
+     "option1": "S",
+     "price": "120.00",
+     "compare_at_price": "150.00",
+     "available": true
+    },
+    {
+     "title": "M",
+     "option1": "M",
+     "price": "120.00",
+     "compare_at_price": "150.00",
+     "available": true
+    },
+    {
+     "title": "L",
+     "option1": "L",
+     "price": "120.00",
+     "compare_at_price": "150.00",
+     "available": true
+    },
+    {
+     "title": "XL",
+     "option1": "XL",
+     "price": "120.00",
+     "compare_at_price": "150.00",
+     "available": true
+    }
+   ],
+   "published_at": "2026-11-01T10:00:00+00:00"
+  },
+  {
+   "id": 1003,
+   "title": "Big Logo Hoodie - Black",
+   "handle": "big-logo-hoodie-black",
+   "product_type": "Sweats",
+   "tags": [
+    "mens"
+   ],
+   "options": [
+    {
+     "name": "Size",
+     "position": 1
+    }
+   ],
+   "images": [
+    {
+     "src": "https://cdn.shopify.com/s/files/test/big-logo-hoodie-black.jpg"
+    }
+   ],
+   "variants": [
+    {
+     "title": "S",
+     "option1": "S",
+     "price": "90.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "M",
+     "option1": "M",
+     "price": "90.00",
+     "compare_at_price": null,
+     "available": false
+    },
+    {
+     "title": "L",
+     "option1": "L",
+     "price": "90.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "XL",
+     "option1": "XL",
+     "price": "90.00",
+     "compare_at_price": null,
+     "available": true
+    }
+   ],
+   "published_at": "2026-11-01T10:00:00+00:00"
+  },
+  {
+   "id": 1004,
+   "title": "Suede Chore Jacket - Chocolate",
+   "handle": "suede-chore-jacket-chocolate",
+   "product_type": "Jackets",
+   "tags": [
+    "mens"
+   ],
+   "options": [
+    {
+     "name": "Size",
+     "position": 1
+    }
+   ],
+   "images": [
+    {
+     "src": "https://cdn.shopify.com/s/files/test/suede-chore-jacket-chocolate.jpg"
+    }
+   ],
+   "variants": [
+    {
+     "title": "S",
+     "option1": "S",
+     "price": "395.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "M",
+     "option1": "M",
+     "price": "395.00",
+     "compare_at_price": null,
+     "available": false
+    },
+    {
+     "title": "L",
+     "option1": "L",
+     "price": "395.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "XL",
+     "option1": "XL",
+     "price": "395.00",
+     "compare_at_price": null,
+     "available": true
+    }
+   ],
+   "published_at": "2026-11-01T10:00:00+00:00"
+  },
+  {
+   "id": 1005,
+   "title": "Rugby Shirt - Navy Cream Stripe Vintage",
+   "handle": "rugby-shirt-navy-cream-stripe-vintage",
+   "product_type": "Shirts",
+   "tags": [
+    "mens"
+   ],
+   "options": [
+    {
+     "name": "Size",
+     "position": 1
+    }
+   ],
+   "images": [
+    {
+     "src": "https://cdn.shopify.com/s/files/test/rugby-shirt-navy-cream-stripe-vintage.jpg"
+    }
+   ],
+   "variants": [
+    {
+     "title": "S",
+     "option1": "S",
+     "price": "110.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "M",
+     "option1": "M",
+     "price": "110.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "L",
+     "option1": "L",
+     "price": "110.00",
+     "compare_at_price": null,
+     "available": true
+    },
+    {
+     "title": "XL",
+     "option1": "XL",
+     "price": "110.00",
+     "compare_at_price": null,
+     "available": true
+    }
+   ],
+   "published_at": "2026-11-01T10:00:00+00:00"
+  }
+ ]
+}

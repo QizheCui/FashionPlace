@@ -1,0 +1,23 @@
+{
+  "_comment": "Brands the collector knows about. source=shopify uses the store's public /products.json. source=affiliate means we still need a feed (e.g. Awin) - skipped for now. 'favourite' brands are ones the user already loves; Explore prefers the others.",
+  "brands": [
+    {"name": "Wax London",       "domain": "www.waxlondon.com",       "source": "shopify",   "currency": "GBP", "favourite": true},
+    {"name": "Percival",         "domain": "percivalclo.com",         "source": "shopify",   "currency": "GBP", "favourite": true},
+    {"name": "Alex Mill",        "domain": "www.alexmill.com",        "source": "shopify",   "currency": "USD", "favourite": true},
+    {"name": "Rains",            "domain": "www.rains.com",           "source": "shopify",   "currency": "GBP", "favourite": true},
+    {"name": "Oliver Spencer",   "domain": "oliverspencer.co.uk",     "source": "shopify",   "currency": "GBP", "favourite": false},
+    {"name": "Universal Works",  "domain": "universalworks.co.uk",    "source": "shopify",   "currency": "GBP", "favourite": false},
+    {"name": "Sunspel",          "domain": "www.sunspel.com",         "source": "shopify",   "currency": "GBP", "favourite": false},
+    {"name": "Kestin",           "domain": "www.kestin.co",           "source": "shopify",   "currency": "GBP", "favourite": false},
+    {"name": "Drake's",          "domain": "www.drakes.com",          "source": "shopify",   "currency": "GBP", "favourite": false},
+    {"name": "Norse Projects",   "domain": "www.norseprojects.com",   "source": "shopify",   "currency": "GBP", "favourite": false},
+    {"name": "De Bonne Facture", "domain": "debonnefacture.com",      "source": "shopify",   "currency": "EUR", "favourite": false},
+    {"name": "Colhay's",         "domain": "www.colhays.com",         "source": "shopify",   "currency": "GBP", "favourite": false},
+    {"name": "Ralph Lauren",     "domain": "www.ralphlauren.co.uk",   "source": "affiliate", "currency": "GBP", "favourite": true},
+    {"name": "Reiss",            "domain": "www.reiss.com",           "source": "affiliate", "currency": "GBP", "favourite": true},
+    {"name": "Arket",            "domain": "www.arket.com",           "source": "affiliate", "currency": "GBP", "favourite": true},
+    {"name": "COS",              "domain": "www.cos.com",             "source": "affiliate", "currency": "GBP", "favourite": true},
+    {"name": "Suitsupply",       "domain": "suitsupply.com",          "source": "affiliate", "currency": "GBP", "favourite": true}
+  ],
+  "fx_to_gbp": {"GBP": 1.0, "USD": 0.79, "EUR": 0.85}
+}
