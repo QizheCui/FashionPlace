@@ -193,7 +193,7 @@
     if (p.department !== "any" && it.department !== "unisex" && it.department !== p.department) return false;
     if (!it.in_stock || it.category === "underwear") return false;
     if (p.tiers && p.tiers.length && !it.live) { const b = S.brandInfo[it.brand]; if (b && b.tier && !p.tiers.includes(b.tier)) return false; }
-    if (it.letter_sized && p.sizes.length && !it.letter_sizes.some((s) => p.sizes.includes(s))) return false;
+    if (it.letter_sized && p.sizes.length && !(it.letter_sizes || []).some((s) => p.sizes.includes(s))) return false;
     if (p.waist && p.waist.length && it.waist_sizes && it.waist_sizes.length && !it.waist_sizes.some((w) => p.waist.includes(w))) return false;
     if (p.shoe && p.shoe.length && it.shoe_sizes && it.shoe_sizes.length && !it.shoe_sizes.some((w) => p.shoe.includes(w) || p.shoe.includes(w - 0.5))) return false;
     if (!ignorePrice && (it.price_gbp < p.price.min || (p.price.max < 1000 && it.price_gbp > p.price.max))) return false;
@@ -250,8 +250,8 @@
     const d = it.deal || {}, now = new Date(), stats = (S.brandStats[it.brand] || {}).days || [];
     if (d.verdict === "real_drop") return { cls: "buy", text: `Buy now — genuinely ${d.discount_pct}% below what we've seen` };
     if (d.verdict === "on_sale_unverified") return { cls: "buy", text: `On sale now (−${d.discount_pct}%)` };
-    const mine = it.letter_sized ? it.letter_sizes.filter((x) => p.sizes.includes(x)) : [];
-    if (it.letter_sized && it.letter_sizes.length <= 2 && mine.length) return { cls: "buy", text: "Few sizes left — may not last" };
+    const mine = it.letter_sized ? (it.letter_sizes || []).filter((x) => p.sizes.includes(x)) : [];
+    if (it.letter_sized && (it.letter_sizes || []).length <= 2 && mine.length) return { cls: "buy", text: "Few sizes left — may not last" };
     const rarely = stats.length >= 30 && Math.max(...stats.map((x) => x[1])) < 0.05;
     if (rarely) return { cls: "", text: `${it.brand} rarely discounts — buy when you're ready` };
     const bf = blackFriday(now.getUTCFullYear()), days = Math.ceil((bf - now) / 864e5);
@@ -267,7 +267,7 @@
     const s = p.saved[it.id];
     if (!it) return null;
     if (!it.in_stock) return { cls: "warn", text: "Sold out" };
-    if (it.letter_sized && p.sizes.length && !it.letter_sizes.some((x) => p.sizes.includes(x))) return { cls: "warn", text: "Not in your size right now" };
+    if (it.letter_sized && p.sizes.length && !(it.letter_sizes || []).some((x) => p.sizes.includes(x))) return { cls: "warn", text: "Not in your size right now" };
     if (s && s.price && it.price_gbp < s.price - 0.5) return { cls: "deal", text: `Dropped ${money(s.price - it.price_gbp)} since you saved it` };
     if (s && s.outOfSize) return { cls: "new", text: "Back in your size" };
     return null;
@@ -709,7 +709,7 @@
       p.liked = p.liked.filter((x) => x !== id); p.disliked = p.disliked.filter((x) => x !== id);
       if (act.dataset.act === "like" && !wasLiked) {
         p.liked.unshift(id);
-        p.saved[id] = { price: it.price_gbp, date: today(), outOfSize: !!(it.letter_sized && !it.letter_sizes.some((s) => p.sizes.includes(s))) };
+        p.saved[id] = { price: it.price_gbp, date: today(), outOfSize: !!(it.letter_sized && !(it.letter_sizes || []).some((s) => p.sizes.includes(s))) };
         if (it.live) { p.extra ||= {}; p.extra[id] = { item: it, vec: (S.liveVec || {})[id] }; }
         toast("Saved — more like this");
       } else delete p.saved[id];
