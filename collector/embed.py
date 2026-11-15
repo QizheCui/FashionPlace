@@ -74,7 +74,7 @@ class ClipEncoder:
         print(f"embedding {len(todo)} new images ({len(items) - len(todo)} cached)")
         for start in range(0, len(todo), 64):
             chunk = todo[start : start + 64]
-            with ThreadPoolExecutor(8) as ex:
+            with ThreadPoolExecutor(16) as ex:
                 imgs = list(ex.map(lambda it: self._download(it["image"]), chunk))
             ok = [(it, im) for it, im in zip(chunk, imgs) if im is not None]
             if ok:
@@ -146,7 +146,7 @@ def run(fake: bool = False) -> None:
     ]))
     brands = json.loads((CONFIG / "brands.json").read_text())["brands"]
     (DATA / "brands.json").write_text(json.dumps(
-        [{k: b.get(k) for k in ("name", "domain", "source", "blurb")} for b in brands], ensure_ascii=False))
+        [{k: b.get(k) for k in ("name", "domain", "source", "blurb", "departments")} for b in brands], ensure_ascii=False))
     index = [p.stem for p in sorted((CONFIG / "profiles").glob("*.json"))]
     (DATA / "profiles" / "index.json").write_text(json.dumps(index))
 

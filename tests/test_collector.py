@@ -87,3 +87,10 @@ def test_numeric_sizes():
     assert tr["waist_sizes"] == [30, 32, 34] and tr["shoe_sizes"] == []
     sh = shopify.normalise(raw("Suede Loafer", "Shoes", sizes=("EU 42", "EU 43")), BRAND, FX)
     assert sh["shoe_sizes"] == [8, 9]
+
+
+def test_single_department_brand_claims_untagged_items():
+    menswear = {**BRAND, "departments": ["men"]}
+    assert shopify.normalise(raw("Oxford Shirt", tags=()), menswear, FX)["department"] == "men"
+    both = {**BRAND, "departments": ["men", "women"]}
+    assert shopify.normalise(raw("Oxford Shirt", tags=()), both, FX)["department"] == "unisex"

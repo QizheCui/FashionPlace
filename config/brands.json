@@ -7,7 +7,10 @@
       "source": "shopify",
       "currency": "GBP",
       "favourite": true,
-      "blurb": "London label making relaxed, textured menswear with a strong focus on responsibly sourced fabrics."
+      "blurb": "London label making relaxed, textured menswear with a strong focus on responsibly sourced fabrics.",
+      "departments": [
+        "men"
+      ]
     },
     {
       "name": "Percival",
@@ -15,7 +18,10 @@
       "source": "shopify",
       "currency": "GBP",
       "favourite": true,
-      "blurb": "Soho-born London brand: modern prep with playful knitwear and a 90s vintage wink."
+      "blurb": "Soho-born London brand: modern prep with playful knitwear and a 90s vintage wink.",
+      "departments": [
+        "men"
+      ]
     },
     {
       "name": "Alex Mill",
@@ -23,7 +29,11 @@
       "source": "shopify",
       "currency": "USD",
       "favourite": true,
-      "blurb": "New York label doing easy, vintage-leaning American casualwear."
+      "blurb": "New York label doing easy, vintage-leaning American casualwear.",
+      "departments": [
+        "men",
+        "women"
+      ]
     },
     {
       "name": "Rains",
@@ -31,7 +41,11 @@
       "source": "shopify",
       "currency": "GBP",
       "favourite": true,
-      "blurb": "Danish rainwear brand: minimal, waterproof outerwear and bags with a clean Scandinavian look."
+      "blurb": "Danish rainwear brand: minimal, waterproof outerwear and bags with a clean Scandinavian look.",
+      "departments": [
+        "men",
+        "women"
+      ]
     },
     {
       "name": "Oliver Spencer",
@@ -39,7 +53,10 @@
       "source": "shopify",
       "currency": "GBP",
       "favourite": false,
-      "blurb": "London designer known for relaxed British tailoring and natural, characterful fabrics."
+      "blurb": "London designer known for relaxed British tailoring and natural, characterful fabrics.",
+      "departments": [
+        "men"
+      ]
     },
     {
       "name": "Universal Works",
@@ -47,7 +64,10 @@
       "source": "shopify",
       "currency": "GBP",
       "favourite": false,
-      "blurb": "Nottingham brand mixing British workwear with a laid-back, colourful touch."
+      "blurb": "Nottingham brand mixing British workwear with a laid-back, colourful touch.",
+      "departments": [
+        "men"
+      ]
     },
     {
       "name": "Sunspel",
@@ -55,7 +75,11 @@
       "source": "shopify",
       "currency": "GBP",
       "favourite": false,
-      "blurb": "English brand making refined everyday essentials since 1860: tees, polos and knitwear done properly."
+      "blurb": "English brand making refined everyday essentials since 1860: tees, polos and knitwear done properly.",
+      "departments": [
+        "men",
+        "women"
+      ]
     },
     {
       "name": "Kestin",
@@ -63,7 +87,10 @@
       "source": "shopify",
       "currency": "GBP",
       "favourite": false,
-      "blurb": "Edinburgh brand blending Scottish heritage with Scandinavian-style utility and minimalism."
+      "blurb": "Edinburgh brand blending Scottish heritage with Scandinavian-style utility and minimalism.",
+      "departments": [
+        "men"
+      ]
     },
     {
       "name": "Drake's",
@@ -71,7 +98,10 @@
       "source": "shopify",
       "currency": "GBP",
       "favourite": false,
-      "blurb": "London tie-maker turned full menswear house: soft tailoring, Ivy staples and English craft."
+      "blurb": "London tie-maker turned full menswear house: soft tailoring, Ivy staples and English craft.",
+      "departments": [
+        "men"
+      ]
     },
     {
       "name": "Norse Projects",
@@ -79,7 +109,11 @@
       "source": "shopify",
       "currency": "GBP",
       "favourite": false,
-      "blurb": "Copenhagen label for functional, quietly minimal everyday clothing."
+      "blurb": "Copenhagen label for functional, quietly minimal everyday clothing.",
+      "departments": [
+        "men",
+        "women"
+      ]
     },
     {
       "name": "De Bonne Facture",
@@ -87,7 +121,10 @@
       "source": "shopify",
       "currency": "EUR",
       "favourite": false,
-      "blurb": "Paris brand reviving French workwear, made with small European workshops."
+      "blurb": "Paris brand reviving French workwear, made with small European workshops.",
+      "departments": [
+        "men"
+      ]
     },
     {
       "name": "Colhay's",
@@ -95,7 +132,10 @@
       "source": "shopify",
       "currency": "GBP",
       "favourite": false,
-      "blurb": "London knitwear specialist making vintage-inspired jumpers and cardigans."
+      "blurb": "London knitwear specialist making vintage-inspired jumpers and cardigans.",
+      "departments": [
+        "men"
+      ]
     },
     {
       "name": "Albam",
@@ -103,7 +143,10 @@
       "source": "shopify",
       "currency": "GBP",
       "favourite": false,
-      "blurb": "British modern essentials with a utilitarian edge, made with long-standing factories."
+      "blurb": "British modern essentials with a utilitarian edge, made with long-standing factories.",
+      "departments": [
+        "men"
+      ]
     },
     {
       "name": "Folk",
@@ -111,7 +154,11 @@
       "source": "shopify",
       "currency": "GBP",
       "favourite": false,
-      "blurb": "London label for considered, texture-rich everyday clothing with subtle design details."
+      "blurb": "London label for considered, texture-rich everyday clothing with subtle design details.",
+      "departments": [
+        "men",
+        "women"
+      ]
     },
     {
       "name": "Private White V.C.",
@@ -119,7 +166,10 @@
       "source": "shopify",
       "currency": "GBP",
       "favourite": false,
-      "blurb": "Manchester-made outerwear and heritage pieces from their own historic factory."
+      "blurb": "Manchester-made outerwear and heritage pieces from their own historic factory.",
+      "departments": [
+        "men"
+      ]
     },
     {
       "name": "Uskees",
@@ -127,7 +177,11 @@
       "source": "shopify",
       "currency": "GBP",
       "favourite": false,
-      "blurb": "British workwear-inspired brand: chore jackets, overalls and sturdy organic cotton."
+      "blurb": "British workwear-inspired brand: chore jackets, overalls and sturdy organic cotton.",
+      "departments": [
+        "men",
+        "women"
+      ]
     },
     {
       "name": "Peregrine",
@@ -135,7 +189,11 @@
       "source": "shopify",
       "currency": "GBP",
       "favourite": false,
-      "blurb": "Family-run English knitwear maker: classic jumpers made in their own mill."
+      "blurb": "Family-run English knitwear maker: classic jumpers made in their own mill.",
+      "departments": [
+        "men",
+        "women"
+      ]
     },
     {
       "name": "Howlin'",
@@ -143,7 +201,10 @@
       "source": "shopify",
       "currency": "EUR",
       "favourite": false,
-      "blurb": "Belgian label making playful, colourful Scottish-knit wool jumpers."
+      "blurb": "Belgian label making playful, colourful Scottish-knit wool jumpers.",
+      "departments": [
+        "men"
+      ]
     },
     {
       "name": "Arpenteur",
@@ -151,7 +212,10 @@
       "source": "shopify",
       "currency": "EUR",
       "favourite": false,
-      "blurb": "French brand making utilitarian, craft-led clothing in French workshops."
+      "blurb": "French brand making utilitarian, craft-led clothing in French workshops.",
+      "departments": [
+        "men"
+      ]
     },
     {
       "name": "Nigel Cabourn",
@@ -159,7 +223,10 @@
       "source": "shopify",
       "currency": "GBP",
       "favourite": false,
-      "blurb": "British designer known for vintage military and mountaineering-inspired pieces."
+      "blurb": "British designer known for vintage military and mountaineering-inspired pieces.",
+      "departments": [
+        "men"
+      ]
     },
     {
       "name": "YMC",
@@ -167,7 +234,11 @@
       "source": "shopify",
       "currency": "GBP",
       "favourite": false,
-      "blurb": "London label (You Must Create) with relaxed, slightly offbeat modern classics."
+      "blurb": "London label (You Must Create) with relaxed, slightly offbeat modern classics.",
+      "departments": [
+        "men",
+        "women"
+      ]
     },
     {
       "name": "Studio Nicholson",
@@ -175,7 +246,11 @@
       "source": "shopify",
       "currency": "GBP",
       "favourite": false,
-      "blurb": "London brand for relaxed, precise minimalism: wide trousers and fine fabrics."
+      "blurb": "London brand for relaxed, precise minimalism: wide trousers and fine fabrics.",
+      "departments": [
+        "men",
+        "women"
+      ]
     },
     {
       "name": "Mfpen",
@@ -183,7 +258,10 @@
       "source": "shopify",
       "currency": "EUR",
       "favourite": false,
-      "blurb": "Copenhagen label for clean, relaxed Scandinavian everyday clothing."
+      "blurb": "Copenhagen label for clean, relaxed Scandinavian everyday clothing.",
+      "departments": [
+        "men"
+      ]
     },
     {
       "name": "Aimé Leon Dore",
@@ -191,7 +269,10 @@
       "source": "shopify",
       "currency": "USD",
       "favourite": false,
-      "blurb": "New York label that mixes old-school prep and Ivy with modern streetwear."
+      "blurb": "New York label that mixes old-school prep and Ivy with modern streetwear.",
+      "departments": [
+        "men"
+      ]
     },
     {
       "name": "Rowing Blazers",
@@ -199,7 +280,11 @@
       "source": "shopify",
       "currency": "USD",
       "favourite": false,
-      "blurb": "New York brand reviving preppy, sporting heritage with a playful twist."
+      "blurb": "New York brand reviving preppy, sporting heritage with a playful twist.",
+      "departments": [
+        "men",
+        "women"
+      ]
     },
     {
       "name": "Anglo-Italian",
@@ -207,7 +292,10 @@
       "source": "shopify",
       "currency": "GBP",
       "favourite": false,
-      "blurb": "London tailoring house blending English cloth with relaxed Italian cuts."
+      "blurb": "London tailoring house blending English cloth with relaxed Italian cuts.",
+      "departments": [
+        "men"
+      ]
     },
     {
       "name": "Taylor Stitch",
@@ -215,7 +303,351 @@
       "source": "shopify",
       "currency": "USD",
       "favourite": false,
-      "blurb": "San Francisco brand for durable, responsible workwear-inspired staples."
+      "blurb": "San Francisco brand for durable, responsible workwear-inspired staples.",
+      "departments": [
+        "men"
+      ]
+    },
+    {
+      "name": "Spoke",
+      "domain": "spoke-london.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London trouser specialist with a fit system for different builds: smart chinos, wool and cord trousers.",
+      "departments": [
+        "men"
+      ]
+    },
+    {
+      "name": "Todd Snyder",
+      "domain": "www.toddsnyder.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "New York menswear spanning tailoring and casual Americana, with a big trouser range.",
+      "departments": [
+        "men"
+      ]
+    },
+    {
+      "name": "Sirplus",
+      "domain": "sirplus.co.uk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London smart-casual brand: shirts, trousers and tailoring for work-to-evening.",
+      "departments": [
+        "men"
+      ]
+    },
+    {
+      "name": "Spier & Mackay",
+      "domain": "www.spierandmackay.com",
+      "source": "shopify",
+      "currency": "CAD",
+      "favourite": false,
+      "blurb": "Toronto tailoring brand known for well-priced suits, wool trousers and shirts.",
+      "departments": [
+        "men"
+      ]
+    },
+    {
+      "name": "Luca Faloni",
+      "domain": "lucafaloni.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Italian-made essentials: cashmere knits, linen and fine cotton in quiet colours.",
+      "departments": [
+        "men"
+      ]
+    },
+    {
+      "name": "Buck Mason",
+      "domain": "www.buckmason.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "Los Angeles label for American wardrobe classics.",
+      "departments": [
+        "men"
+      ]
+    },
+    {
+      "name": "Saturdays NYC",
+      "domain": "www.saturdaysnyc.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "New York brand with clean, surf-inspired city clothing.",
+      "departments": [
+        "men"
+      ]
+    },
+    {
+      "name": "Corridor",
+      "domain": "corridornyc.com",
+      "source": "shopify",
+      "currency": "USD",
+      "favourite": false,
+      "blurb": "New York label known for textured shirts and relaxed, colourful classics.",
+      "departments": [
+        "men"
+      ]
+    },
+    {
+      "name": "Grenson",
+      "domain": "www.grenson.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Northamptonshire shoemaker: brogues, loafers and boots.",
+      "departments": [
+        "men"
+      ]
+    },
+    {
+      "name": "Velasca",
+      "domain": "www.velasca.com",
+      "source": "shopify",
+      "currency": "EUR",
+      "favourite": false,
+      "blurb": "Milan brand making Italian-crafted shoes and leather goods.",
+      "departments": [
+        "men"
+      ]
+    },
+    {
+      "name": "A Kind of Guise",
+      "domain": "akindofguise.com",
+      "source": "shopify",
+      "currency": "EUR",
+      "favourite": false,
+      "blurb": "Munich label for design-led, craft-focused menswear.",
+      "departments": [
+        "men"
+      ]
+    },
+    {
+      "name": "The Workers Club",
+      "domain": "theworkersclub.co.uk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "British brand reworking workwear and military classics.",
+      "departments": [
+        "men"
+      ]
+    },
+    {
+      "name": "Berg & Berg",
+      "domain": "www.bergandberg.com",
+      "source": "shopify",
+      "currency": "EUR",
+      "favourite": false,
+      "blurb": "Oslo menswear house with classic, Italian-made tailoring and knitwear.",
+      "departments": [
+        "men"
+      ]
+    },
+    {
+      "name": "Asket",
+      "domain": "www.asket.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Stockholm label with a permanent, traceable collection of essentials.",
+      "departments": [
+        "men"
+      ]
+    },
+    {
+      "name": "Rixo",
+      "domain": "rixo.co.uk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London label known for vintage-inspired printed dresses.",
+      "departments": [
+        "women"
+      ]
+    },
+    {
+      "name": "Kitri",
+      "domain": "kitristudio.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London brand for print-led, feminine pieces at accessible prices.",
+      "departments": [
+        "women"
+      ]
+    },
+    {
+      "name": "Damson Madder",
+      "domain": "damsonmadder.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Playful London label with a responsible approach to making.",
+      "departments": [
+        "women"
+      ]
+    },
+    {
+      "name": "Nobody's Child",
+      "domain": "www.nobodyschild.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London brand for accessible, responsibly made dresses and everyday pieces.",
+      "departments": [
+        "women"
+      ]
+    },
+    {
+      "name": "With Nothing Underneath",
+      "domain": "withnothingunderneath.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London label perfecting the oversized shirt and wardrobe basics.",
+      "departments": [
+        "women"
+      ]
+    },
+    {
+      "name": "Navygrey",
+      "domain": "navygrey.co.uk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London knitwear brand making timeless British-wool jumpers.",
+      "departments": [
+        "women"
+      ]
+    },
+    {
+      "name": "Lisou",
+      "domain": "www.lisou.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London brand for printed silk shirts and dresses.",
+      "departments": [
+        "women"
+      ]
+    },
+    {
+      "name": "Musier Paris",
+      "domain": "musierparis.com",
+      "source": "shopify",
+      "currency": "EUR",
+      "favourite": false,
+      "blurb": "Paris label with feminine, effortless French style.",
+      "departments": [
+        "women"
+      ]
+    },
+    {
+      "name": "Aligne",
+      "domain": "aligneofficial.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London brand for modern, minimal wardrobe pieces.",
+      "departments": [
+        "women"
+      ]
+    },
+    {
+      "name": "Omnes",
+      "domain": "omnes.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London label for accessible, more sustainable everyday clothing.",
+      "departments": [
+        "women"
+      ]
+    },
+    {
+      "name": "Paloma Wool",
+      "domain": "palomawool.com",
+      "source": "shopify",
+      "currency": "EUR",
+      "favourite": false,
+      "blurb": "Barcelona label with artistic, sculptural knits and prints.",
+      "departments": [
+        "women"
+      ]
+    },
+    {
+      "name": "Kowtow",
+      "domain": "kowtowclothing.com",
+      "source": "shopify",
+      "currency": "NZD",
+      "favourite": false,
+      "blurb": "New Zealand brand making relaxed organic cotton clothing.",
+      "departments": [
+        "women"
+      ]
+    },
+    {
+      "name": "Rouje",
+      "domain": "www.rouje.com",
+      "source": "shopify",
+      "currency": "EUR",
+      "favourite": false,
+      "blurb": "Paris label for French-girl dresses, blouses and knits.",
+      "departments": [
+        "women"
+      ]
+    },
+    {
+      "name": "ME+EM",
+      "domain": "www.meandem.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London brand for smart, modern clothes that work from office to evening.",
+      "departments": [
+        "women"
+      ]
+    },
+    {
+      "name": "Never Fully Dressed",
+      "domain": "www.neverfullydressed.co.uk",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London label known for bold prints and statement skirts.",
+      "departments": [
+        "women"
+      ]
+    },
+    {
+      "name": "Anine Bing",
+      "domain": "www.aninebing.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Los Angeles label mixing Scandinavian minimalism with rock-and-roll cool.",
+      "departments": [
+        "women"
+      ]
+    },
+    {
+      "name": "Faithfull the Brand",
+      "domain": "faithfullthebrand.com",
+      "source": "shopify",
+      "currency": "AUD",
+      "favourite": false,
+      "blurb": "Australian label for holiday linen and relaxed summer dresses.",
+      "departments": [
+        "women"
+      ]
     },
     {
       "name": "Ralph Lauren",
@@ -223,7 +655,11 @@
       "source": "affiliate",
       "currency": "GBP",
       "favourite": true,
-      "blurb": "The American prep icon: Oxford shirts, cable knits and classic tailoring."
+      "blurb": "The American prep icon: Oxford shirts, cable knits and classic tailoring.",
+      "departments": [
+        "men",
+        "women"
+      ]
     },
     {
       "name": "Reiss",
@@ -231,7 +667,11 @@
       "source": "affiliate",
       "currency": "GBP",
       "favourite": true,
-      "blurb": "London brand for sharp, contemporary smart-casual and tailoring."
+      "blurb": "London brand for sharp, contemporary smart-casual and tailoring.",
+      "departments": [
+        "men",
+        "women"
+      ]
     },
     {
       "name": "Arket",
@@ -239,7 +679,11 @@
       "source": "affiliate",
       "currency": "GBP",
       "favourite": true,
-      "blurb": "Scandinavian modern basics with a clean, lasting design approach."
+      "blurb": "Scandinavian modern basics with a clean, lasting design approach.",
+      "departments": [
+        "men",
+        "women"
+      ]
     },
     {
       "name": "COS",
@@ -247,7 +691,11 @@
       "source": "affiliate",
       "currency": "GBP",
       "favourite": true,
-      "blurb": "Minimal, architectural modern essentials."
+      "blurb": "Minimal, architectural modern essentials.",
+      "departments": [
+        "men",
+        "women"
+      ]
     },
     {
       "name": "Suitsupply",
@@ -255,7 +703,10 @@
       "source": "affiliate",
       "currency": "GBP",
       "favourite": true,
-      "blurb": "Amsterdam tailoring house for well-cut suits, blazers and smart separates."
+      "blurb": "Amsterdam tailoring house for well-cut suits, blazers and smart separates.",
+      "departments": [
+        "men"
+      ]
     }
   ],
   "fx_to_gbp": {
@@ -268,6 +719,7 @@
     "CHF": 0.89,
     "AUD": 0.52,
     "CAD": 0.57,
-    "NOK": 0.071
+    "NOK": 0.071,
+    "NZD": 0.47
   }
 }

@@ -110,6 +110,15 @@ def detect_department(p: dict) -> str:
     return "unisex"
 
 
+def department_for(p: dict, brand: dict) -> str:
+    """Untagged items take their brand's department: a menswear-only label's 'unisex' tee is menswear."""
+    dept = detect_department(p)
+    deps = brand.get("departments") or []
+    if dept == "unisex" and len(deps) == 1:
+        return deps[0]
+    return dept
+
+
 def detect_category(p: dict) -> str:
     blob = f"{p.get('product_type', '')} {p.get('title', '')}".lower()
     for cat, pattern in CATEGORY_RULES:
@@ -190,7 +199,7 @@ def normalise(p: dict, brand: dict, fx: dict) -> dict | None:
         "image": _shopify_img(images[0]) if images else "",
         "images": [_shopify_img(s) for s in images[:4]],
         "category": cat,
-        "department": detect_department(p),
+        "department": department_for(p, brand),
         "price_gbp": round(price * rate, 2),
         "compare_at_gbp": round(compare * rate, 2) if compare > price else None,
         "currency": brand.get("currency", "GBP"),
