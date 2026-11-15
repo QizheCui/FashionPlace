@@ -21,7 +21,7 @@ button, select, input { font: inherit; color: inherit; }
   border-bottom: 1px solid var(--line);
 }
 .brandmark { font: 600 28px/1 var(--serif); letter-spacing: .01em; }
-.brandmark em { font-style: italic; font-weight: 500; color: var(--accent); }
+.brandmark em { font: 600 0.62em/1 var(--sans); font-style: normal; letter-spacing: .22em; color: var(--accent); vertical-align: 0.18em; margin-left: 2px; }
 .tabs { display: flex; gap: 6px; flex: 1; }
 .tabs button {
   background: none; border: 0; padding: 8px 14px; cursor: pointer; color: var(--muted);
