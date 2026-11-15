@@ -1710,6 +1710,442 @@
       "tier": "luxury"
     },
     {
+      "name": "Hanifa",
+      "domain": "hanifa.co",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Christy Dawn",
+      "domain": "christydawn.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Romantic dresses made from deadstock and regenerative cotton.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Mara Hoffman",
+      "domain": "marahoffman.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Colourful, considered resort and ready-to-wear.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "LoveShackFancy",
+      "domain": "loveshackfancy.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Ultra-feminine florals, ruffles and pastels.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Spell",
+      "domain": "au.spell.co",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Byron Bay boho: prints, lace and vintage-inspired dresses.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Auguste the Label",
+      "domain": "augustethelabel.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Australian boho florals and easy dresses.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Sir the Label",
+      "domain": "sirthelabel.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Australian label for elegant linen and minimal summer pieces.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Aje",
+      "domain": "ajeworld.com.au",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Sydney label for sculptural, statement dresses.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Zulu & Zephyr",
+      "domain": "zuluandzephyr.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Australian label for laid-back coastal pieces.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Kivari",
+      "domain": "kivari.com.au",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Australian boho occasion dresses.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Lack of Color",
+      "domain": "lackofcolor.com.au",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Australian hat label.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Rhode",
+      "domain": "rhode-resort.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Bright, printed resort dresses.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Mirror Palais",
+      "domain": "mirrorpalais.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "New York label for sensual, vintage-romantic pieces.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Danielle Guizio",
+      "domain": "danielleguizio.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Going-out pieces with a New York edge.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Miaou",
+      "domain": "miaou.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Los Angeles label for fitted, Y2K-inspired pieces.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Whimsy + Row",
+      "domain": "whimsyandrow.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Los Angeles label for sustainable, easy feminine pieces.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Pixie Market",
+      "domain": "pixiemarket.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "New York shop for trend-led, affordable pieces.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Hayley Menzies",
+      "domain": "hayleymenzies.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Bold jacquard knits and psychedelic prints.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Olivia Rubin",
+      "domain": "oliviarubinlondon.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London label for playful, sparkly party pieces.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Shrimps",
+      "domain": "shrimps.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London label for faux fur, pearls and whimsical prints.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Lucy & Yak",
+      "domain": "lucyandyak.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Colourful dungarees and relaxed, ethically made basics.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "high-street"
+    },
+    {
+      "name": "L.F.Markey",
+      "domain": "lfmarkey.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "London label for utilitarian boiler suits and bold colour.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Ninety Percent",
+      "domain": "ninetypercent.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Elevated, responsibly made everyday pieces.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Organic Basics",
+      "domain": "organicbasics.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Sustainable essentials.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Girlfriend Collective",
+      "domain": "girlfriend.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Recycled-fabric activewear in great colours.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Seventy + Mochi",
+      "domain": "seventyandmochi.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Retro-inspired denim and dungarees.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Simon Miller",
+      "domain": "simonmillerusa.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Los Angeles label for bold bags and sculptural knits.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Sandy Liang",
+      "domain": "sandyliang.info",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "New York designer known for bows, fleece and girlish details.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Batsheva",
+      "domain": "batsheva.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Prairie dresses and Victorian-inspired prints.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Collina Strada",
+      "domain": "collinastrada.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Joyful, eco-minded New York label.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Eckhaus Latta",
+      "domain": "eckhauslatta.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Experimental, textural Los Angeles label.",
+      "departments": [
+        "men",
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Rat & Boa",
+      "domain": "ratandboa.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Slip dresses and boho-glam party wear.",
+      "departments": [
+        "women"
+      ],
+      "tier": "boutique"
+    },
+    {
+      "name": "Rebecca Vallance",
+      "domain": "rebeccavallance.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Australian label for polished occasion dresses.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Ulla Johnson",
+      "domain": "ullajohnson.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Artisanal prints, smocking and handcraft.",
+      "departments": [
+        "women"
+      ],
+      "tier": "premium"
+    },
+    {
+      "name": "Gabriela Hearst",
+      "domain": "gabrielahearst.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Quiet luxury: fine knits and tailoring.",
+      "departments": [
+        "women"
+      ],
+      "tier": "luxury"
+    },
+    {
+      "name": "Brother Vellies",
+      "domain": "brothervellies.com",
+      "source": "shopify",
+      "currency": "GBP",
+      "favourite": false,
+      "blurb": "Handmade luxury shoes and accessories.",
+      "departments": [
+        "women"
+      ],
+      "tier": "luxury"
+    },
+    {
       "name": "Ralph Lauren",
       "domain": "www.ralphlauren.co.uk",
       "source": "affiliate",

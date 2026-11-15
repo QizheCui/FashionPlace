@@ -48,9 +48,16 @@ class FetchError(Exception):
     pass
 
 
-def _get_json(url: str, timeout: int = 30) -> dict:
+def _get_json(url: str, timeout: int = 30, _retry: bool = True) -> dict:
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": "application/json"})
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
+    try:
+        resp = urllib.request.urlopen(req, timeout=timeout)
+    except urllib.error.HTTPError as e:
+        if e.code == 429 and _retry:  # asked to slow down: wait once, then try again
+            time.sleep(int(e.headers.get("Retry-After") or 20))
+            return _get_json(url, timeout, _retry=False)
+        raise
+    with resp:
         if "json" not in resp.headers.get("Content-Type", ""):
             raise FetchError(f"not JSON ({resp.headers.get('Content-Type')})")
         return json.loads(resp.read().decode("utf-8"))
