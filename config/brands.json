@@ -2432,7 +2432,8 @@
       "name": "Naked Copenhagen",
       "domain": "www.nakedcph.com",
       "source": "shopify",
-      "currency": "GBP",
+      "currency": "DKK",
+      "currency_fixed": true,
       "favourite": false,
       "blurb": "Copenhagen sneaker store.",
       "departments": [

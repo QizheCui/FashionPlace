@@ -30,6 +30,12 @@ def update_history(history: dict, items: list[dict], today: str) -> None:
     for it in items:
         h = history.setdefault(it["id"], {"first_seen": today, "points": []})
         h["last_seen"] = today
+        # a shop's currency was corrected (or a price jumped 3x+): old prices aren't comparable, so start again
+        cur = it.get("currency", "GBP")
+        last = h["points"][-1][1] if h["points"] else None
+        if (h.get("cur") and h["cur"] != cur) or (last and it["price_gbp"] and not 1 / 3 < it["price_gbp"] / last < 3):
+            h["points"] = []
+        h["cur"] = cur
         pts = h["points"]
         if not pts or pts[-1][1] != it["price_gbp"]:
             pts.append([today, it["price_gbp"]])
@@ -88,7 +94,7 @@ def run(only: str | None = None, fixture_dir: Path | None = None, today: str | N
             return brand, [], {"status": "skipped", "reason": f"source={brand['source']} (needs feed)"}
         try:
             raw = load_fixture(fixture_dir, brand) if fixture_dir else shopify.fetch_store(brand["domain"])
-            if not fixture_dir:
+            if not fixture_dir and not brand.get("currency_fixed"):  # some shops report a visitor currency, not the catalogue one
                 cur = shopify.detect_currency(brand["domain"])
                 if cur and cur in fx and cur != brand.get("currency"):
                     brand = {**brand, "currency": cur}

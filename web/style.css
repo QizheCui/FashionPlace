@@ -353,3 +353,26 @@ body.on-landing > :not(#landing):not(.overlay):not(.toast):not(script) { display
 .qchip:disabled { cursor: default; }
 .qnote { font-size: 12.5px; color: var(--accent); }
 .l-res-head .qchips { justify-content: center; }
+
+/* the stylist's edit */
+.edit { margin: 0 auto 40px; display: flex; flex-direction: column; gap: 26px; }
+.edit > .l-eyebrow { text-align: center; }
+.edit-said { margin: -14px auto 0; max-width: 680px; text-align: center; font: italic 500 22px/1.4 var(--serif); color: #3d3731; }
+.edit.loading .edit-said { font-style: normal; font-size: 17px; color: #6b625a; animation: editPulse 1.6s ease-in-out infinite; }
+@keyframes editPulse { 50% { opacity: .45; } }
+.erow { display: flex; flex-direction: column; gap: 12px; padding-top: 18px; border-top: 1px solid #e3dacd; }
+.erow-h { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.erow h3 { margin: 0; font: 500 24px/1.2 var(--serif); }
+.egrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+.edit-foot { margin: 0; text-align: center; font-size: 12.5px; color: #8a8178; }
+.l-grid-head { margin: 8px 0 18px; text-align: center; font: 500 26px var(--serif); }
+.edit-row { padding: 6px 40px 0; }
+.edit-row .edit { border-bottom: 1px solid var(--line); padding-bottom: 28px; margin-bottom: 24px; }
+.edit-row .edit > .l-eyebrow, .edit-row .edit-said, .edit-row .edit-foot { text-align: left; margin-left: 0; }
+.edit-row .egrid .card { min-width: 0; }
+@media (max-width: 700px) {
+  .egrid { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px; padding-bottom: 6px; }
+  .egrid > * { flex: 0 0 62%; scroll-snap-align: start; }
+  .edit-said { font-size: 19px; }
+  .edit-row { padding: 6px 18px 0; }
+}

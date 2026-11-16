@@ -139,7 +139,7 @@ def detect_department(p: dict) -> str:
 
 
 BRAND_ALIASES = {"nike": "Nike", "nike sportswear": "Nike", "jordan": "Jordan", "adidas": "adidas", "adidas originals": "adidas",
-                 "adidas performance": "adidas", "on": "On", "on running": "On", "new balance": "New Balance", "asics": "Asics",
+                 "adidas performance": "adidas", "adidas dk a/s": "adidas", "on": "On", "on running": "On", "new balance": "New Balance", "asics": "Asics",
                  "hoka": "Hoka", "hoka one one": "Hoka", "salomon": "Salomon", "saucony": "Saucony", "puma": "Puma",
                  "converse": "Converse", "vans": "Vans", "reebok": "Reebok", "mizuno": "Mizuno", "brooks": "Brooks"}
 

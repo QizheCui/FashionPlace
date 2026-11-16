@@ -525,7 +525,7 @@
     document.querySelectorAll(".tabs button").forEach((b) => b.classList.toggle("active", !S.query && b.dataset.tab === S.tab));
     $("#savedCount").textContent = P().liked.length || "";
     const full = build(), list = full.slice(0, 120);
-    renderTastebar(); renderBrandsRow(); renderChips(); renderPrice(); renderLive();
+    renderTastebar(); renderBrandsRow(); renderChips(); renderPrice(); renderLive(); renderEditRow();
     if (S.query) $("#intro p").textContent = full.length ? `${full.length >= 240 ? "240+" : full.length} pieces · what you asked for first, then ranked by your taste.` : "Nothing matches that in our brands yet — try removing a filter above.";
     $("#grid").innerHTML = list.map(card).join("");
     $("#empty").hidden = list.length > 0;
@@ -697,9 +697,87 @@
     }
     return best && S.brandCount[best] >= 5 ? best : null;
   }
+
+  // ---------- the stylist: an AI reads the request and plans the look; our own search finds each piece ----------
+  const PLAN_CATS = new Set(["trousers", "denim", "knitwear", "shirts", "tshirts", "outerwear", "tailoring", "shoes", "bags", "accessories", "dresses", "skirts", "tops", "sweats", "activewear", "shorts"]);
+  async function askStylist(text, dept) {
+    if (!S.live || !S.live.search_url || S.model === "fake") return null;
+    const r = await fetch(`${S.live.search_url}/plan`, { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, dept }), signal: AbortSignal.timeout(25000) });
+    const d = await r.json();
+    if (!r.ok || d.error || !Array.isArray(d.pieces)) throw new Error(d.error || `status ${r.status}`);
+    d.pieces = d.pieces.filter((x) => x && (x.query || x.label)).slice(0, 6);
+    return d;
+  }
+  // the words of one planned piece → the same structured filters a typed search would get
+  function pieceQuery(piece, dept) {
+    const words = [piece.query || piece.label, piece.colour, piece.material, piece.max_price_gbp ? `under £${Math.round(piece.max_price_gbp)}` : ""].filter(Boolean).join(" ");
+    const q = parseQuery(words);
+    q.facets = q.facets.filter((f) => f.key !== "dept" && f.key !== "brand");
+    const cat = PLAN_CATS.has(piece.category) ? piece.category : null;
+    const fc = q.facets.find((f) => f.key === "cat");
+    if (cat && (!fc || (fc.cat && fc.cat !== cat))) { q.facets = q.facets.filter((f) => f.key !== "cat"); q.facets.unshift({ key: "cat", cat, sub: null, label: cap(cat) }); }
+    if (dept === "men" || dept === "women") q.facets.push({ key: "dept", dept, label: dept });
+    return q;
+  }
+  async function mustWordIds(words) {
+    const mw = (words || []).map((w) => String(w).toLowerCase().trim()).filter((w) => w.length >= 2).slice(0, 3);
+    if (!mw.length) return null;
+    const idx = await loadIndex(), res = mw.map((w) => new RegExp(`(^|[^a-z0-9])${escRe(w)}([^a-z0-9]|$)`));
+    const ids = new Set(), parts = new Set();
+    idx.texts.forEach((x, i) => { if (res.every((r) => r.test(x))) { ids.add(idx.ids[i]); parts.add(idx.parts[idx.part[i]]); } });
+    await Promise.all([...parts].map((n) => loadPart(n)));
+    return { words: mw, ids };
+  }
+  async function pieceVecs(texts, st) {
+    if (!clipText && !S.testEncode) await encodeText(texts[0], st);
+    return encodeTexts(texts.map((t) => `a photo of ${t}`));
+  }
+  // find pieces for every part of the plan; never the same piece twice, at most one per brand in a row
+  async function fillPlan(plan, dept, st, perPiece = 4) {
+    const d = plan.department === "men" || plan.department === "women" ? plan.department : dept;
+    const cats = [...new Set(plan.pieces.map((x) => x.category).filter((c) => PLAN_CATS.has(c)))];
+    await Promise.all([ensureShard(d === "men" || d === "women" ? d : "any"), ...cats.map((c) => ensureCat(d === "men" || d === "women" ? d : "any", c))]);
+    const vecs = await pieceVecs(plan.pieces.map((x) => x.query || x.label), st);
+    const used = new Set(), out = [];
+    for (let i = 0; i < plan.pieces.length; i++) {
+      const piece = plan.pieces[i], q = pieceQuery(piece, d), must = await mustWordIds(piece.must_words);
+      const base = S.items.filter((it) => it.in_stock && it.image && S.vecs[it.id] && it.price_gbp >= 10 && !JUNK.test(it.title) && !used.has(it.id)
+        && !["underwear", "other", "lifestyle"].includes(it.category) && (!must || !must.ids.size || must.ids.has(it.id))).map((it) => ({ it }));
+      const res = matchQuery(base, q);
+      const ranked = semantic(res.list, vecs[i], piece.query || piece.label);
+      const brands = {}, items = [];
+      for (const x of ranked) {
+        if ((brands[x.it.brand] || 0) >= (must && must.ids.size ? perPiece : 1)) continue;
+        brands[x.it.brand] = (brands[x.it.brand] || 0) + 1; items.push(x.it); used.add(x.it.id);
+        if (items.length >= perPiece) break;
+      }
+      out.push({ piece, items, missing: !!(must && !must.ids.size), mustWords: must && must.words, dropped: res.dropped });
+    }
+    return out;
+  }
+  const STYLIST_STEPS = ["Our stylist is reading your words…", "Planning the look, piece by piece…", "Searching every brand for each piece…"];
+  function stylistLoading(el) {
+    let i = 0; el.innerHTML = `<div class="edit loading"><p class="l-eyebrow">The edit</p><p class="edit-said">${STYLIST_STEPS[0]}</p></div>`;
+    const t = setInterval(() => { const p = el.querySelector(".edit.loading .edit-said"); if (!p) return clearInterval(t); i = Math.min(i + 1, STYLIST_STEPS.length - 1); p.textContent = STYLIST_STEPS[i]; }, 2200);
+    return () => clearInterval(t);
+  }
+  function renderEdit(plan, rows, cardFn) {
+    const shown = rows.filter((r) => r.items.length);
+    if (!shown.length) return "";
+    return `<div class="edit"><p class="l-eyebrow">The edit</p>
+      ${plan.understood ? `<p class="edit-said">${esc(plan.understood)}</p>` : ""}
+      ${shown.map((r) => `<div class="erow"><div class="erow-h"><h3>${esc(r.piece.label || cap(r.piece.query))}</h3>
+        ${r.dropped && r.dropped.length ? `<span class="qnote">closest without ${r.dropped.map((x) => esc(x.label.toLowerCase())).join(" or ")}</span>` : ""}</div>
+        <div class="egrid">${r.items.map(cardFn).join("")}</div></div>`).join("")}
+      <p class="edit-foot">Planned by an AI stylist, found by our own search across every brand.</p></div>`;
+  }
   async function landingSearch(text) {
-    const st = $("#lStatus");
+    const st = $("#lStatus"), token = (S.landingToken = (S.landingToken || 0) + 1);
     st.textContent = "Searching every brand…";
+    const q00 = parseQuery(text), dd = q00.facets.find((f) => f.key === "dept");
+    const planP = askStylist(text, dd ? dd.dept : "any").catch((e) => { console.warn("stylist", e); return null; });
+    $("#lEdit").innerHTML = "";
     try {
       const q0 = parseQuery(text), c0 = q0.facets.find((f) => f.key === "cat" && f.cat), d0 = q0.facets.find((f) => f.key === "dept");
       const [vec, kw] = await Promise.all([encodeQuery(text, st), keywordPlan(text, q0).catch(() => null), ensureShard("any"), c0 ? ensureCat(d0 ? d0.dept : "any", c0.cat) : null]);
@@ -729,11 +807,28 @@
       $("#lResHead").innerHTML = `<h2>For “${esc(text)}”</h2>${facetChips(q, res.dropped, new Set(), kw).replace(/data-qfacet="[^"]*"/g, "disabled")}
         <p class="l-sub">${!pool.length ? "Nothing in our brands matches that yet — try removing a word or two." : `${pool.length >= 400 ? "Hundreds of matches" : `${pool.length} match${pool.length === 1 ? "" : "es"}`} across ${new Set(pool.map((x) => x.it.brand)).size} brands. Save it and we'll keep finding more, in your size.`}</p>
         ${pool.length ? `<button class="l-cta" id="lSave">Make this my taste →</button>` : ""}`;
-      $("#lGrid").innerHTML = top.map(lcard).join("");
+      $("#lGrid").innerHTML = top.map(lcard).join(""); $("#lGridHead").hidden = true;
       $("#lResHead").scrollIntoView({ behavior: "smooth", block: "start" });
+      landingEdit(text, planP, token, { exact, dept: S.landingQuery.dept });
     } catch (e) {
       st.textContent = S.model === "fake" ? "Search works on the live site." : `Couldn't search just now (${e.message}). Try again in a moment.`;
     }
+  }
+
+  async function landingEdit(text, planP, token, { exact, dept }) {
+    if (!S.live || !S.live.search_url || S.model === "fake") return;
+    const el = $("#lEdit"), stop = stylistLoading(el);
+    const plan = await planP; stop();
+    if (token !== S.landingToken) return;
+    if (!plan || !plan.pieces.length) { el.innerHTML = ""; return; }
+    // a named model we already found exactly: the normal results are the answer
+    if (plan.kind === "exact" && exact) { el.innerHTML = ""; return; }
+    try {
+      const rows = await fillPlan(plan, dept, null, plan.kind === "exact" || plan.pieces.length === 1 ? 8 : 4);
+      if (token !== S.landingToken) return;
+      el.innerHTML = renderEdit(plan, rows, lcard);
+      if (el.innerHTML) $("#lGridHead").hidden = false;
+    } catch (e) { console.warn("edit", e); el.innerHTML = ""; }
   }
   function startSetup(fromQuery) {
     const np = newProfile("");
@@ -897,6 +992,7 @@
   let clipText = null;
   async function encodeText(text, statusEl) {
     if (S.model === "fake") throw new Error("demo mode");
+    if (S.testEncode) return (await S.testEncode([text]))[0];
     if (!clipText) {
       if (statusEl) statusEl.textContent = "Loading the style model (one-time download, ~60 MB)…";
       const T = await import("https://cdn.jsdelivr.net/npm/@huggingface/transformers@3");
@@ -960,6 +1056,7 @@
   }
   // ---------- live search across every shop (needs the worker in worker/) ----------
   async function encodeTexts(texts) {
+    if (S.testEncode) return S.testEncode(texts);
     const out = [];
     for (let i = 0; i < texts.length; i += 24) {
       const inputs = clipText.tok(texts.slice(i, i + 24), { padding: true, truncation: true });
@@ -1003,6 +1100,31 @@
     el.innerHTML = `<h2>Live from the shops <span>${L.loading ? "searching every brand right now…" : L.error ? "couldn't reach the shops just now" : `${L.items.length} fresh matches across ${L.brands || "all"} brands`}</span></h2>
       <div class="grid live">${L.items.map(card).join("")}</div>`;
   }
+
+  function renderEditRow() {
+    const el = $("#editRow"); if (!el) return;
+    if (!S.query) { el.hidden = true; el.innerHTML = ""; S.edit = null; S.editToken = (S.editToken || 0) + 1; return; }
+    if (!S.edit || S.edit.text !== S.query.text) return; // still loading, or nothing to show
+    const html = renderEdit(S.edit.plan, S.edit.rows, (it) => card({ it, why: "Part of the look", status: savedStatus(it, P()) }));
+    el.innerHTML = html; el.hidden = !html;
+  }
+  async function appEdit(text, exact) {
+    const el = $("#editRow"); if (!el) return;
+    const token = (S.editToken = (S.editToken || 0) + 1);
+    S.edit = null; el.hidden = true;
+    if (!S.live || !S.live.search_url || S.model === "fake") return;
+    el.hidden = false; const stop = stylistLoading(el);
+    const plan = await askStylist(text, P().department).catch(() => null); stop();
+    if (token !== S.editToken || !S.query || S.query.text !== text) return;
+    if (!plan || !plan.pieces.length || (plan.kind === "exact" && exact)) { el.hidden = true; el.innerHTML = ""; return; }
+    const pr = P().price; // your budget, unless the request named its own
+    for (const x of plan.pieces) if (!x.max_price_gbp && pr && pr.max < 1000) x.max_price_gbp = pr.max;
+    try {
+      const rows = await fillPlan(plan, P().department, null, plan.kind === "exact" || plan.pieces.length === 1 ? 8 : 4);
+      if (token !== S.editToken || !S.query || S.query.text !== text) return;
+      S.edit = { text, plan, rows }; renderEditRow();
+    } catch (e) { console.warn("edit", e); el.hidden = true; }
+  }
   async function runSearch(text) {
     const st = $("#qStatus");
     try {
@@ -1012,6 +1134,7 @@
       await loadKeywordParts(kw);
       S.query = { text, vec, kw, parsed: parseQuery(text) }; S.brand = null; render(); window.scrollTo({ top: 0 });
       liveSearch(text, vec);
+      appEdit(text, kw && kw.ids.size && !kw.missing);
     } catch (e) {
       st.textContent = S.model === "fake" ? "Search by feeling works on the live site." : `Couldn't load the style model (${e.message}).`;
     }
@@ -1180,7 +1303,7 @@
     if (p) { $("#welcome").hidden = true; showLanding(false); await useProfile(p); render(); }
   });
 
-  if (/[?&]debug=1/.test(location.search)) window.__fp = { S, parseQuery, matchQuery, render, pv, norm, mean, keywordPlan, loadKeywordParts }; // for automated tests
+  if (/[?&]debug=1/.test(location.search)) window.__fp = { S, parseQuery, matchQuery, render, pv, norm, mean, keywordPlan, loadKeywordParts, fillPlan, renderEdit, pieceQuery, landingSearch, runSearch }; // for automated tests
 
   // ---------- boot ----------
   (async function boot() {

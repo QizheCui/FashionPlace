@@ -102,6 +102,8 @@ def main(inline: bool) -> None:
         if (OUT / "data").exists():
             shutil.rmtree(OUT / "data")
         shutil.copytree(DATA, OUT / "data", ignore=shutil.ignore_patterns("price_history.json", "collect_report.json", "items.json", "brand_stats_full.json"))
+        if (ROOT / "config" / "live.json").exists():  # the helper's address goes live with every deploy
+            shutil.copy(ROOT / "config" / "live.json", OUT / "data" / "live.json")
         shards = shard_items()
         by_id = {it["id"]: it for d in shards.values() for it in d["items"]}
         updated = next(iter(shards.values()))["updated"]
