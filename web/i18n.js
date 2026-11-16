@@ -48,7 +48,7 @@
     "Showing their pieces ✓": "正在显示他们的单品 ✓", "New brand to you": "新认识的品牌", "Lowest we've seen": "历史最低价", "Live from the shops": "实时来自各店铺",
     "searching every brand right now…": "正在实时搜索所有品牌…", "couldn't reach the shops just now": "暂时连接不上店铺",
     "Looking for": "正在找", "Clear": "清除", "Menswear": "男装", "Womenswear": "女装",
-    "Love it": "喜欢", "Love": "喜欢", "Switch to English": "Switch to English", "Not for me": "不适合我", "Surprise me with this": "用这个给我惊喜",
+    "Love it": "喜欢", "Your photos": "你的照片", "your photos": "你的照片", "Love": "喜欢", "Switch to English": "Switch to English", "Not for me": "不适合我", "Surprise me with this": "用这个给我惊喜",
     "Sold out": "已售罄", "Not in your size right now": "暂无你的尺码", "Back in your size": "你的尺码有货了",
     "Few sizes left — may not last": "尺码所剩不多——可能很快售罄", "Black Friday weekend — check the brand's site for codes": "黑五周末——去品牌官网看看优惠码",
     "Wait? Winter sales usually start around Boxing Day": "要不要等等？冬季大促通常在节礼日（12月26日）前后开始",

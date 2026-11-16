@@ -51,6 +51,12 @@
   }
   // profiles saved by older versions of the app may miss newer fields
   function upgrade(p) {
+    // profiles saved before notes could be internal: hide the built-in starting notes
+    const b = p.builtin && S.builtins && S.builtins.find((x) => x.id === p.id);
+    if (b) {
+      const sys = new Set([...(b.facets || []).map((f) => f.label), "loud logos, fast fashion, shiny sportswear"]);
+      for (const w of [...(p.words || []), ...(p.avoidWords || [])]) if (sys.has(w.label)) w.hidden = true;
+    }
     const d = { tiers: [], waist: [], shoe: [], nudges: {}, steerWords: [], saved: {}, extra: {}, avoidVibes: [], surpriseVibes: ["bold-colour", "texture", "vintage"],
       brands: [], words: [], avoidWords: [], liked: [], disliked: [], vibes: [], sizes: ["M"], price: { min: 0, max: 300 }, department: "men" };
     for (const [k, v] of Object.entries(d)) if (p[k] === undefined || p[k] === null) p[k] = JSON.parse(JSON.stringify(v));
@@ -159,8 +165,8 @@
       price: { min: (b.budget && b.budget.min_gbp) || 0, max: (b.budget && b.budget.hard_max_gbp) || 300 },
       vibes: b.vibes || [], avoidVibes: [], surpriseVibes: b.surprise_vibes || [],
       brands: b.brands || [], tiers: b.tiers || [],
-      words: (b.facets || []).map((f) => ({ label: f.label, vec: f.vec })),
-      avoidWords: b.avoid ? [{ label: "loud logos, fast fashion, shiny sportswear", vec: b.avoid }] : [],
+      words: (b.facets || []).map((f) => ({ label: f.label, vec: f.vec, hidden: true })),
+      avoidWords: b.avoid ? [{ label: "loud logos, fast fashion, shiny sportswear", vec: b.avoid, hidden: true }] : [],
       liked: [], disliked: [], saved: {}, setupDone: true,
     };
   }
@@ -205,7 +211,8 @@
     const disliked = withFeedback ? mean(p.disliked.map((id) => S.vecs[id])) : null;
     const t = blend([
       [mean(vibeVecs(p.vibes)), 1.0],
-      [mean(p.words.map((w) => pv(w.vec))), 1.0],
+      [mean(p.words.filter((w) => !w.thumb).map((w) => pv(w.vec))), 1.0],
+      [mean(p.words.filter((w) => w.thumb).map((w) => pv(w.vec))), 0.8], // photos: a strong, separate signal
       [mean(p.brands.map((b) => S.brandCentroid[b])), 0.6],
       [liked, Math.min(1.6, 0.3 * p.liked.length)],
       [disliked, -Math.min(0.8, 0.2 * p.disliked.length)],
@@ -292,7 +299,7 @@
     if (best && S.byId[best]) return `Close to the ${shortTitle(S.byId[best].title)} you liked`;
     const cands = [
       ...p.vibes.map((id) => S.vibeById[id]).filter(Boolean).map((x) => [x.label, x.vec]),
-      ...p.words.map((w) => [w.thumb ? "your photos" : w.label, pv(w.vec)]),
+      ...p.words.filter((w) => !w.hidden).map((w) => [w.thumb ? "your photos" : w.label, pv(w.vec)]),
     ].filter(([l]) => facetFits(l, it.category)).map(([l, vec]) => [l, dot(v, vec)]).sort((a, b) => b[1] - a[1]);
     const top = cands[0] ? shorten(cands[0][0]) : (leans(S.taste)[0] || ["your taste"])[0];
     if (mode === "explore" && S.twist && dot(v, S.twist) > dot(v, S.taste) * 0.92) return `${cap(top)}, with a bolder twist`;
@@ -912,15 +919,15 @@
         <p class="sub">Feelings work best — a place, a season, a person, a mood. e.g. <i>“Sunday in Copenhagen in October”</i>, <i>“what a well-dressed architect wears”</i>.${demo ? "<br><b>Word matching works on the live site, not in this demo.</b>" : ""}</p>
         <div class="addrow"><input id="fWord" placeholder="Describe a feeling or a look…" maxlength="140"><button class="solid" id="fAddLove">+ Love</button><button class="ghost" id="fAddAvoid">+ Avoid</button></div>
         <p class="status" id="fStatus"></p>
-        <div class="words">${d.words.map((w, i) => w.thumb ? "" : `<span class="word">♥ ${esc(w.label)} <button data-delword="${i}" aria-label="Remove">✕</button></span>`).join("")}
-        ${d.avoidWords.map((w, i) => `<span class="word avoid">✕ ${esc(w.label)} <button data-delavoid="${i}" aria-label="Remove">✕</button></span>`).join("")}</div>
+        <div class="words">${d.words.map((w, i) => w.thumb || w.hidden ? "" : `<span class="word">♥ ${esc(w.label)} <button data-delword="${i}" aria-label="Remove">✕</button></span>`).join("")}
+        ${d.avoidWords.map((w, i) => w.hidden ? "" : `<span class="word avoid">✕ ${esc(w.label)} <button data-delavoid="${i}" aria-label="Remove">✕</button></span>`).join("")}</div>
         <h3>Outfit photos <small>screenshots, saved posts, your own outfits</small></h3>
         <label class="upload"><input type="file" id="fPhotos" accept="image/*" multiple hidden>＋ Add photos you love</label>
         <div class="thumbs">${d.words.filter((w) => w.thumb).map((w) => `<span class="thumb"><img src="${w.thumb}" alt=""><button data-delword="${d.words.indexOf(w)}" aria-label="Remove">✕</button></span>`).join("")}</div>
         ${Object.keys(d.nudges || {}).length || (d.steerWords || []).length ? `<h3>Saved nudges</h3><div class="words">
           ${Object.entries(d.nudges || {}).map(([id, n]) => `<span class="word">${esc((S.refinerById[id] || { label: id }).label)}${n > 1 ? ` ×${n}` : ""} <button data-delnudge="${id}" aria-label="Remove">✕</button></span>`).join("")}
           ${(d.steerWords || []).map((w, i) => `<span class="word">“${esc(w.label)}” <button data-delsteer="${i}" aria-label="Remove">✕</button></span>`).join("")}</div>` : ""}
-        ${!d.words.length && !d.avoidWords.length ? `<p class="sub">Optional — skip if the vibes say it all.</p>` : ""}`;
+        ${!d.words.some((w) => !w.hidden) && !d.avoidWords.some((w) => !w.hidden) ? `<p class="sub">Optional — skip if the vibes say it all.</p>` : ""}`;
     } else {
       body.innerHTML = `<h2>Pick your favourites</h2><p class="sub">Picked for you from what you've told us so far. Tap the ones you'd wear — every tap swaps the rest for closer matches. <button class="link" id="fMore">Show different ones</button></p><p class="status" id="pickStatus"></p><div class="pickgrid" id="pickGrid"></div>`;
       ED.grid = []; fillPicks();
@@ -941,7 +948,7 @@
   function brandStepCards(d) {
     const t = tasteFrom(d, { withFeedback: false });
     const hasTaste = d.vibes.length || d.words.length;
-    const sources = [...d.vibes.map((id) => S.vibeById[id]).filter(Boolean).map((v) => [v.label, v.vec]), ...d.words.map((w) => [w.thumb ? "your photos" : `“${w.label}”`, pv(w.vec)])];
+    const sources = [...d.vibes.map((id) => S.vibeById[id]).filter(Boolean).map((v) => [v.label, v.vec]), ...d.words.filter((w) => !w.hidden).map((w) => [w.thumb ? "your photos" : `“${w.label}”`, pv(w.vec)])];
     const tierOk = (b) => !d.tiers.length || d.tiers.includes(b.tier);
     const list = S.brands.filter((b) => S.brandCentroid[b.name] && brandFitsDept(b, d.department) && tierOk(b)).map((b) => {
       const c = S.brandCentroid[b.name];
@@ -1023,6 +1030,7 @@
   let clipVision = null;
   async function encodeImage(file, statusEl) {
     if (S.model === "fake") throw new Error("demo mode");
+    if (S.testEncodeImage) return S.testEncodeImage(file);
     if (!clipVision) {
       statusEl.textContent = "Loading the photo model (one-time download, ~90 MB)…";
       const T = await import("https://cdn.jsdelivr.net/npm/@huggingface/transformers@3");
