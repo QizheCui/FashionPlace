@@ -8,6 +8,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
+import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -79,6 +80,32 @@ def load_fixture(fixture_dir: Path, brand: dict) -> list[dict]:
     return json.loads(path.read_text())["products"]
 
 
+def failure_kind(reason: str) -> str:
+    """blocked = the shop asks not to be read; gone = no readable catalogue at that address; temporary = try again."""
+    r = reason.lower()
+    if "robots" in r:
+        return "blocked"
+    if any(k in r for k in ("404", "not json", "name or service", "no products", "expecting value", "certificate")):
+        return "gone"
+    return "temporary"
+
+
+def health(report: dict) -> dict:
+    """A short daily summary. 'broken' = shops that used to work and have now failed three days running."""
+    b = report["brands"]
+    failed = {k: v for k, v in b.items() if v["status"] == "failed"}
+    pick = lambda kind: sorted(k for k, v in failed.items() if v.get("kind") == kind)
+    return {
+        "date": report["date"],
+        "ok": sum(1 for v in b.values() if v["status"] == "ok"),
+        "needs_feed": sorted(k for k, v in b.items() if v["status"] == "skipped"),
+        "blocked": pick("blocked"), "gone": pick("gone"),
+        "temporary": [{"shop": k, "reason": v["reason"][:80], "days": v.get("fail_days", 1)} for k, v in sorted(failed.items()) if v.get("kind") == "temporary"],
+        "broken": [{"shop": k, "reason": v["reason"][:80], "days": v["fail_days"], "last_ok": v["last_ok"]}
+                   for k, v in sorted(failed.items()) if v.get("last_ok") and v.get("fail_days", 0) >= 3],
+    }
+
+
 def run(only: str | None = None, fixture_dir: Path | None = None, today: str | None = None) -> dict:
     today = today or dt.date.today().isoformat()
     cfg = load_json(CONFIG / "brands.json", {})
@@ -88,20 +115,28 @@ def run(only: str | None = None, fixture_dir: Path | None = None, today: str | N
     previous = {it["id"]: it for it in load_json(DATA / "items.json", {"items": []})["items"]}
     history = load_json(DATA / "price_history.json", {})
     report, items = {"date": today, "brands": {}}, []
+    prev_report = load_json(DATA / "collect_report.json", {}).get("brands", {})
 
     def one(brand: dict) -> tuple[dict, list[dict], dict]:
         if brand["source"] != "shopify":
             return brand, [], {"status": "skipped", "reason": f"source={brand['source']} (needs feed)"}
         try:
-            raw = load_fixture(fixture_dir, brand) if fixture_dir else shopify.fetch_store(brand["domain"])
+            try:
+                raw = load_fixture(fixture_dir, brand) if fixture_dir else shopify.fetch_store(brand["domain"])
+            except shopify.FetchError as e:
+                # a busy or flaky shop gets one more try after a pause; a closed door doesn't
+                if fixture_dir or failure_kind(str(e)) != "temporary":
+                    raise
+                time.sleep(25)
+                raw = shopify.fetch_store(brand["domain"])
             if not fixture_dir and not brand.get("currency_fixed"):  # some shops report a visitor currency, not the catalogue one
                 cur = shopify.detect_currency(brand["domain"])
                 if cur and cur in fx and cur != brand.get("currency"):
                     brand = {**brand, "currency": cur}
         except shopify.FetchError as e:
             # keep yesterday's items for this brand so one bad day doesn't empty the feed
-            kept = [it for it in previous.values() if it["brand"] == brand["name"]]
-            return brand, kept, {"status": "failed", "reason": str(e)[:200], "kept_previous": len(kept)}
+            kept = [it for it in previous.values() if brand["name"] in (it["brand"], it.get("retailer"))]
+            return brand, kept, {"status": "failed", "reason": str(e)[:200], "kind": failure_kind(str(e)), "kept_previous": len(kept)}
         norm = [n for n in (shopify.normalise(p, brand, fx) for p in raw) if n]
         # keep each brand to its newest in-stock pieces so one giant catalogue can't drown the rest
         norm.sort(key=lambda n: (n["in_stock"], n.get("published_at") or ""), reverse=True)
@@ -114,6 +149,13 @@ def run(only: str | None = None, fixture_dir: Path | None = None, today: str | N
     with ThreadPoolExecutor(max_workers=8) as pool:
         for brand, got, rep in pool.map(one, chosen):
             items.extend(got)
+            old = prev_report.get(brand["name"], {})
+            if rep["status"] == "ok":
+                rep["last_ok"] = today
+            else:
+                rep["last_ok"] = old.get("last_ok")
+                if rep["status"] == "failed":
+                    rep["fail_days"] = (old.get("fail_days", 0) if old.get("status") == "failed" else 0) + 1
             report["brands"][brand["name"]] = rep
             print(("✓" if rep["status"] == "ok" else "·" if rep["status"] == "skipped" else "✗"), brand["name"], rep.get("products", rep.get("reason", "")))
 
@@ -138,6 +180,7 @@ def run(only: str | None = None, fixture_dir: Path | None = None, today: str | N
     (DATA / "items.json").write_text(json.dumps({"updated": today, "items": items}, ensure_ascii=False))
     (DATA / "price_history.json").write_text(json.dumps(history, separators=(",", ":")))
     (DATA / "collect_report.json").write_text(json.dumps(report, indent=2))
+    (DATA / "health.json").write_text(json.dumps(health(report), indent=1, ensure_ascii=False))
     return report
 
 

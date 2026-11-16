@@ -31,6 +31,8 @@ def score(c, r):
     if not r["items"]: return 0.0, "no results"
     s = sum(ok_item(c, it) for it in r["items"]) / len(r["items"])
     if c.get("no_drop") and (r["dropped"] or r["missing"]): s = min(s, 0.25)
+    if c.get("no_edit") and r.get("edit"): s = min(s, 0.25); notes.append("would show a styled look next to a specific request")
+    if c.get("no_edit") and r["dropped"]: s = min(s, 0.5)
     return s, "; ".join(notes)
 
 results = []
@@ -46,7 +48,7 @@ with sync_playwright() as p:
             r = {"error": str(e)[:200]}
         s, note = score(c, r)
         results.append({"case": c, "score": round(s, 3), "pass": s >= c["thr"], "note": note, "secs": round(time.time() - t0, 1),
-                        **{k: r.get(k) for k in ("en", "kind", "engine", "mood", "named", "facets", "matches")},
+                        **{k: r.get(k) for k in ("en", "kind", "engine", "mood", "named", "facets", "matches", "edit", "pieces")},
                         "top": [f'{it["category"]} | {it["brand"]} | {it["title"][:60]}' for it in r.get("items", [])[:8]]})
         print(f'{"PASS" if s >= c["thr"] else "FAIL"} {s:.2f} [{c["group"]}] {c["q"]}  {("— " + note) if note else ""}', flush=True)
     b.close()

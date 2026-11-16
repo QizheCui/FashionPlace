@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
   pages: write
   id-token: write
 
@@ -58,6 +59,17 @@ jobs:
         # code/config pushes only rebuild the site; the brands' websites are visited once a day
         if: github.event_name != 'push'
         run: python -m collector.collect
+
+      - name: Shop health alert
+        if: github.event_name != 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python tools/health_issue.py > /tmp/health.md || true
+          if [ -s /tmp/health.md ]; then
+            n=$(gh issue list --search "Shop health in:title" --state open --json number --jq '.[0].number')
+            if [ -n "$n" ]; then gh issue comment "$n" --body-file /tmp/health.md; else gh issue create --title "Shop health" --body-file /tmp/health.md; fi
+          fi
 
       - name: Import affiliate feeds (if set up)
         if: github.event_name != 'push'

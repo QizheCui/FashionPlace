@@ -87,7 +87,9 @@ Rules:
 - "style": a feeling, occasion, aesthetic or look (e.g. "modern city finance", "Sunday in Copenhagen").
   Act like a stylist: return 4-6 complementary pieces that together make the look, specific about cut,
   colour and fabric, and set department if the words imply it.
-- A plain garment request ("black wool trousers under £150") is "style" with ONE piece.
+- A request that names a garment ("cashmere scarf", "blue dress", "black wool trousers under £150") is "style" with
+  exactly ONE piece: that garment with every colour and fabric the shopper gave. Never add other garments to it.
+  "cashmere scarf" means a scarf made of cashmere, not other cashmere things and not other scarves.
 - Respect any budget, colour, fabric or department the shopper gave.
 - "named" holds ONLY what the shopper literally wrote. A mood, place, season or occasion ("European autumn",
   "old money", "for a wedding") names no garment, colour or material: use null. Never put your own ideas in "named".
@@ -95,7 +97,7 @@ Rules:
   are ALWAYS English. Write "understood" and "label" in the reply language you are told.`;
 
 const CF_MODELS = ["@cf/qwen/qwen3-30b-a3b-fp8", "@cf/meta/llama-3.3-70b-instruct-fp8-fast"];
-const PLAN_VERSION = "4"; // bump to drop cached plans
+const PLAN_VERSION = "5"; // bump to drop cached plans
 
 async function plan({ text, dept, lang }, env) {
   const today = new Date().toISOString().slice(0, 10);

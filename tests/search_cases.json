@@ -1470,6 +1470,138 @@
 ],
 "thr": 0.7,
 "miss_ok": true
+},
+{
+"q": "cashmere scarf",
+"group": "strict",
+"cat": [
+"accessories"
+],
+"title": "scarf|scarves|stole|wrap|snood",
+"thr": 0.9,
+"no_edit": true,
+"material": "cashmere"
+},
+{
+"q": "羊绒围巾",
+"group": "strict",
+"cat": [
+"accessories"
+],
+"title": "scarf|scarves|stole|wrap|snood",
+"thr": 0.9,
+"no_edit": true,
+"material": "cashmere"
+},
+{
+"q": "blue dress",
+"group": "strict",
+"cat": [
+"dresses"
+],
+"title": "dress",
+"thr": 0.9,
+"no_edit": true,
+"colour": "blue|navy|indigo|cobalt|denim|sky|azure|midnight|marine|teal|aqua"
+},
+{
+"q": "蓝色连衣裙",
+"group": "strict",
+"cat": [
+"dresses"
+],
+"title": "dress",
+"thr": 0.9,
+"no_edit": true,
+"colour": "blue|navy|indigo|cobalt|denim|sky|azure|midnight|marine|teal|aqua"
+},
+{
+"q": "silk scarf",
+"group": "strict",
+"cat": [
+"accessories"
+],
+"title": "scarf|scarves|bandana|foulard|carré|twilly|neckerchief",
+"thr": 0.9,
+"no_edit": true,
+"material": "silk|satin"
+},
+{
+"q": "leather gloves",
+"group": "strict",
+"cat": [
+"accessories"
+],
+"title": "glove",
+"thr": 0.9,
+"no_edit": true,
+"material": "leather"
+},
+{
+"q": "linen dress",
+"group": "strict",
+"cat": [
+"dresses"
+],
+"title": "dress",
+"thr": 0.9,
+"no_edit": true,
+"material": "linen"
+},
+{
+"q": "红色毛衣",
+"group": "strict",
+"cat": [
+"knitwear"
+],
+"thr": 0.9,
+"no_edit": true,
+"colour": "red|burgundy|wine|crimson|scarlet|bordeaux|cherry|ruby"
+},
+{
+"q": "wool beanie",
+"group": "strict",
+"cat": [
+"accessories"
+],
+"title": "beanie|hat|bonnet",
+"thr": 0.9,
+"no_edit": true,
+"material": "wool|merino|lambswool|cashmere|mohair|alpaca"
+},
+{
+"q": "suede boots",
+"group": "strict",
+"cat": [
+"shoes"
+],
+"title": "boot",
+"thr": 0.9,
+"no_edit": true,
+"material": "suede"
+},
+{
+"q": "black cashmere jumper",
+"group": "strict",
+"cat": [
+"knitwear"
+],
+"thr": 0.9,
+"no_edit": true,
+"colour": "black",
+"material": "cashmere"
+},
+{
+"q": "绿色羊毛大衣",
+"group": "strict",
+"cat": [
+"outerwear"
+],
+"title": "coat",
+"thr": 0.9,
+"no_edit": true,
+"colour": "green|olive|khaki|forest|sage|moss|bottle",
+"material": "wool|cashmere|tweed|flannel|merino|alpaca|mohair"
 }
 ]
 }
