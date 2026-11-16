@@ -8,7 +8,7 @@ os.makedirs("e2e", exist_ok=True)
 out = {"site": SITE, "runs": []}
 
 def items_from(pg):
-    return pg.evaluate("""() => [...document.querySelectorAll('#grid .card, .grid .card')].slice(0, 16).map(c => ({
+    return pg.evaluate("""() => [...document.querySelectorAll('#grid .card, .grid .card')].slice(0, 18).map(c => ({
         brand: c.querySelector('.b')?.textContent.trim(), title: c.querySelector('.t')?.textContent.trim(),
         why: c.querySelector('.why')?.textContent.trim(), cat: (window.__fp && window.__fp.S.byId[c.dataset.id] || {}).category }))""")
 
@@ -60,14 +60,15 @@ with sync_playwright() as p:
     photo, photo_title = pick_photo(pg)
     out["photo_title"] = photo_title
     runs = [("baseline", "en", dict()), ("zh-words", "zh", dict(word="十月哥本哈根的周日，温暖的羊毛和麂皮")),
-            ("en-words", "en", dict(word="dark wool trousers for the office")), ("photo", "en", dict(photo=photo))]
+            ("en-words", "en", dict(word="dark wool trousers for the office")), ("photo", "en", dict(photo=photo)),
+            ("vibe+photo", "en", dict(photo=photo, vibe=True)), ("zh-words+photo", "zh", dict(word="十月哥本哈根的周日，温暖的羊毛和麂皮", photo=photo))]
     for name, lang, kw in runs:
         try: r = setup(pg, lang, name, **kw)
         except Exception as e: r = {"error": str(e)[:400]}
         out["runs"].append({"name": name, "lang": lang, **r})
         print(f"== {name}: {r.get('word_status') or r.get('photo_status') or r.get('error', '')}", flush=True)
         print("   picks:", " / ".join(r.get("picks", [])[:8]), flush=True)
-        for f in r.get("feed", [])[:14]: print(f"   {f.get('cat')} | {f.get('brand')} | {(f.get('title') or '')[:70]} | {f.get('why')}", flush=True)
+        for f in r.get("feed", [])[:18]: print(f"   {f.get('cat')} | {f.get('brand')} | {(f.get('title') or '')[:70]} | {f.get('why')}", flush=True)
     out["errors"] = errs[:30]
     print("photo was:", photo_title); print("page errors:", errs[:8])
     b.close()

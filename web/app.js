@@ -212,7 +212,9 @@
     const t = blend([
       [mean(vibeVecs(p.vibes)), 1.0],
       [mean(p.words.filter((w) => !w.thumb).map((w) => pv(w.vec))), 1.0],
-      [mean(p.words.filter((w) => w.thumb).map((w) => pv(w.vec))), 0.8], // photos: a strong, separate signal
+      // photos: photo-to-photo similarity is much stronger than words-to-photo, so a photo is
+      // turned down when there's anything else to go on, or it pulls the whole feed to one thing
+      [mean(p.words.filter((w) => w.thumb).map((w) => pv(w.vec))), p.vibes.length || p.words.some((w) => !w.thumb) || p.liked.length ? 0.35 : 1.0],
       [mean(p.brands.map((b) => S.brandCentroid[b])), 0.6],
       [liked, Math.min(1.6, 0.3 * p.liked.length)],
       [disliked, -Math.min(0.8, 0.2 * p.disliked.length)],
@@ -326,11 +328,21 @@
   const shorten = (s) => s.replace(/^(a|an) /i, "").split(",")[0].replace(/ menswear| men's/g, "").slice(0, 56);
   const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
-  function diversify(ranked, perBrandRun = 2) {
-    const out = [], pool = ranked.slice(0, 600);
+  // the same piece listed twice (one listing per colour, or by two shops) shows once
+  const pieceKey = (it) => `${it.brand}|${it.title}`.toLowerCase().replace(/[^a-z0-9|]+/g, " ").trim();
+  function dedupe(list) {
+    const seen = new Set();
+    return list.filter((x) => { const k = pieceKey(x.it); if (seen.has(k)) return false; seen.add(k); return true; });
+  }
+  // no brand more than perBrandRun times in any 6 in a row; optionally no category more than perCatRun times in any 6
+  function diversify(ranked, perBrandRun = 2, perCatRun = 0) {
+    const out = [], pool = dedupe(ranked.slice(0, 900)).slice(0, 600);
     while (pool.length) {
-      const recent = out.slice(-6).map((x) => x.it.brand);
-      let idx = pool.findIndex((x) => recent.filter((b) => b === x.it.brand).length < perBrandRun);
+      const recent = out.slice(-6).map((x) => x.it);
+      const ok = (x) => recent.filter((r) => r.brand === x.it.brand).length < perBrandRun
+        && (!perCatRun || recent.filter((r) => r.category === x.it.category).length < perCatRun);
+      let idx = pool.slice(0, 200).findIndex(ok);
+      if (idx < 0) idx = pool.findIndex((x) => recent.filter((r) => r.brand === x.it.brand).length < perBrandRun);
       if (idx < 0) idx = 0;
       out.push(pool.splice(idx, 1)[0]);
     }
@@ -404,8 +416,8 @@
     }
     if (S.tab === "deals") {
       const cutoff = quantile(base.map((x) => x.s), 0.35);
-      return base.filter((x) => x.it.deal && x.it.deal.verdict && x.it.deal.verdict !== "always_on_sale" && x.s >= cutoff)
-        .sort((a, b) => b.s - a.s).map((x) => ({ ...x, why: reason(x.it, "deals"), advice: advice(x.it, p) }));
+      return dedupe(base.filter((x) => x.it.deal && x.it.deal.verdict && x.it.deal.verdict !== "always_on_sale" && x.s >= cutoff)
+        .sort((a, b) => b.s - a.s)).map((x) => ({ ...x, why: reason(x.it, "deals"), advice: advice(x.it, p) }));
     }
     if (S.tab === "explore") {
       const k = S.surprise, mine = new Set(p.brands);
@@ -416,10 +428,10 @@
       const ranked = cand.map((x, i) => ({ ...x, e: (1 - k) * x.s + 1.5 * k * zw[i] + (mine.has(x.it.brand) ? 0 : 0.5) }))
         .sort((a, b) => b.e - a.e);
       const pool = ranked.length ? ranked : base.filter((x) => !seen.has(x.it.id)).sort((a, b) => b.s - a.s); // tiny catalogue fallback
-      return (S.brand ? pool : diversify(pool, 1)).map((x) => ({ ...x, why: reason(x.it, "explore") }));
+      return (S.brand ? dedupe(pool) : diversify(pool, 1, S.category === "all" ? 2 : 0)).map((x) => ({ ...x, why: reason(x.it, "explore") }));
     }
     const ranked = base.filter((x) => !p.disliked.includes(x.it.id)).sort((a, b) => b.s - a.s);
-    return (S.brand ? ranked : diversify(ranked)).map((x) => ({ ...x, why: reason(x.it, "foryou") }));
+    return (S.brand ? dedupe(ranked) : diversify(ranked, 2, S.category === "all" ? 2 : 0)).map((x) => ({ ...x, why: reason(x.it, "foryou") }));
   }
 
   // ---------- brands to know ----------
@@ -829,7 +841,7 @@
       // a mix: no more than two in a row from one brand, three of one kind of garment
       const perCat = {}, top = [];
       const perBrand = {};
-      for (const x of pool) {
+      for (const x of dedupe(pool)) {
         if ((perCat[x.it.category] || 0) >= (named || exact ? 12 : 3) || (perBrand[x.it.brand] || 0) >= (exact ? 12 : 2)) continue;
         perCat[x.it.category] = (perCat[x.it.category] || 0) + 1; perBrand[x.it.brand] = (perBrand[x.it.brand] || 0) + 1; top.push(x.it);
         if (top.length >= 12) break;
