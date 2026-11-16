@@ -196,6 +196,50 @@ def fix_categories(enc, items: list[dict], mat: np.ndarray) -> None:
     print(f"categories corrected from photos: {changed}")
 
 
+ANCHOR_N, ANCHOR_W = 40, 0.5
+
+
+def build_vibes(enc, items: list[dict], mat: np.ndarray, gen: np.ndarray) -> None:
+    """Each style gets a vector per department. Words alone are a loose guide for a photo model, so each
+    vector is the style's descriptions blended with the pieces in that department that match them best
+    (a spread of brands and garment types). The style then points at real clothes, not just at a sentence."""
+    cfg = json.loads((CONFIG / "vibes.json").read_text())
+    bias = (mat @ gen.T).mean(1)
+    rows = {d: np.array([i for i, it in enumerate(items) if it.get("department") in (d, "unisex")
+                         and it.get("category") not in ("other", "accessories", "bags")], dtype=int) for d in ("men", "women")}
+    out, report = [], {}
+    for v in cfg["vibes"]:
+        pr = v["prompts"]
+        pr = pr if isinstance(pr, dict) else {d: pr for d in ("men", "women") if v.get("for", "any") in ("any", d)}
+        vecs = {}
+        for dept, prompts in pr.items():
+            t = unit(enc.text(prompts).mean(0))
+            r = rows[dept]
+            vec, picked = t, []
+            if len(r) >= 200:
+                sc = mat[r] @ t - 0.7 * bias[r]
+                per_brand, per_cat = {}, {}
+                for j in np.argsort(-sc)[:3000]:
+                    it = items[r[j]]
+                    if per_brand.get(it["brand"], 0) >= 2 or per_cat.get(it["category"], 0) >= 10:
+                        continue
+                    per_brand[it["brand"]] = per_brand.get(it["brand"], 0) + 1
+                    per_cat[it["category"]] = per_cat.get(it["category"], 0) + 1
+                    picked.append(int(r[j]))
+                    if len(picked) >= ANCHOR_N:
+                        break
+                if len(picked) >= 15:
+                    vec = unit(t + ANCHOR_W * unit(mat[picked].mean(0)))
+            vecs[dept] = [round(float(x), 4) for x in vec]
+            report[f"{v['id']}|{dept}"] = [f"{items[i]['category']} | {items[i]['brand']} | {items[i]['title'][:60]}" for i in picked[:10]]
+        out.append({"id": v["id"], "label": v["label"], "desc": v["desc"], "group": v.get("group", ""),
+                    "for": v.get("for", "any"), "top": v.get("top", {}), "vecs": vecs})
+    (DATA / "vibes.json").write_text(json.dumps({"groups": cfg.get("groups", []), "vibes": out}))
+    (DATA / "style_report.json").write_text(json.dumps(report, ensure_ascii=False, indent=0))
+    for k, titles in report.items():
+        print(f"STYLE {k}: " + " ;; ".join(titles[:8]))
+
+
 def run(fake: bool = False) -> None:
     items = [it for it in json.loads((DATA / "items.json").read_text())["items"]
              if it.get("in_stock") and it.get("category") not in ("underwear", "lifestyle")]
@@ -253,19 +297,15 @@ def run(fake: bool = False) -> None:
         prof = build_profile(enc, json.loads(pf.read_text()))
         (DATA / "profiles" / pf.name).write_text(json.dumps(prof))
         print(f"profile {prof['id']} built")
-    # style moods offered during setup, each as a vector on the same style map
-    vibes = json.loads((CONFIG / "vibes.json").read_text())["vibes"]
-    (DATA / "vibes.json").write_text(json.dumps([
-        {"id": v["id"], "label": v["label"], "desc": v["desc"], "for": v.get("for", "any"),
-         "vec": [round(float(x), 5) for x in unit(enc.text(v["prompts"]).mean(0))]}
-        for v in vibes
-    ]))
-    # Some photos (text-heavy banners, flat lays) sit close to *any* sentence. The app subtracts each
-    # piece's average closeness to these bland captions, so typed searches surface real matches.
+    # styles offered during setup: one vector per department, anchored on real pieces from the catalogue
     generic = ["a photo of clothing", "a photo of a garment", "a product photo", "fashion", "an outfit",
                "a photo of a piece of clothing on a white background", "a model wearing clothes", "menswear",
                "womenswear", "a photo of an item for sale"]
-    (DATA / "generic.json").write_text(json.dumps([[round(float(x), 5) for x in v] for v in enc.text(generic)]))
+    gen = enc.text(generic)
+    build_vibes(enc, items, mat, gen)
+    # Some photos (text-heavy banners, flat lays) sit close to *any* sentence. The app subtracts each
+    # piece's average closeness to these bland captions, so typed searches surface real matches.
+    (DATA / "generic.json").write_text(json.dumps([[round(float(x), 5) for x in v] for v in gen]))
     # "Not quite right?" nudges: a direction from 'less' towards 'more'
     refiners = json.loads((CONFIG / "refiners.json").read_text())["refiners"]
     # Each direction blends a text one ("dark clothing" minus "light clothing") with one learned from the

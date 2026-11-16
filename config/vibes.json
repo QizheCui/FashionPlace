@@ -1,251 +1,921 @@
 {
-  "_comment": "Style moods people pick during setup. 'prompts' are what the AI matches against product photos; 'desc' is what people read.",
-  "vibes": [
-    {
-      "id": "old-money",
-      "label": "Old money",
-      "desc": "Heritage fabrics, quiet polish, nothing shouts",
-      "prompts": [
-        "old money style clothing, understated heritage elegance",
-        "classic cashmere and wool pieces in navy, camel and cream"
-      ]
-    },
-    {
-      "id": "ivy-prep",
-      "label": "Ivy & prep",
-      "desc": "Oxford shirts, rugby stripes, varsity knits",
-      "prompts": [
-        "vintage ivy league preppy clothing",
-        "oxford button down shirt, rugby shirt, varsity cardigan"
-      ],
-      "for": "men"
-    },
-    {
-      "id": "quiet-luxury",
-      "label": "Quiet luxury",
-      "desc": "Beautiful materials, no logos",
-      "prompts": [
-        "quiet luxury minimalist clothing in premium natural fabrics",
-        "logo-free refined knitwear and tailoring"
-      ]
-    },
-    {
-      "id": "scandi-min",
-      "label": "Scandi minimal",
-      "desc": "Clean lines, muted palette, functional",
-      "prompts": [
-        "scandinavian minimalist clothing, clean lines and muted colours",
-        "functional minimal copenhagen style"
-      ]
-    },
-    {
-      "id": "workwear",
-      "label": "Workwear",
-      "desc": "Chore jackets, canvas, cord, built to last",
-      "prompts": [
-        "heritage workwear, chore jacket, canvas and corduroy",
-        "rugged utility clothing with patch pockets"
-      ],
-      "for": "men"
-    },
-    {
-      "id": "parisian",
-      "label": "Parisian casual",
-      "desc": "Effortless, a bit undone, very chic",
-      "prompts": [
-        "effortless parisian casual style",
-        "french casual chic clothing, breton stripe and relaxed tailoring"
-      ]
-    },
-    {
-      "id": "soft-tailoring",
-      "label": "Soft tailoring",
-      "desc": "Unstructured blazers, pleats, relaxed suiting",
-      "prompts": [
-        "unstructured relaxed blazer and pleated trousers",
-        "soft italian tailoring, smart casual"
-      ],
-      "for": "men"
-    },
-    {
-      "id": "euro-autumn",
-      "label": "European autumn",
-      "desc": "Wool, suede, corduroy, warm earth tones",
-      "prompts": [
-        "european autumn clothing in wool, suede and corduroy",
-        "warm earthy tones, brown, olive, rust and camel"
-      ]
-    },
-    {
-      "id": "japanese-amer",
-      "label": "Japanese Americana",
-      "desc": "Selvedge denim, vintage cuts, craft detail",
-      "prompts": [
-        "japanese americana, selvedge denim and vintage workwear",
-        "craft details, indigo, vintage american cuts"
-      ],
-      "for": "men"
-    },
-    {
-      "id": "coastal",
-      "label": "Coastal & sailing",
-      "desc": "Fishermen knits, linen, navy and white",
-      "prompts": [
-        "coastal sailing style, fisherman knit and linen",
-        "navy and white nautical clothing"
-      ]
-    },
-    {
-      "id": "outdoor",
-      "label": "Outdoor & technical",
-      "desc": "Shells, fleeces, trail-ready but clean",
-      "prompts": [
-        "technical outdoor clothing, waterproof shell jacket and fleece",
-        "gorpcore hiking style"
-      ]
-    },
-    {
-      "id": "street",
-      "label": "Streetwear",
-      "desc": "Graphics, hoodies, oversized, logos",
-      "prompts": [
-        "streetwear with graphic print hoodie and oversized fit",
-        "logo heavy urban street fashion"
-      ]
-    },
-    {
-      "id": "bold-colour",
-      "label": "Bold colour",
-      "desc": "Rich colour that still looks elegant",
-      "prompts": [
-        "rich bold colour clothing that still looks elegant",
-        "statement colour knitwear in burgundy, cobalt or bottle green"
-      ]
-    },
-    {
-      "id": "texture",
-      "label": "Texture",
-      "desc": "Bouclé, mohair, cable knit, suede",
-      "prompts": [
-        "interesting textured fabric such as boucle, mohair or chunky cable knit",
-        "suede and brushed wool textures"
-      ]
-    },
-    {
-      "id": "vintage",
-      "label": "Vintage character",
-      "desc": "Patterns and pieces with a past",
-      "prompts": [
-        "vintage inspired patterned clothing with character",
-        "fair isle, retro stripes and archive details"
-      ]
-    },
-    {
-      "id": "evening",
-      "label": "Evening & smart",
-      "desc": "Dinner, events, sharper pieces",
-      "prompts": [
-        "smart evening wear, dark tailoring and fine knit polo",
-        "elegant dinner outfit"
-      ]
-    },
-    {
-      "id": "romantic",
-      "label": "Romantic & feminine",
-      "desc": "Florals, ruffles, soft and pretty",
-      "for": "women",
-      "prompts": [
-        "romantic feminine dress with florals and ruffles",
-        "soft pretty womenswear in delicate fabrics"
-      ]
-    },
-    {
-      "id": "minimal-chic",
-      "label": "Minimal chic",
-      "desc": "Clean shapes, neutral, polished",
-      "for": "women",
-      "prompts": [
-        "minimal chic womenswear in neutral colours",
-        "clean polished modern women's outfit"
-      ]
-    },
-    {
-      "id": "french-girl",
-      "label": "French girl",
-      "desc": "Tea dresses, knits, red lip energy",
-      "for": "women",
-      "prompts": [
-        "french girl style, tea dress and cardigan",
-        "parisienne effortless womenswear"
-      ]
-    },
-    {
-      "id": "power-tailoring",
-      "label": "Power tailoring",
-      "desc": "Sharp blazers, wide trousers",
-      "for": "women",
-      "prompts": [
-        "women's sharp tailored blazer and wide leg trousers",
-        "confident power suiting for women"
-      ]
-    },
-    {
-      "id": "boho",
-      "label": "Boho",
-      "desc": "Flowing, earthy, a bit free",
-      "for": "women",
-      "prompts": [
-        "bohemian flowing maxi dress",
-        "earthy relaxed boho womenswear"
-      ]
-    },
-    {
-      "id": "going-out",
-      "label": "Going out",
-      "desc": "Party tops, slip dresses, shine",
-      "for": "women",
-      "prompts": [
-        "going out party dress and satin slip dress",
-        "glamorous evening womenswear with shine"
-      ]
-    },
-    {
-      "id": "cosy-knits",
-      "label": "Cosy knits",
-      "desc": "Chunky cardigans, soft layers",
-      "for": "women",
-      "prompts": [
-        "cosy chunky knitted cardigan for women",
-        "soft layered knitwear"
-      ]
-    },
-    {
-      "id": "print-lover",
-      "label": "Print lover",
-      "desc": "Bold prints and pattern clashing",
-      "for": "women",
-      "prompts": [
-        "bold printed womenswear with colourful patterns",
-        "pattern clashing dress and blouse"
-      ]
-    },
-    {
-      "id": "athleisure",
-      "label": "Athleisure",
-      "desc": "Clean sportswear you wear all day",
-      "prompts": [
-        "stylish athleisure outfit, clean sportswear",
-        "minimal tracksuit and fashion trainers"
-      ]
-    },
-    {
-      "id": "runner",
-      "label": "Runner",
-      "desc": "Running shoes and performance kit",
-      "prompts": [
-        "running shoes and performance running clothing",
-        "technical running jacket and shorts"
-      ]
-    }
-  ]
+ "_comment": "Styles people pick during setup. 'prompts' (per department) are what the AI matches against product photos; 'desc' is what people read. 'top' = position among the 12 shown first for that department.",
+ "groups": [
+  "Classic & smart",
+  "Minimal & modern",
+  "Relaxed & heritage",
+  "Street & sport",
+  "Expressive",
+  "Occasion"
+ ],
+ "vibes": [
+  {
+   "id": "old-money",
+   "label": "Old money",
+   "desc": "Heritage fabrics, quiet polish, nothing shouts",
+   "group": "Classic & smart",
+   "for": "any",
+   "prompts": {
+    "men": [
+     "men's old money style: navy cashmere crew neck jumper, understated and expensive looking",
+     "men's camel wool overcoat, classic heritage elegance",
+     "men's cream cable knit jumper and pleated flannel trousers",
+     "men's brown suede loafers and a navy blazer, discreet wealth"
+    ],
+    "women": [
+     "women's old money style: cashmere twinset in cream and navy, understated and expensive looking",
+     "women's camel wool coat with a silk scarf, classic heritage elegance",
+     "women's tailored wool trousers with a fine knit polo, country club polish",
+     "women's tweed jacket and leather loafers, discreet wealth"
+    ]
+   },
+   "top": {
+    "men": 1,
+    "women": 4
+   }
+  },
+  {
+   "id": "quiet-luxury",
+   "label": "Quiet luxury",
+   "desc": "Beautiful materials, no logos",
+   "group": "Classic & smart",
+   "for": "any",
+   "prompts": {
+    "men": [
+     "men's quiet luxury: logo-free fine merino knit in a neutral colour",
+     "men's minimalist cashmere overshirt in taupe, premium natural fabric",
+     "men's relaxed tailored trousers in soft grey wool, refined and plain",
+     "men's plain suede bomber jacket in a muted tone"
+    ],
+    "women": [
+     "women's quiet luxury: logo-free cashmere jumper in oatmeal",
+     "women's minimalist long wool coat in beige, premium fabric and clean cut",
+     "women's fluid silk shirt and tailored trousers in neutral tones",
+     "women's fine ribbed knit dress in a muted colour, refined and plain"
+    ]
+   },
+   "top": {
+    "men": 2,
+    "women": 3
+   }
+  },
+  {
+   "id": "city-smart",
+   "label": "City smart",
+   "desc": "Office to dinner: sharp, modern, not stiff",
+   "group": "Classic & smart",
+   "for": "any",
+   "prompts": {
+    "men": [
+     "men's modern smart casual office outfit: navy unstructured blazer with a knitted polo",
+     "men's charcoal tailored wool trousers for work",
+     "men's crisp shirt under a fine merino jumper, business casual",
+     "men's dark overcoat and leather derby shoes for the city"
+    ],
+    "women": [
+     "women's modern office outfit: tailored blazer with straight trousers",
+     "women's smart knit top and midi skirt for work",
+     "women's crisp poplin shirt and tailored trousers, business casual",
+     "women's long dark coat and leather ankle boots for the city"
+    ]
+   },
+   "top": {
+    "men": 3,
+    "women": 6
+   }
+  },
+  {
+   "id": "soft-tailoring",
+   "label": "Soft tailoring",
+   "desc": "Unstructured blazers, pleats, relaxed suiting",
+   "group": "Classic & smart",
+   "for": "men",
+   "prompts": {
+    "men": [
+     "men's unstructured relaxed blazer in soft wool",
+     "men's pleated wide trousers, soft italian tailoring",
+     "men's relaxed linen or flannel suit worn casually",
+     "men's drapey double breasted jacket, easy elegance"
+    ]
+   },
+   "top": {
+    "men": 9
+   }
+  },
+  {
+   "id": "classic-tailoring",
+   "label": "Classic tailoring",
+   "desc": "Proper suits, shirts and ties, done well",
+   "group": "Classic & smart",
+   "for": "men",
+   "prompts": {
+    "men": [
+     "men's classic navy wool two piece suit",
+     "men's formal white dress shirt and silk tie",
+     "men's charcoal three piece suit, sharp british tailoring",
+     "men's black oxford leather shoes and a tailored overcoat"
+    ]
+   },
+   "top": {}
+  },
+  {
+   "id": "power-tailoring",
+   "label": "Power tailoring",
+   "desc": "Sharp blazers, wide trousers",
+   "group": "Classic & smart",
+   "for": "women",
+   "prompts": {
+    "women": [
+     "women's sharp tailored blazer with strong shoulders",
+     "women's wide leg tailored trousers, confident suiting",
+     "women's matching trouser suit in a bold neutral",
+     "women's waistcoat and tailored trousers set"
+    ]
+   },
+   "top": {}
+  },
+  {
+   "id": "ivy-prep",
+   "label": "Ivy & prep",
+   "desc": "Oxford shirts, rugby stripes, varsity knits",
+   "group": "Classic & smart",
+   "for": "any",
+   "prompts": {
+    "men": [
+     "men's ivy league style: oxford button down shirt and chinos",
+     "men's striped rugby shirt, preppy collegiate",
+     "men's varsity cardigan or cricket jumper",
+     "men's penny loafers with a navy blazer, vintage prep"
+    ],
+    "women": [
+     "women's preppy style: pleated tennis skirt and cable knit jumper",
+     "women's oxford shirt under a v-neck cricket jumper, collegiate",
+     "women's navy blazer with gold buttons and loafers",
+     "women's polo shirt and tailored shorts, country club prep"
+    ]
+   },
+   "top": {
+    "men": 7
+   }
+  },
+  {
+   "id": "british-country",
+   "label": "British country",
+   "desc": "Tweed, waxed jackets, Fair Isle, brogues",
+   "group": "Classic & smart",
+   "for": "any",
+   "prompts": {
+    "men": [
+     "men's waxed cotton country jacket in olive",
+     "men's tweed sport coat and corduroy trousers",
+     "men's fair isle wool jumper, british countryside",
+     "men's brown leather brogue boots and a quilted jacket"
+    ],
+    "women": [
+     "women's waxed cotton country jacket in olive",
+     "women's tweed blazer and riding style boots",
+     "women's fair isle wool jumper, british countryside",
+     "women's quilted jacket and corduroy trousers"
+    ]
+   },
+   "top": {}
+  },
+  {
+   "id": "scandi-min",
+   "label": "Scandi minimal",
+   "desc": "Clean lines, muted palette, functional",
+   "group": "Minimal & modern",
+   "for": "any",
+   "prompts": {
+    "men": [
+     "men's scandinavian minimalist outfit, clean lines in grey, navy and black",
+     "men's boxy plain overshirt and straight trousers, copenhagen style",
+     "men's minimal wool coat with hidden buttons",
+     "men's plain heavyweight t-shirt and tapered trousers, functional and simple"
+    ],
+    "women": [
+     "women's scandinavian minimalist outfit, clean lines in grey, cream and black",
+     "women's oversized plain wool coat, stockholm style",
+     "women's boxy shirt and straight leg trousers, pared back",
+     "women's simple knit dress in a muted colour, functional and simple"
+    ]
+   },
+   "top": {
+    "men": 4
+   }
+  },
+  {
+   "id": "minimal-chic",
+   "label": "Minimal chic",
+   "desc": "Clean shapes, neutral, polished",
+   "group": "Minimal & modern",
+   "for": "women",
+   "prompts": {
+    "women": [
+     "minimal chic womenswear in neutral colours, clean shapes",
+     "women's polished modern outfit: column skirt and fitted knit",
+     "women's sleek sleeveless top and tailored trousers in black and ivory",
+     "women's structured minimalist dress, no decoration"
+    ]
+   },
+   "top": {
+    "women": 1
+   }
+  },
+  {
+   "id": "clean-girl",
+   "label": "Clean & polished",
+   "desc": "Sleek basics, slicked-back, gold hoops",
+   "group": "Minimal & modern",
+   "for": "women",
+   "prompts": {
+    "women": [
+     "women's sleek fitted basics: white tank top and high waisted trousers",
+     "women's ribbed bodysuit and straight jeans, polished and simple",
+     "women's neutral matching knit set, clean girl aesthetic",
+     "women's fitted long sleeve top with gold jewellery, fresh and minimal"
+    ]
+   },
+   "top": {
+    "women": 5
+   }
+  },
+  {
+   "id": "everyday-basics",
+   "label": "Everyday basics",
+   "desc": "Great tees, jeans, sweatshirts, done right",
+   "group": "Minimal & modern",
+   "for": "any",
+   "prompts": {
+    "men": [
+     "men's well made plain white t-shirt and straight blue jeans",
+     "men's plain grey crewneck sweatshirt, quality everyday basic",
+     "men's simple navy chore jacket and chinos, easy daily outfit",
+     "men's plain white leather trainers and a casual overshirt"
+    ],
+    "women": [
+     "women's well made plain white t-shirt and straight blue jeans",
+     "women's plain grey crewneck sweatshirt, quality everyday basic",
+     "women's simple striped long sleeve top and relaxed trousers",
+     "women's plain white trainers and a casual shirt jacket"
+    ]
+   },
+   "top": {
+    "men": 5,
+    "women": 8
+   }
+  },
+  {
+   "id": "dark-avant",
+   "label": "All black & avant-garde",
+   "desc": "Dark, draped, sculptural, a bit dramatic",
+   "group": "Minimal & modern",
+   "for": "any",
+   "prompts": {
+    "men": [
+     "men's all black avant-garde outfit, draped and asymmetric",
+     "men's oversized black coat with dropped shoulders, japanese designer style",
+     "men's black wide cropped trousers and chunky black boots",
+     "men's dark layered monochrome outfit, sculptural shapes"
+    ],
+    "women": [
+     "women's all black avant-garde outfit, draped and asymmetric",
+     "women's oversized black coat with sculptural shape, japanese designer style",
+     "women's black deconstructed dress, dark and dramatic",
+     "women's dark layered monochrome outfit with chunky boots"
+    ]
+   },
+   "top": {}
+  },
+  {
+   "id": "workwear",
+   "label": "Workwear",
+   "desc": "Chore jackets, canvas, cord, built to last",
+   "group": "Relaxed & heritage",
+   "for": "any",
+   "prompts": {
+    "men": [
+     "men's heritage workwear chore jacket in canvas with patch pockets",
+     "men's corduroy trousers and a heavy flannel shirt",
+     "men's rugged carpenter trousers and work boots",
+     "men's french blue work jacket, utility clothing"
+    ],
+    "women": [
+     "women's utility chore jacket in canvas with patch pockets",
+     "women's carpenter trousers or dungarees, workwear style",
+     "women's boiler suit, practical utility clothing",
+     "women's heavy overshirt and work boots"
+    ]
+   },
+   "top": {
+    "men": 6
+   }
+  },
+  {
+   "id": "japanese-amer",
+   "label": "Japanese Americana",
+   "desc": "Selvedge denim, vintage cuts, craft detail",
+   "group": "Relaxed & heritage",
+   "for": "men",
+   "prompts": {
+    "men": [
+     "men's japanese selvedge denim jeans, raw indigo",
+     "men's vintage american workwear reproduced with craft detail",
+     "men's sashiko or indigo dyed jacket",
+     "men's loopwheel sweatshirt and military chinos, vintage cuts"
+    ]
+   },
+   "top": {}
+  },
+  {
+   "id": "rugged",
+   "label": "Rugged & western",
+   "desc": "Suede, denim, boots, worn-in leather",
+   "group": "Relaxed & heritage",
+   "for": "men",
+   "prompts": {
+    "men": [
+     "men's suede trucker jacket and worn denim",
+     "men's western shirt with snap buttons",
+     "men's leather boots and a shearling jacket, rugged outdoorsman",
+     "men's heavy plaid wool overshirt, lumberjack style"
+    ]
+   },
+   "top": {}
+  },
+  {
+   "id": "euro-autumn",
+   "label": "European autumn",
+   "desc": "Wool, suede, corduroy, warm earth tones",
+   "group": "Relaxed & heritage",
+   "for": "any",
+   "prompts": {
+    "men": [
+     "men's autumn outfit in brown, olive, rust and camel",
+     "men's corduroy jacket and wool jumper in warm earth tones",
+     "men's suede jacket with a roll neck jumper, european city in autumn",
+     "men's brushed wool overshirt in brown check"
+    ],
+    "women": [
+     "women's autumn outfit in brown, olive, rust and camel",
+     "women's corduroy skirt and wool jumper in warm earth tones",
+     "women's suede jacket with a roll neck, european city in autumn",
+     "women's brown wool coat and knee high leather boots"
+    ]
+   },
+   "top": {
+    "men": 11
+   }
+  },
+  {
+   "id": "parisian",
+   "label": "Parisian casual",
+   "desc": "Effortless, a bit undone, very chic",
+   "group": "Relaxed & heritage",
+   "for": "men",
+   "prompts": {
+    "men": [
+     "men's effortless parisian casual: breton stripe top and navy chore jacket",
+     "men's relaxed blazer worn with jeans and loafers, french chic",
+     "men's navy crew neck jumper over a white t-shirt, understated french style",
+     "men's trench coat and straight trousers, left bank"
+    ]
+   },
+   "top": {}
+  },
+  {
+   "id": "french-girl",
+   "label": "French girl",
+   "desc": "Tea dresses, knits, red-lip energy",
+   "group": "Relaxed & heritage",
+   "for": "women",
+   "prompts": {
+    "women": [
+     "french girl style: floral tea dress with a cardigan",
+     "parisienne effortless womenswear: breton stripe top and straight jeans",
+     "women's oversized blazer with a white tee and ballet flats, french chic",
+     "women's short knit cardigan and a midi skirt, parisian"
+    ]
+   },
+   "top": {
+    "women": 2
+   }
+  },
+  {
+   "id": "coastal",
+   "label": "Coastal & sailing",
+   "desc": "Fishermen knits, linen, navy and white",
+   "group": "Relaxed & heritage",
+   "for": "any",
+   "prompts": {
+    "men": [
+     "men's chunky fisherman knit jumper in cream",
+     "men's navy and white nautical stripes and linen trousers",
+     "men's sailing jacket and deck shoes",
+     "men's washed linen shirt, relaxed seaside style"
+    ],
+    "women": [
+     "women's chunky fisherman knit jumper in cream",
+     "women's navy and white nautical stripe top and white trousers",
+     "women's linen shirt dress, relaxed seaside style",
+     "women's coastal outfit in pale blue and white cotton"
+    ]
+   },
+   "top": {}
+  },
+  {
+   "id": "riviera",
+   "label": "Mediterranean summer",
+   "desc": "Linen, knitted polos, loafers, holiday ease",
+   "group": "Relaxed & heritage",
+   "for": "any",
+   "prompts": {
+    "men": [
+     "men's italian summer style: knitted polo shirt and pleated linen trousers",
+     "men's open collar camp shirt in a soft print, riviera holiday",
+     "men's cream linen suit jacket worn casually",
+     "men's suede loafers and tailored shorts, summer in italy"
+    ],
+    "women": [
+     "women's italian summer style: linen shirt and wide trousers in white",
+     "women's crochet top and flowing skirt, riviera holiday",
+     "women's simple linen sundress, mediterranean",
+     "women's raffia bag and leather sandals with a white dress"
+    ]
+   },
+   "top": {}
+  },
+  {
+   "id": "cosy-knits",
+   "label": "Cosy knits",
+   "desc": "Chunky cardigans, soft layers",
+   "group": "Relaxed & heritage",
+   "for": "any",
+   "prompts": {
+    "men": [
+     "men's chunky shawl collar cardigan, cosy and warm",
+     "men's thick ribbed wool jumper, soft layers",
+     "men's brushed mohair jumper, fireside comfort",
+     "men's heavy knit roll neck in cream"
+    ],
+    "women": [
+     "women's cosy chunky knitted cardigan",
+     "women's oversized soft wool jumper, layered",
+     "women's fluffy mohair knit in a soft colour",
+     "women's knitted lounge set, warm and comfortable"
+    ]
+   },
+   "top": {}
+  },
+  {
+   "id": "dark-academia",
+   "label": "Dark academia",
+   "desc": "Tweed, turtlenecks, library colours",
+   "group": "Relaxed & heritage",
+   "for": "any",
+   "prompts": {
+    "men": [
+     "men's dark academia outfit: tweed blazer, turtleneck and wool trousers in brown and grey",
+     "men's argyle sweater vest over a shirt, scholarly",
+     "men's long dark wool coat and leather satchel",
+     "men's herringbone trousers and brogues, old library"
+    ],
+    "women": [
+     "women's dark academia outfit: tweed blazer, turtleneck and pleated skirt in brown and grey",
+     "women's argyle sweater vest over a shirt, scholarly",
+     "women's plaid wool skirt with knee socks and loafers",
+     "women's long dark wool coat, old library"
+    ]
+   },
+   "top": {}
+  },
+  {
+   "id": "street",
+   "label": "Streetwear",
+   "desc": "Graphics, hoodies, oversized, logos",
+   "group": "Street & sport",
+   "for": "any",
+   "prompts": {
+    "men": [
+     "men's streetwear outfit: oversized graphic hoodie and baggy trousers",
+     "men's logo t-shirt and cargo trousers, urban street fashion",
+     "men's puffer jacket and hyped trainers",
+     "men's oversized graphic print tee, skate brand"
+    ],
+    "women": [
+     "women's streetwear outfit: oversized graphic hoodie and baggy jeans",
+     "women's cropped logo tee and cargo trousers, urban street fashion",
+     "women's puffer jacket and chunky trainers",
+     "women's oversized bomber jacket, street style"
+    ]
+   },
+   "top": {
+    "men": 8,
+    "women": 9
+   }
+  },
+  {
+   "id": "skate-90s",
+   "label": "Skate & 90s",
+   "desc": "Baggy denim, flannels, beat-up sneakers",
+   "group": "Street & sport",
+   "for": "any",
+   "prompts": {
+    "men": [
+     "men's 90s skate style: baggy jeans and a loose flannel shirt",
+     "men's vintage washed band t-shirt and wide trousers",
+     "men's suede skate shoes and a coach jacket",
+     "men's loose striped t-shirt, 1990s"
+    ],
+    "women": [
+     "women's 90s style: baggy jeans and a baby tee",
+     "women's loose flannel shirt and vintage washed denim",
+     "women's slip dress over a t-shirt, 1990s grunge",
+     "women's suede skate shoes and a coach jacket"
+    ]
+   },
+   "top": {}
+  },
+  {
+   "id": "techwear",
+   "label": "Techwear",
+   "desc": "Black shells, cargo straps, city-ninja",
+   "group": "Street & sport",
+   "for": "men",
+   "prompts": {
+    "men": [
+     "men's black techwear jacket with many pockets and waterproof fabric",
+     "men's technical cargo trousers with straps, futuristic",
+     "men's all black functional urban outfit, water resistant shell",
+     "men's modular vest and technical trainers"
+    ]
+   },
+   "top": {}
+  },
+  {
+   "id": "outdoor",
+   "label": "Outdoor & gorpcore",
+   "desc": "Shells, fleeces, trail-ready but clean",
+   "group": "Street & sport",
+   "for": "any",
+   "prompts": {
+    "men": [
+     "men's technical waterproof shell jacket for hiking",
+     "men's fleece jacket in a retro outdoor colour, gorpcore",
+     "men's trail trousers and hiking shoes worn in the city",
+     "men's lightweight down jacket, mountain brand"
+    ],
+    "women": [
+     "women's technical waterproof shell jacket for hiking",
+     "women's fleece jacket in a retro outdoor colour, gorpcore",
+     "women's trail trousers and hiking shoes worn in the city",
+     "women's lightweight down jacket, mountain brand"
+    ]
+   },
+   "top": {
+    "men": 10
+   }
+  },
+  {
+   "id": "athleisure",
+   "label": "Athleisure",
+   "desc": "Clean sportswear you wear all day",
+   "group": "Street & sport",
+   "for": "any",
+   "prompts": {
+    "men": [
+     "men's stylish athleisure outfit: minimal tracksuit",
+     "men's clean technical joggers and a quarter zip top",
+     "men's fashion trainers with tapered track pants",
+     "men's plain performance hoodie, gym to street"
+    ],
+    "women": [
+     "women's stylish athleisure outfit: matching leggings and sports bra set",
+     "women's clean quarter zip top and flared leggings",
+     "women's fashion trainers with a tennis dress",
+     "women's plain performance jacket, pilates to coffee"
+    ]
+   },
+   "top": {
+    "men": 12,
+    "women": 11
+   }
+  },
+  {
+   "id": "runner",
+   "label": "Runner",
+   "desc": "Running shoes and performance kit",
+   "group": "Street & sport",
+   "for": "any",
+   "prompts": {
+    "men": [
+     "men's running shoes, performance",
+     "men's technical running jacket and shorts",
+     "men's lightweight running singlet and cap",
+     "men's trail running shoes and vest"
+    ],
+    "women": [
+     "women's running shoes, performance",
+     "women's technical running jacket and shorts",
+     "women's running tights and crop top",
+     "women's trail running shoes and vest"
+    ]
+   },
+   "top": {}
+  },
+  {
+   "id": "retro-sport",
+   "label": "Retro sport",
+   "desc": "Track tops, football shirts, classic trainers",
+   "group": "Street & sport",
+   "for": "any",
+   "prompts": {
+    "men": [
+     "men's vintage track jacket with stripes, 1980s sportswear",
+     "men's retro football shirt, terrace style",
+     "men's classic low profile suede trainers",
+     "men's retro nylon windbreaker in bold colour blocks"
+    ],
+    "women": [
+     "women's vintage track jacket with stripes, 1980s sportswear",
+     "women's retro football shirt worn with a skirt",
+     "women's classic low profile suede trainers",
+     "women's retro nylon track pants and windbreaker"
+    ]
+   },
+   "top": {}
+  },
+  {
+   "id": "vintage",
+   "label": "Vintage character",
+   "desc": "Patterns and pieces with a past",
+   "group": "Expressive",
+   "for": "any",
+   "prompts": {
+    "men": [
+     "men's vintage inspired patterned shirt with character",
+     "men's retro striped knit polo, 1950s",
+     "men's archive style jacket with unusual details",
+     "men's patterned fair isle or jacquard knit, thrifted look"
+    ],
+    "women": [
+     "women's vintage inspired patterned dress with character",
+     "women's retro knit cardigan with embroidery",
+     "women's 1960s style shift dress or coat",
+     "women's thrifted look blouse with a bold collar"
+    ]
+   },
+   "top": {}
+  },
+  {
+   "id": "seventies",
+   "label": "Seventies",
+   "desc": "Flares, suede, big collars, warm browns",
+   "group": "Expressive",
+   "for": "any",
+   "prompts": {
+    "men": [
+     "men's 1970s style: flared trousers and a shirt with a big collar",
+     "men's brown suede jacket and knitted polo, seventies",
+     "men's retro striped knit in orange and brown",
+     "men's corduroy flares and heeled boots"
+    ],
+    "women": [
+     "women's 1970s style: flared jeans and a suede jacket",
+     "women's printed blouse with a big collar, seventies",
+     "women's crochet vest and maxi skirt, retro",
+     "women's knee high boots with a suede mini skirt"
+    ]
+   },
+   "top": {}
+  },
+  {
+   "id": "rock-grunge",
+   "label": "Rock & grunge",
+   "desc": "Leather jackets, black denim, boots",
+   "group": "Expressive",
+   "for": "any",
+   "prompts": {
+    "men": [
+     "men's black leather biker jacket and skinny black jeans, rock style",
+     "men's ripped denim and a faded band t-shirt, grunge",
+     "men's black chelsea boots and a studded belt",
+     "men's oversized distressed knit jumper in dark colours"
+    ],
+    "women": [
+     "women's black leather biker jacket and black jeans, rock style",
+     "women's ripped denim and a faded band t-shirt, grunge",
+     "women's black combat boots with a mini skirt and tights",
+     "women's distressed knit and leather trousers"
+    ]
+   },
+   "top": {}
+  },
+  {
+   "id": "bold-colour",
+   "label": "Bold colour",
+   "desc": "Rich colour that still looks elegant",
+   "group": "Expressive",
+   "for": "any",
+   "prompts": {
+    "men": [
+     "men's knitwear in a rich bold colour: cobalt, burgundy or bottle green",
+     "men's elegant outfit with one strong colour",
+     "men's bright coloured jacket, confident but tasteful",
+     "men's colourful striped shirt"
+    ],
+    "women": [
+     "women's dress in a rich bold colour: cobalt, fuchsia or emerald",
+     "women's elegant outfit with one strong colour",
+     "women's bright coloured coat, confident but tasteful",
+     "women's colour blocked knitwear"
+    ]
+   },
+   "top": {}
+  },
+  {
+   "id": "texture",
+   "label": "Texture",
+   "desc": "Bouclé, mohair, cable knit, suede",
+   "group": "Expressive",
+   "for": "any",
+   "prompts": {
+    "men": [
+     "men's richly textured knit: boucle, mohair or chunky cable",
+     "men's suede and brushed wool textures",
+     "men's corduroy and fleece textures",
+     "men's textured tweed overshirt"
+    ],
+    "women": [
+     "women's richly textured knit: boucle, mohair or chunky cable",
+     "women's boucle jacket",
+     "women's suede, shearling and brushed wool textures",
+     "women's textured tweed skirt set"
+    ]
+   },
+   "top": {}
+  },
+  {
+   "id": "print-lover",
+   "label": "Print lover",
+   "desc": "Bold prints and pattern clashing",
+   "group": "Expressive",
+   "for": "women",
+   "prompts": {
+    "women": [
+     "bold printed womenswear with colourful patterns",
+     "women's pattern clashing dress and blouse",
+     "women's graphic floral or abstract print trousers",
+     "women's leopard or zebra print statement piece"
+    ]
+   },
+   "top": {}
+  },
+  {
+   "id": "copenhagen-girl",
+   "label": "Copenhagen colour",
+   "desc": "Playful colour, big collars, happy dressing",
+   "group": "Expressive",
+   "for": "women",
+   "prompts": {
+    "women": [
+     "women's playful scandinavian style: colourful dress with puff sleeves",
+     "women's bright knit cardigan worn with jeans and trainers, copenhagen fashion week",
+     "women's oversized collar blouse and a quilted jacket in pastel",
+     "women's cheerful mix of colour and print, danish brand"
+    ]
+   },
+   "top": {
+    "women": 10
+   }
+  },
+  {
+   "id": "romantic",
+   "label": "Romantic & feminine",
+   "desc": "Florals, ruffles, soft and pretty",
+   "group": "Expressive",
+   "for": "women",
+   "prompts": {
+    "women": [
+     "romantic feminine dress with florals and ruffles",
+     "soft pretty womenswear in delicate fabrics, lace trim",
+     "women's puff sleeve blouse in broderie",
+     "women's flowing floral midi dress, cottage garden"
+    ]
+   },
+   "top": {
+    "women": 7
+   }
+  },
+  {
+   "id": "balletcore",
+   "label": "Balletcore & coquette",
+   "desc": "Bows, wrap tops, ballet flats, soft pink",
+   "group": "Expressive",
+   "for": "women",
+   "prompts": {
+    "women": [
+     "women's balletcore outfit: wrap cardigan, tulle skirt and ballet flats",
+     "women's coquette style top with bows and lace in soft pink",
+     "women's satin ribbon detail dress, delicate and girlish",
+     "women's leg warmers and a fitted bodysuit, dancer off duty"
+    ]
+   },
+   "top": {}
+  },
+  {
+   "id": "boho",
+   "label": "Boho",
+   "desc": "Flowing, earthy, a bit free",
+   "group": "Expressive",
+   "for": "women",
+   "prompts": {
+    "women": [
+     "bohemian flowing maxi dress",
+     "earthy relaxed boho womenswear with embroidery",
+     "women's suede fringe jacket and tiered skirt",
+     "women's crochet and lace festival outfit"
+    ]
+   },
+   "top": {
+    "women": 12
+   }
+  },
+  {
+   "id": "y2k",
+   "label": "Y2K",
+   "desc": "Low-rise, baby tees, shiny and fun",
+   "group": "Expressive",
+   "for": "women",
+   "prompts": {
+    "women": [
+     "women's y2k outfit: low rise jeans and a baby tee",
+     "women's 2000s style mini skirt and halter top",
+     "women's velour tracksuit, early 2000s",
+     "women's butterfly top and cargo mini skirt"
+    ]
+   },
+   "top": {}
+  },
+  {
+   "id": "evening",
+   "label": "Evening & smart",
+   "desc": "Dinner, events, sharper pieces",
+   "group": "Occasion",
+   "for": "any",
+   "prompts": {
+    "men": [
+     "men's smart evening outfit: dark tailoring with a fine knit polo",
+     "men's velvet dinner jacket or black tuxedo",
+     "men's elegant dark shirt and tailored trousers for dinner",
+     "men's black leather dress shoes, formal event"
+    ],
+    "women": [
+     "women's elegant evening dress for a dinner or event",
+     "women's black tailored jumpsuit, evening",
+     "women's silk blouse and long skirt, formal dinner",
+     "women's elegant heels and a clutch with a midi dress"
+    ]
+   },
+   "top": {}
+  },
+  {
+   "id": "going-out",
+   "label": "Going out",
+   "desc": "Party tops, slip dresses, shine",
+   "group": "Occasion",
+   "for": "women",
+   "prompts": {
+    "women": [
+     "going out party dress with sequins",
+     "women's satin slip dress for a night out",
+     "glamorous evening womenswear with shine",
+     "women's corset top and leather trousers, night out"
+    ]
+   },
+   "top": {}
+  },
+  {
+   "id": "resort",
+   "label": "Holiday & resort",
+   "desc": "Swim cover-ups, breezy sets, sandals",
+   "group": "Occasion",
+   "for": "any",
+   "prompts": {
+    "men": [
+     "men's holiday outfit: swim shorts and an open linen shirt",
+     "men's printed resort shirt and drawstring shorts",
+     "men's terry towelling polo, poolside",
+     "men's leather sandals and a straw hat"
+    ],
+    "women": [
+     "women's holiday outfit: kaftan or beach cover up",
+     "women's breezy matching linen set for a beach holiday",
+     "women's swimsuit with a sarong",
+     "women's strappy sundress and flat sandals"
+    ]
+   },
+   "top": {}
+  }
+ ]
 }

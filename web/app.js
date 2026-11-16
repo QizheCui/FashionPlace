@@ -205,7 +205,10 @@
   }
 
   // ---------- taste ----------
-  const vibeVecs = (ids) => ids.map((id) => S.vibeById[id] && S.vibeById[id].vec).filter(Boolean);
+  // the department styles are read for: the profile being edited, else the one in use
+  const vibeDept = () => { const e = document.getElementById("editor"); return (e && !e.hidden && ED.draft ? ED.draft.department : S.current && S.current.department) || "any"; };
+  const vibeFits = (v, dept) => !v.for || v.for === "any" || dept === "any" || v.for === dept;
+  const vibeVecs = (ids) => ids.map((id) => S.vibeById[id]).filter((v) => v && vibeFits(v, vibeDept())).map((v) => v.vec);
   function tasteFrom(p, { withFeedback = true } = {}) {
     const liked = withFeedback ? mean(p.liked.map((id) => S.vecs[id])) : null;
     const disliked = withFeedback ? mean(p.disliked.map((id) => S.vecs[id])) : null;
@@ -245,7 +248,7 @@
     S.twist = blend([[mean(vibeVecs(p.surpriseVibes.length ? p.surpriseVibes : ["bold-colour", "texture", "vintage"])), 1]]);
   }
   function leans(taste) {
-    const sims = S.vibes.map((v) => [v.label, dot(taste, v.vec)]).sort((a, b) => b[1] - a[1]).slice(0, 4);
+    const sims = S.vibes.filter((v) => vibeFits(v, vibeDept())).map((v) => [v.label, dot(taste, v.vec)]).sort((a, b) => b[1] - a[1]).slice(0, 4);
     const ex = sims.map(([, s]) => Math.exp(s * 30)), tot = ex.reduce((a, b) => a + b, 0);
     return sims.map(([l], i) => [l, Math.round((100 * ex[i]) / tot)]).filter(([, pc]) => pc >= 8).slice(0, 3);
   }
@@ -311,7 +314,7 @@
     if (best && S.byId[best]) return `Close to the ${shortTitle(S.byId[best].title)} you liked`;
     // photo-to-photo similarity runs much higher than words-to-photo, so photos are scaled down to compare fairly
     const all = [
-      ...p.vibes.map((id) => S.vibeById[id]).filter(Boolean).map((x) => [x.label, x.vec, 1]),
+      ...p.vibes.map((id) => S.vibeById[id]).filter((x) => x && vibeFits(x, p.department)).map((x) => [x.label, x.vec, 0.75]),
       ...p.words.filter((w) => !w.hidden).map((w) => [w.thumb ? "your photos" : w.label, pv(w.vec), w.thumb ? 0.45 : 1]),
     ].map(([l, vec, k]) => [l, k * dot(v, vec)]).sort((a, b) => b[1] - a[1]);
     const cands = all.filter(([l]) => facetFits(l, it.category));
@@ -902,11 +905,18 @@
   // ---------- taste editor (setup + tuning) ----------
   const TIERS = { "high-street": "High street", boutique: "Independent & boutique", premium: "Premium & designer", luxury: "Luxury" };
   const STEPS = ["Basics", "Vibes", "Words & photos", "Pick favourites"];
-  const vibesFor = (dept) => S.vibes.filter((v) => !v.for || v.for === "any" || dept === "any" || v.for === dept);
+  const vibesFor = (dept) => S.vibes.filter((v) => vibeFits(v, dept));
+  // the dozen most people in that department start from; "Both" gets the leaders of each
+  function topVibes(dept) {
+    const rank = (v) => dept === "any" ? Math.min(v.top.men || 99, v.top.women || 99) : v.top[dept] || 99;
+    const lim = dept === "any" ? 7 : 12;
+    return vibesFor(dept).filter((v) => rank(v) <= lim).sort((a, b) => rank(a) - rank(b));
+  }
   const brandFitsDept = (b, dept) => dept === "any" || !b.departments || b.departments.includes(dept);
   const ED = { step: 0, draft: null, onboarding: false, shown: new Set() };
 
   function openEditor(p, onboarding, step = 0) {
+    ED.moreVibes = false;
     ED.draft = upgrade(JSON.parse(JSON.stringify(p))); ED.onboarding = onboarding; ED.step = step; ED.shown = new Set();
     $("#editor").hidden = false; renderEditor();
   }
@@ -931,12 +941,24 @@
     } else if (ED.step === 1) {
       body.innerHTML = `<h2>Which vibes feel like you?</h2>
         <p class="sub">Tap once for <b>♥ love</b>, again for <b>✕ not me</b>, again to clear. Tap <b>✦</b> on anything you'd like to be <i>surprised</i> by in Explore.</p>
-        <div class="vibes">${vibesFor(d.department).map((v) => {
-          const st = d.vibes.includes(v.id) ? "love" : d.avoidVibes.includes(v.id) ? "avoid" : "";
-          return `<div class="vibe ${st}" data-vibe="${v.id}" role="button" tabindex="0"><b>${esc(v.label)}</b><small>${esc(v.desc)}</small>
+        ${(() => {
+          const tile = (v) => {
+            const st = d.vibes.includes(v.id) ? "love" : d.avoidVibes.includes(v.id) ? "avoid" : "";
+            return `<div class="vibe ${st}" data-vibe="${v.id}" role="button" tabindex="0"><b>${esc(v.label)}</b><small>${esc(v.desc)}</small>
             <span class="vstate">${st === "love" ? "♥ Love" : st === "avoid" ? "✕ Not me" : ""}</span>
             <button class="spark ${d.surpriseVibes.includes(v.id) ? "on" : ""}" data-spark="${v.id}" title="Surprise me with this">✦</button></div>`;
-        }).join("")}</div>`;
+          };
+          const all = vibesFor(d.department), top = topVibes(d.department), topIds = new Set(top.map((v) => v.id));
+          const chosen = new Set([...d.vibes, ...d.avoidVibes]);
+          const rest = all.filter((v) => !topIds.has(v.id));
+          if (!top.length) return `<div class="vibes">${all.map(tile).join("")}</div>`;
+          const open = ED.moreVibes || rest.some((v) => chosen.has(v.id));
+          const groups = (S.vibeGroups.length ? S.vibeGroups : [""]).map((g) => [g, rest.filter((v) => (v.group || "") === g || !S.vibeGroups.length)]).filter(([, vs]) => vs.length);
+          return `<p class="vhead">${d.department === "men" ? "Most chosen in menswear" : d.department === "women" ? "Most chosen in womenswear" : "Most chosen"}</p>
+            <div class="vibes">${top.map(tile).join("")}</div>
+            ${open ? groups.map(([g, vs]) => `<p class="vhead">${esc(g)}</p><div class="vibes">${vs.map(tile).join("")}</div>`).join("")
+              : `<button class="ghost vmore" id="vMore">Show ${rest.length} more styles</button>`}`;
+        })()}`;
     } else if (ED.step === 2) {
       const demo = S.model === "fake";
       body.innerHTML = `<h2>Describe it in your own words</h2>
@@ -1297,6 +1319,7 @@
     }
     const sp = t.closest("[data-spark]");
     if (sp) { const id = sp.dataset.spark, a = ED.draft.surpriseVibes; ED.draft.surpriseVibes = a.includes(id) ? a.filter((x) => x !== id) : [...a, id]; renderEditor(); return; }
+    if (t.closest("#vMore")) { ED.moreVibes = true; renderEditor(); return; }
     const vb = t.closest("[data-vibe]");
     if (vb) {
       const id = vb.dataset.vibe, d = ED.draft;
@@ -1366,7 +1389,18 @@
       const [vibes, brands, index, pbuf] = await Promise.all([
         ...["vibes.json", "brands.json", "profiles/index.json"].map(getJSON), getBin("projection.bin")]);
       S.proj = new Float32Array(pbuf); S.k = S.proj.length / 512;
-      S.vibes = vibes.map((v) => ({ ...v, vec: pv(v.vec) })); for (const v of S.vibes) S.vibeById[v.id] = v;
+      // each style has a vector per department ("Old money" looks different in menswear and womenswear)
+      const vlist = Array.isArray(vibes) ? vibes : vibes.vibes;
+      S.vibeGroups = (!Array.isArray(vibes) && vibes.groups) || [];
+      S.vibes = vlist.map((v) => {
+        const vecs = {};
+        if (v.vecs) for (const [d, x] of Object.entries(v.vecs)) vecs[d] = pv(x); else vecs.any = pv(v.vec);
+        if (!vecs.any) vecs.any = norm(mean(Object.values(vecs)));
+        const o = { ...v, vecs, top: v.top || {} };
+        Object.defineProperty(o, "vec", { get() { return this.vecs[vibeDept()] || this.vecs.any; } });
+        return o;
+      });
+      for (const v of S.vibes) S.vibeById[v.id] = v;
       S.generic = (await getJSON("generic.json").catch(() => [])).map(pv);
       S.shards = await getJSON("shards.json").catch(() => ({}));
       for (const b of brands) S.brandInfo[b.name] = b;
