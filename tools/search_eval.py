@@ -36,7 +36,7 @@ def score(c, r):
 results = []
 with sync_playwright() as p:
     b = p.chromium.launch(); pg = b.new_page(viewport={"width": 1280, "height": 900})
-    pg.goto(SITE); pg.wait_for_function("() => window.__fp && window.__fp.S.items.length > 1000", timeout=120000)
+    pg.goto(SITE); pg.wait_for_function("() => window.__fp && window.__fp.searchFor", timeout=120000); pg.wait_for_timeout(3000)
     pg.evaluate("(off) => { window.__fp.S.planWait = 20000; window.__fp.S.noStylist = off; }", bool(os.environ.get("BASELINE")))
     for i, c in enumerate(cases):
         t0 = time.time()
