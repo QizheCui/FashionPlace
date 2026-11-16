@@ -65,7 +65,10 @@ with sync_playwright() as p:
         try: r = setup(pg, lang, name, **kw)
         except Exception as e: r = {"error": str(e)[:400]}
         out["runs"].append({"name": name, "lang": lang, **r})
-        print(name, json.dumps(r, ensure_ascii=False)[:1500], flush=True)
+        print(f"== {name}: {r.get('word_status') or r.get('photo_status') or r.get('error', '')}", flush=True)
+        print("   picks:", " / ".join(r.get("picks", [])[:8]), flush=True)
+        for f in r.get("feed", [])[:14]: print(f"   {f.get('cat')} | {f.get('brand')} | {(f.get('title') or '')[:70]} | {f.get('why')}", flush=True)
     out["errors"] = errs[:30]
+    print("photo was:", photo_title); print("page errors:", errs[:8])
     b.close()
 json.dump(out, open("e2e/results.json", "w"), ensure_ascii=False, indent=1)
