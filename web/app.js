@@ -283,7 +283,7 @@
     // fashion terms the photo model doesn't know well ('quiet luxury', 'old money') borrow the matching
     // vibe's richer description
     const t = text.toLowerCase();
-    const vibe = S.vibes.find((v) => t.includes(v.label.toLowerCase().replace(/ &.*/, ""))) ||
+    const vibe = S.vibes.find((v) => v.label.toLowerCase().split(" & ").some((w) => w.length > 5 && t.includes(w))) ||
       S.vibes.map((v) => [v, dot(v.vec, q)]).filter(([, s]) => s > 0.9).sort((a, c) => c[1] - a[1]).map(([v]) => v)[0];
     if (vibe) q = norm(q.map((x, j) => x + 1.5 * vibe.vec[j]));
     // brands carry a look: a piece from a label whose whole range fits the words gets a lift
@@ -291,7 +291,10 @@
     const bAvg = Object.values(bs).reduce((a, c) => a + c, 0) / (Object.keys(bs).length || 1);
     const b = (it) => (S.bias[it.id] || 0) - 0.7 * ((bs[it.brand] ?? bAvg) - bAvg);
     const first = pool.map((x) => ({ ...x, m: dot(S.vecs[x.it.id], q) - b(x.it) })).sort((a, c) => c.m - a.m);
-    const top = first.slice(0, 25).map((x) => S.vecs[x.it.id]);
+    // the best matches sharpen the query — taken across garment types, so one type can't hijack a mood
+    const perCat = {}, lead = [];
+    for (const x of first.slice(0, 300)) { if ((perCat[x.it.category] || 0) >= 8) continue; perCat[x.it.category] = (perCat[x.it.category] || 0) + 1; lead.push(x); if (lead.length >= 25) break; }
+    const top = (lead.length >= 15 ? lead : first.slice(0, 25)).map((x) => S.vecs[x.it.id]);
     if (top.length < 5) return first;
     const cen = norm(mean(top)), q2 = norm(q.map((x, j) => x + 0.6 * cen[j]));
     return first.slice(0, 4000).map((x) => ({ ...x, m: dot(S.vecs[x.it.id], q2) - b(x.it) })).sort((a, c) => c.m - a.m);
@@ -841,7 +844,10 @@
     const parsed0 = parseQuery(en);
     let kw = await keywordPlan(en, parsed0).catch(() => null);
     const exact0 = !!(kw && kw.ids.size && !kw.missing);
-    if (!plan && live && !exact0 && !S.noStylist) { // a known model name needs no thinking; anything else waits briefly for the stylist
+    // a brand or garment plus a model name we hold ("adidas samba") needs no thinking; anything else waits
+    // briefly for the stylist — "old money" also appears in product names, but it's a style, not a product
+    const productLike = parsed0.facets.some((f) => f.key === "brand" || f.key === "cat");
+    if (!plan && live && !(exact0 && productLike) && !S.noStylist) {
       if (st) st.textContent = "Understanding your words…";
       plan = await Promise.race([planP, sleep(S.planWait || 5000).then(() => null)]);
     }
@@ -858,10 +864,13 @@
     // the request itself, plus how the stylist pictures it (the overall mood, and each piece of the look)
     let vec = norm(await encodeQuery(en, st));
     if (texts.length) {
+      // for a feeling, the stylist's picture leads: raw words like "walk" or "weekend" mislead a photo model
+      const own = parsed.facets.some((f) => f.key === "cat") ? 1 : 0.5;
+      vec = vec.map((x) => own * x);
       try {
         const vs = (await encodeTexts(texts.map((t) => `a photo of ${t}`))).map(norm);
         const mood = plan.mood && !hasCJK(plan.mood) ? vs[0] : null, pieces = mean(mood ? vs.slice(1) : vs);
-        vec = vec.map((x, i) => x + (mood ? 0.8 * mood[i] : 0) + (pieces ? 0.8 * pieces[i] : 0));
+        vec = vec.map((x, i) => x + (mood ? mood[i] : 0) + (pieces ? 0.8 * pieces[i] : 0));
       } catch (e) { console.warn("mood", e); }
     }
     await loadKeywordParts(kw);
@@ -879,9 +888,9 @@
       && !["underwear", "other", "lifestyle"].includes(it.category) && (exact || named || !["accessories", "bags"].includes(it.category)))
       .map((it) => ({ it }));
     const res = matchQuery(all, q);
-    const pool = semantic(res.list, u.vec, u.semText).slice(0, 400);
+    const ranked = semantic(res.list, u.vec, u.semText), pool = ranked.slice(0, 400);
     const perCat = {}, perBrand = {}, top = [];
-    for (const x of dedupe(pool)) { // a mix: at most two per brand, three of one kind of garment
+    for (const x of dedupe(ranked.slice(0, 4000))) { // look deep enough that one garment type can't fill the page // a mix: at most two per brand, three of one kind of garment
       if ((perCat[x.it.category] || 0) >= (named || exact ? 12 : 3) || (perBrand[x.it.brand] || 0) >= (exact ? 12 : 2)) continue;
       perCat[x.it.category] = (perCat[x.it.category] || 0) + 1; perBrand[x.it.brand] = (perBrand[x.it.brand] || 0) + 1; top.push(x.it);
       if (top.length >= 12) break;
