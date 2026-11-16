@@ -112,6 +112,11 @@ def main(inline: bool) -> None:
             ids = json.loads(meta.read_text())["ids"]
             out = {"updated": updated, "items": [by_id[i] for i in ids if i in by_id]}
             (OUT / "data" / f"items-{name}.json").write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")))
+        for meta in sorted((DATA / "fsl").glob("meta-*.json")):  # the fashion-model build, side by side
+            name = meta.stem[len("meta-"):]
+            ids = json.loads(meta.read_text())["ids"]
+            out = {"updated": updated, "items": [by_id[i] for i in ids if i in by_id]}
+            (OUT / "data" / "fsl" / f"items-{name}.json").write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")))
         (OUT / "data" / "search-index.txt").write_text(search_index(by_id))
         core = {d: {"updated": updated, "items": [by_id[i] for i in json.loads((DATA / f"meta-{d}-core.json").read_text())["ids"] if i in by_id]}
                 for d in ("men", "women") if (DATA / f"meta-{d}-core.json").exists()}

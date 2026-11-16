@@ -66,25 +66,31 @@
   const P = () => S.current;
 
   // ---------- data ----------
+  // Two photo models can be live side by side while a new one is tried out: ?model=fsl reads the
+  // fashion-trained build (data/fsl/), anything else the standard one.
+  const FSL = new URLSearchParams(location.search).get("model") === "fsl";
+  const FULL = FSL ? 768 : 512; // size of a vector straight from the model
+  const SHARED = /^(landing\.json|search-index\.txt|brand_stats\.json)$/;
+  const dpath = (path) => `data/${FSL && !SHARED.test(path) ? "fsl/" : ""}${path}`;
   async function getBin(path) {
     if (window.FP_DATA && typeof window.FP_DATA[path] === "string") {
       const bin = atob(window.FP_DATA[path]), u = new Uint8Array(bin.length);
       for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
       return u.buffer;
     }
-    const r = await fetch(`data/${path}`, { cache: "no-cache" });
+    const r = await fetch(dpath(path), { cache: "no-cache" });
     if (!r.ok) throw new Error(`${path}: ${r.status}`);
     return r.arrayBuffer();
   }
   async function getText(path) {
     if (window.FP_DATA && typeof window.FP_DATA[path] === "string") return window.FP_DATA[path];
-    const r = await fetch(`data/${path}`, { cache: "no-cache" });
+    const r = await fetch(dpath(path), { cache: "no-cache" });
     if (!r.ok) throw new Error(`${path}: ${r.status}`);
     return r.text();
   }
   async function getJSON(path) {
     if (window.FP_DATA && window.FP_DATA[path]) return window.FP_DATA[path];
-    const r = await fetch(`data/${path}`, { cache: "no-cache" });
+    const r = await fetch(dpath(path), { cache: "no-cache" });
     if (!r.ok) throw new Error(`${path}: ${r.status}`);
     return r.json();
   }
@@ -100,8 +106,9 @@
   }
   const JUNK = /spacer|custom order|flat fee|gift ?wrap|\bgwp\b|e-?gift|gift card|gift box|shipping|deposit|insurance|alteration|diffuser|lotion|hand cream|body wash|glow box|eau de|parfum|perfume|\bedp\b|\bedt\b|\b\d+ ?ml\b|candle|incense|\bsoap\b|\bvinyl\b|swatch|shirt fabric|giclee|gicl[ée]e|\bgsm\b|art print|poster|\bvol\.? ?\d|hardcover|paperback|\bbook\b|tribute to|magazine|pillow talk/i;
   const projCache = new WeakMap();
-  function pv(v) { // full-size (512) vector -> map vector (k); cached per array
+  function pv(v) { // full-size vector -> map vector (k); cached per array
     if (!v || v.length === S.k) return v;
+    if (v.length !== FULL) return new Array(S.k).fill(0); // made by a different photo model: no say
     let out = projCache.get(v);
     if (out) return out;
     const k = S.k, P = S.proj; out = new Array(k).fill(0);
@@ -1139,13 +1146,18 @@
     if (!clipText) {
       if (statusEl) statusEl.textContent = "Loading the style model (one-time download, ~60 MB)…";
       const T = await import("https://cdn.jsdelivr.net/npm/@huggingface/transformers@3");
-      const id = "Xenova/clip-vit-base-patch32";
-      clipText = { tok: await T.AutoTokenizer.from_pretrained(id), model: await T.CLIPTextModelWithProjection.from_pretrained(id) };
+      const id = FSL ? "Marqo/marqo-fashionSigLIP" : "Xenova/clip-vit-base-patch32";
+      clipText = { tok: await T.AutoTokenizer.from_pretrained(id), model: await (FSL ? T.SiglipTextModel : T.CLIPTextModelWithProjection).from_pretrained(id) };
     }
     if (statusEl) statusEl.textContent = "Reading your words…";
-    const inputs = clipText.tok([text], { padding: true, truncation: true });
-    const { text_embeds } = await clipText.model(inputs);
-    return norm(Array.from(text_embeds.data));
+    return (await textVecs([text]))[0];
+  }
+  const TOK_OPTS = FSL ? { padding: "max_length", truncation: true } : { padding: true, truncation: true };
+  const embeds = (o, key) => o[key] || o.pooler_output; // the two model families name their output differently
+  async function textVecs(texts) {
+    const e = embeds(await clipText.model(clipText.tok(texts, TOK_OPTS)), "text_embeds"), [n, d] = e.dims, out = [];
+    for (let r = 0; r < n; r++) out.push(norm(Array.from(e.data.slice(r * d, (r + 1) * d))));
+    return out;
   }
   let clipVision = null;
   async function encodeImage(file, statusEl) {
@@ -1154,12 +1166,11 @@
     if (!clipVision) {
       statusEl.textContent = "Loading the photo model (one-time download, ~90 MB)…";
       const T = await import("https://cdn.jsdelivr.net/npm/@huggingface/transformers@3");
-      const id = "Xenova/clip-vit-base-patch32";
-      clipVision = { T, proc: await T.AutoProcessor.from_pretrained(id), model: await T.CLIPVisionModelWithProjection.from_pretrained(id) };
+      const id = FSL ? "Marqo/marqo-fashionSigLIP" : "Xenova/clip-vit-base-patch32";
+      clipVision = { T, proc: await T.AutoProcessor.from_pretrained(id), model: await (FSL ? T.SiglipVisionModel : T.CLIPVisionModelWithProjection).from_pretrained(id) };
     }
     const img = await clipVision.T.RawImage.fromBlob(file);
-    const { image_embeds } = await clipVision.model(await clipVision.proc(img));
-    return norm(Array.from(image_embeds.data));
+    return norm(Array.from(embeds(await clipVision.model(await clipVision.proc(img)), "image_embeds").data));
   }
   function thumbOf(file) {
     return new Promise((res) => {
@@ -1206,12 +1217,7 @@
   async function encodeTexts(texts) {
     if (S.testEncode) return S.testEncode(texts);
     const out = [];
-    for (let i = 0; i < texts.length; i += 24) {
-      const inputs = clipText.tok(texts.slice(i, i + 24), { padding: true, truncation: true });
-      const { text_embeds } = await clipText.model(inputs);
-      const [n, d] = text_embeds.dims;
-      for (let r = 0; r < n; r++) out.push(norm(Array.from(text_embeds.data.slice(r * d, (r + 1) * d))));
-    }
+    for (let i = 0; i < texts.length; i += 24) out.push(...await textVecs(texts.slice(i, i + 24)));
     return out;
   }
   // a live result has only a title: every named part of the request must be in it
@@ -1471,7 +1477,7 @@
     try {
       const [vibes, brands, index, pbuf] = await Promise.all([
         ...["vibes.json", "brands.json", "profiles/index.json"].map(getJSON), getBin("projection.bin")]);
-      S.proj = new Float32Array(pbuf); S.k = S.proj.length / 512;
+      S.proj = new Float32Array(pbuf); S.k = S.proj.length / FULL;
       // each style has a vector per department ("Old money" looks different in menswear and womenswear)
       const vlist = Array.isArray(vibes) ? vibes : vibes.vibes;
       S.vibeGroups = (!Array.isArray(vibes) && vibes.groups) || [];

@@ -27,10 +27,16 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
 CONFIG = ROOT / "config"
 CACHE = ROOT / ".cache" / "image_vectors.npz"
-DIM = 512
-MODEL_NAME = "clip-ViT-B-32"
+import os
+
+# Two photo models can be built side by side: the general one ("clip", in data/) and the fashion-trained
+# one ("fsl", in data/fsl/). The site reads whichever it is told to.
+VARIANT = os.environ.get("EMBED_MODEL", "clip")
+OUT = DATA / "fsl" if VARIANT == "fsl" else DATA
+DIM = 768 if VARIANT == "fsl" else 512
+MODEL_NAME = "marqo-fashionSigLIP" if VARIANT == "fsl" else "clip-ViT-B-32"
 PROJ_DIM = 192
-MAX_NEW_PER_RUN = int(__import__("os").environ.get("MAX_NEW_EMBED", "45000"))
+MAX_NEW_PER_RUN = int(os.environ.get("MAX_NEW_EMBED", "6000" if VARIANT == "fsl" else "45000"))
 CORE_PER_BRAND = 80
 
 
@@ -97,6 +103,59 @@ class ClipEncoder:
         for i, it in enumerate(items):
             if it["image"] in cache:
                 out[i] = cache[it["image"]]
+        return out
+
+
+class FslEncoder:
+    """Marqo-FashionSigLIP: the same kind of model, trained on fashion product photos and their descriptions."""
+
+    def __init__(self) -> None:
+        import open_clip
+        import torch
+
+        from collector import embed_fsl
+
+        self.torch, self.fsl = torch, embed_fsl
+        torch.set_num_threads(4)
+        self.model, _, self.pre = open_clip.create_model_and_transforms(embed_fsl.MODEL)
+        self.tok = open_clip.get_tokenizer(embed_fsl.MODEL)
+        self.model.eval()
+
+    def text(self, texts: list[str]) -> np.ndarray:
+        out = []
+        with self.torch.inference_mode():
+            for i in range(0, len(texts), 32):
+                out.append(self.model.encode_text(self.tok(texts[i : i + 32]), normalize=True).numpy())
+        return np.concatenate(out).astype(np.float32)
+
+    def items(self, items: list[dict]) -> np.ndarray:
+        keys, vecs = self.fsl.load_cache()
+        pos = {k: i for i, k in enumerate(keys)}
+        todo = [it["image"] for it in items if it["image"] and it["image"] not in pos]
+        todo = list(dict.fromkeys(todo))
+        backlog = max(0, len(todo) - MAX_NEW_PER_RUN)
+        todo = todo[:MAX_NEW_PER_RUN]
+        print(f"fashion model: reading {len(todo)} new photos ({len(pos)} cached, {backlog} left for later runs)")
+        new_k, new_v = [], []
+        for start in range(0, len(todo), 32):
+            chunk = todo[start : start + 32]
+            with ThreadPoolExecutor(16) as ex:
+                imgs = list(ex.map(self.fsl.download, chunk))
+            ok = [(u, im) for u, im in zip(chunk, imgs) if im is not None]
+            if ok:
+                with self.torch.inference_mode():
+                    v = self.model.encode_image(self.torch.stack([self.pre(im) for _, im in ok]), normalize=True).numpy()
+                new_k += [u for u, _ in ok]
+                new_v.append(v.astype(np.float16))
+        if new_k:
+            keys, vecs = keys + new_k, np.concatenate([vecs, *new_v])
+            pos = {k: i for i, k in enumerate(keys)}
+            self.fsl.save_cache(keys, vecs)
+        out = np.zeros((len(items), DIM), dtype=np.float32)
+        for i, it in enumerate(items):
+            j = pos.get(it["image"])
+            if j is not None:
+                out[i] = vecs[j]
         return out
 
 
@@ -234,8 +293,8 @@ def build_vibes(enc, items: list[dict], mat: np.ndarray, gen: np.ndarray) -> Non
             report[f"{v['id']}|{dept}"] = [f"{items[i]['category']} | {items[i]['brand']} | {items[i]['title'][:60]}" for i in picked[:10]]
         out.append({"id": v["id"], "label": v["label"], "desc": v["desc"], "group": v.get("group", ""),
                     "for": v.get("for", "any"), "top": v.get("top", {}), "vecs": vecs})
-    (DATA / "vibes.json").write_text(json.dumps({"groups": cfg.get("groups", []), "vibes": out}))
-    (DATA / "style_report.json").write_text(json.dumps(report, ensure_ascii=False, indent=0))
+    (OUT / "vibes.json").write_text(json.dumps({"groups": cfg.get("groups", []), "vibes": out}))
+    (OUT / "style_report.json").write_text(json.dumps(report, ensure_ascii=False, indent=0))
     for k, titles in report.items():
         print(f"STYLE {k}: " + " ;; ".join(titles[:8]))
 
@@ -243,7 +302,8 @@ def build_vibes(enc, items: list[dict], mat: np.ndarray, gen: np.ndarray) -> Non
 def run(fake: bool = False) -> None:
     items = [it for it in json.loads((DATA / "items.json").read_text())["items"]
              if it.get("in_stock") and it.get("category") not in ("underwear", "lifestyle")]
-    enc = FakeEncoder() if fake else ClipEncoder()
+    OUT.mkdir(parents=True, exist_ok=True)
+    enc = FakeEncoder() if fake else FslEncoder() if VARIANT == "fsl" else ClipEncoder()
     mat = enc.items(items).astype(np.float32)
     keep = np.linalg.norm(mat, axis=1) > 0
     if not keep.all():
@@ -251,7 +311,7 @@ def run(fake: bool = False) -> None:
         items = [it for it, k in zip(items, keep) if k]
         mat = mat[keep]
     mat /= np.linalg.norm(mat, axis=1, keepdims=True) + 1e-9
-    if not fake:
+    if not fake and VARIANT == "clip":  # categories/colours are corrected once, by the first pass
         fix_categories(enc, items, mat)
     # Shrink 512 -> K dims for the browser download. Uncentred SVD keeps item·query dot products
     # (what ranking uses) as intact as possible; the browser projects its own text/photo vectors
@@ -262,13 +322,13 @@ def run(fake: bool = False) -> None:
     low = mat @ proj
     scale = float(np.abs(low).max()) or 1.0
     q = np.clip(np.round(low / scale * 127), -127, 127).astype(np.int8)
-    (DATA / "projection.bin").write_bytes(proj.tobytes())  # float32, row-major 512 x k
+    (OUT / "projection.bin").write_bytes(proj.tobytes())  # float32, row-major 512 x k
     # Shards, so a phone only downloads what it shows:
     #   <dept>-core : a varied slice of every brand (newest pieces + genuine deals) for the feed and the front page
     #   <dept>-<category> : every piece of one kind (all men's shoes, all women's coats…), loaded on demand
     meta_base = {"model": "fake" if fake else MODEL_NAME, "dim": DIM, "k": k, "scale": scale}
     index = {}
-    for old_f in list(DATA.glob("vectors-*.bin")) + list(DATA.glob("meta-*.json")):
+    for old_f in list(OUT.glob("vectors-*.bin")) + list(OUT.glob("meta-*.json")):
         old_f.unlink()
     for dept in ("men", "women"):
         rows = [i for i, it in enumerate(items) if it.get("department") in (dept, "unisex")]
@@ -286,16 +346,16 @@ def run(fake: bool = False) -> None:
         for name, idx in groups.items():
             if name in ("underwear", "lifestyle", "other") or not idx:
                 continue
-            (DATA / f"vectors-{dept}-{name}.bin").write_bytes(q[idx].tobytes())
-            (DATA / f"meta-{dept}-{name}.json").write_text(json.dumps({**meta_base, "ids": [items[i]["id"] for i in idx]}))
+            (OUT / f"vectors-{dept}-{name}.bin").write_bytes(q[idx].tobytes())
+            (OUT / f"meta-{dept}-{name}.json").write_text(json.dumps({**meta_base, "ids": [items[i]["id"] for i in idx]}))
             index[dept][name] = len(idx)
-    (DATA / "shards.json").write_text(json.dumps(index))
+    (OUT / "shards.json").write_text(json.dumps(index))
     for old in ("vectors.json", "vectors.bin", "vectors_meta.json"):
-        (DATA / old).unlink(missing_ok=True)
-    (DATA / "profiles").mkdir(exist_ok=True)
+        (OUT / old).unlink(missing_ok=True)
+    (OUT / "profiles").mkdir(exist_ok=True)
     for pf in sorted((CONFIG / "profiles").glob("*.json")):
         prof = build_profile(enc, json.loads(pf.read_text()))
-        (DATA / "profiles" / pf.name).write_text(json.dumps(prof))
+        (OUT / "profiles" / pf.name).write_text(json.dumps(prof))
         print(f"profile {prof['id']} built")
     # styles offered during setup: one vector per department, anchored on real pieces from the catalogue
     generic = ["a photo of clothing", "a photo of a garment", "a product photo", "fashion", "an outfit",
@@ -305,7 +365,7 @@ def run(fake: bool = False) -> None:
     build_vibes(enc, items, mat, gen)
     # Some photos (text-heavy banners, flat lays) sit close to *any* sentence. The app subtracts each
     # piece's average closeness to these bland captions, so typed searches surface real matches.
-    (DATA / "generic.json").write_text(json.dumps([[round(float(x), 5) for x in v] for v in gen]))
+    (OUT / "generic.json").write_text(json.dumps([[round(float(x), 5) for x in v] for v in gen]))
     # "Not quite right?" nudges: a direction from 'less' towards 'more'
     refiners = json.loads((CONFIG / "refiners.json").read_text())["refiners"]
     # Each direction blends a text one ("dark clothing" minus "light clothing") with one learned from the
@@ -327,7 +387,7 @@ def run(fake: bool = False) -> None:
         if pdir is not None:
             d = unit(0.4 * d + 1.0 * pdir)
         out.append({"id": r["id"], "label": r["label"], "vec": [round(float(x), 5) for x in d]})
-    (DATA / "refiners.json").write_text(json.dumps(out))
+    (OUT / "refiners.json").write_text(json.dumps(out))
     cfg = json.loads((CONFIG / "brands.json").read_text())
     report = json.loads((DATA / "collect_report.json").read_text())["brands"] if (DATA / "collect_report.json").exists() else {}
     out = []
@@ -337,12 +397,12 @@ def run(fake: bool = False) -> None:
                     "currency": cur, "fx": cfg["fx_to_gbp"].get(cur, 1.0),
                     "tier": b.get("tier", "boutique"),
                     "live": (report.get(b["name"]) or {}).get("status") == "ok"})
-    (DATA / "brands.json").write_text(json.dumps(out, ensure_ascii=False))
+    (OUT / "brands.json").write_text(json.dumps(out, ensure_ascii=False))
     live = CONFIG / "live.json"
     if live.exists():
-        (DATA / "live.json").write_text(live.read_text())
+        (OUT / "live.json").write_text(live.read_text())
     index = [p.stem for p in sorted((CONFIG / "profiles").glob("*.json"))]
-    (DATA / "profiles" / "index.json").write_text(json.dumps(index))
+    (OUT / "profiles" / "index.json").write_text(json.dumps(index))
 
 
 if __name__ == "__main__":

@@ -8,6 +8,9 @@ on:
       baseline:
         description: "set to 1 to switch the stylist off (the old search), for comparison"
         default: ""
+      model:
+        description: "fsl = the fashion-trained model on trial; blank = the one visitors get"
+        default: ""
 jobs:
   eval:
     runs-on: ubuntu-latest
@@ -21,6 +24,7 @@ jobs:
         env:
           ONLY: ${{ inputs.only }}
           BASELINE: ${{ inputs.baseline }}
+          MODEL: ${{ inputs.model }}
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: search-eval, path: e2e/ }

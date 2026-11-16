@@ -4,6 +4,7 @@ import json, os, re, time, collections
 from playwright.sync_api import sync_playwright
 
 SITE = os.environ.get("SITE", "https://qizhecui.github.io/FashionPlace/?debug=1")
+if os.environ.get("MODEL"): SITE += "&model=" + os.environ["MODEL"]
 ONLY = os.environ.get("ONLY", "")
 cases = json.load(open("tests/search_cases.json"))["cases"]
 if ONLY: cases = [c for c in cases if c["group"] == ONLY]

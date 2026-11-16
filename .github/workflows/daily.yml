@@ -33,8 +33,8 @@ jobs:
 
       - name: Install
         run: |
-          pip install torch --index-url https://download.pytorch.org/whl/cpu
-          pip install -r requirements.txt
+          pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          pip install -r requirements.txt open_clip_torch
 
       - name: Tests
         run: python -m pytest -q tests
@@ -79,6 +79,28 @@ jobs:
 
       - name: Build style vectors (CLIP)
         run: python -m collector.embed
+
+      - name: Restore fashion-model photo vectors
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache/fsl
+          key: fsl-merged-none
+          restore-keys: fsl-merged-
+
+      - name: Build style vectors (fashion-trained model, side by side)
+        # must never stop the normal site from publishing while this model is on trial
+        continue-on-error: true
+        env:
+          EMBED_MODEL: fsl
+          MAX_NEW_EMBED: ${{ github.event_name == 'push' && '300' || '8000' }}
+        run: python -m collector.embed
+
+      - name: Keep fashion-model photo vectors (nightly runs only, so a quick deploy can't replace a fuller set)
+        if: github.event_name != 'push'
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/fsl
+          key: fsl-merged-${{ github.run_id }}
 
       - name: Save data to the 'data' branch (replaced each day, so history doesn't pile up)
         run: |
