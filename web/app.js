@@ -236,6 +236,7 @@
   const steering = () => Object.keys(S.steer.nudges).length + S.steer.words.length;
   function recompute() {
     const p = P();
+    S.wordFacets = p.words.filter((w) => !w.thumb && !w.hidden).map((w) => parseQuery(w.en || w.label).facets.filter((f) => f.key === "cat" || f.key === "colour" || f.key === "material")).filter((fs) => fs.length);
     S.steerVec = steerVector(p);
     S.taste = tasteFrom(p);
     S.avoid = blend([[mean(vibeVecs(p.avoidVibes)), 1], [mean(p.avoidWords.map((w) => pv(w.vec))), 1]]);
@@ -260,7 +261,16 @@
     if (S.brand && it.brand !== S.brand) return false;
     return !!S.vecs[it.id];
   }
-  const score = (it) => { const v = S.vecs[it.id]; return dot(v, S.taste) - (S.avoid ? 0.35 * dot(v, S.avoid) : 0) - 0.7 * (S.bias[it.id] || 0); };
+  // typed taste words that name a garment, colour or fabric ("dark wool trousers") also count literally,
+  // because the photo model alone is loose about fabric and formality
+  const WORD_FACET_W = 0.04;
+  function wordFacetBonus(it) {
+    if (!S.wordFacets || !S.wordFacets.length) return 0;
+    let sum = 0;
+    for (const fs of S.wordFacets) sum += fs.filter((f) => facetOk(it, f)).length / fs.length;
+    return WORD_FACET_W * sum / S.wordFacets.length;
+  }
+  const score = (it) => { const v = S.vecs[it.id]; return dot(v, S.taste) - (S.avoid ? 0.35 * dot(v, S.avoid) : 0) - 0.7 * (S.bias[it.id] || 0) + wordFacetBonus(it); };
   // Typed searches: closeness to the words, minus how close the photo is to *every* sentence, then
   // a second pass that also leans towards the best first-pass matches (keeps the results coherent).
   function semantic(pool, qvec, text = "") {
@@ -1074,7 +1084,7 @@
       let en = text;
       if (hasCJK(text)) { st.textContent = "Understanding your words…"; try { ({ en } = await toEnglish(text, ED.draft.department)); } catch { st.textContent = CJK_ERR; return; } }
       const vec = await encodeText(en, st);
-      (kind === "love" ? ED.draft.words : ED.draft.avoidWords).push({ label: text, vec: vec.map((x) => Math.round(x * 1e5) / 1e5) });
+      (kind === "love" ? ED.draft.words : ED.draft.avoidWords).push({ label: text, en, vec: vec.map((x) => Math.round(x * 1e5) / 1e5) });
       renderEditor(); $("#fStatus").textContent = `Added “${text}”.`;
     } catch (e) {
       st.textContent = S.model === "fake" ? "Word matching works on the live site." : `Couldn't load the style model (${e.message}). Try again in a moment.`;
