@@ -30,20 +30,20 @@ CATEGORY_RULES = [
     # a garment named as trousers is trousers, even if it's 'knit', 'flannel' or 'baggy' (but sweatpants stay sweats)
     ("trousers", r"^(?!.*(sweat|jogger|track ?pant|fleece|legging|lounge|denim|jean)).*(\btrousers?\b|\bpants?\b|\bchinos?\b|\bslacks\b)"),
     ("bags", r"\bbags?\b|tote|backpack|holdall|duffle|pouch|wallet|card holder"),
-    ("accessories", r"\bhats?\b|beanie|\bcaps?\b|scarf|scarves|glove|\bbelts?\b|\bties?\b|\bsocks?\b|sunglass|umbrella|jewel|\brings?\b|necklace"),
+    ("accessories", r"\bbonnet\b|[ée]charpe|\bhats?\b|beanie|\bcaps?\b|scarf|scarves|glove|\bbelts?\b|\bties?\b|\bsocks?\b|sunglass|umbrella|jewel|\brings?\b|necklace"),
     ("sweats", r"sweatshirt|hoodie|sweat\b|sweatpants?|jogger|track ?pants?|fleece"),
     ("activewear", r"legging|sports bra|\btights\b|running (top|tee|t-shirt|shorts?|tights?|jacket|vest|singlet)|training (top|tee|shorts?)|base ?layer|singlet|track ?suit|\bgym\b"),
     ("dresses", r"\bdress(es)?\b(?! shirt)(?!-up)|jumpsuit|playsuit"),
-    ("skirts", r"\bskirts?\b"),
+    ("skirts", r"\bskirts?\b|\bjupe\b"),
     ("tailoring", r"blazer|\bsuit\b|suits\b|waistcoat|sport coat|tuxedo"),
-    ("outerwear", r"jacket|coat|parka|gilet|vest|overcoat|bomber|harrington|anorak|overshirt|chore"),
-    ("knitwear", r"knit|jumper|sweater|cardigan|crew neck|crewneck|roll ?neck|turtle|polo neck|merino|cashmere|lambswool"),
+    ("outerwear", r"\bveste\b|doudoune|manteau|\bcaban\b|blouson|surchemise|jacket|coat|parka|gilet|vest|overcoat|bomber|harrington|anorak|overshirt|chore"),
+    ("knitwear", r"\bpull\b|knit|jumper|sweater|cardigan|crew neck|crewneck|roll ?neck|turtle|polo neck|merino|cashmere|lambswool"),
 
-    ("tshirts", r"t-shirt|tee\b|tees\b|t shirt|polo"),
+    ("tshirts", r"marini[eè]re|t-shirt|tee\b|tees\b|t shirt|polo"),
     ("tops", r"blouse|\bcami\b|camisole|bodysuit|\btops?\b|bustier|corset"),
-    ("shirts", r"shirt|oxford|flannel"),
+    ("shirts", r"\bchemise\b|shirt|oxford|flannel"),
     ("denim", r"\bjeans?\b|denim"),
-    ("trousers", r"trouser|chino|pant|cord\b|corduroy"),
+    ("trousers", r"pantalon|salopette|trouser|chino|pant|cord\b|corduroy"),
     ("shorts", r"short"),
 ]
 

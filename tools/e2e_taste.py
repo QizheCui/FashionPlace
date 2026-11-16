@@ -22,13 +22,16 @@ def pick_photo(pg):
     open("e2e/photo.jpg", "wb").write(urllib.request.urlopen(req, timeout=30).read())
     return "e2e/photo.jpg", it["title"]
 
-def setup(pg, lang, name, word=None, photo=None, vibe=False):
+def setup(pg, lang, name, word=None, photo=None, vibe=False, dept="men"):
     pg.goto(SITE); pg.wait_for_timeout(1500)
     pg.evaluate(f"localStorage.clear(); localStorage.setItem('fp:lang', '{lang}')"); pg.goto(SITE); pg.wait_for_timeout(3000)
     pg.click("#signIn"); pg.wait_for_timeout(400); pg.click("#newProfile"); pg.wait_for_timeout(400)
-    pg.fill("#fName", name); pg.click("[data-dept=men]"); pg.wait_for_timeout(1500)
+    pg.fill("#fName", name); pg.click(f"[data-dept={dept}]"); pg.wait_for_timeout(1500)
     pg.click("#edNext"); pg.wait_for_timeout(600)
-    if vibe: pg.click(".vibe >> nth=0")
+    if vibe is True: pg.click(".vibe >> nth=0")
+    elif vibe:
+        if not pg.query_selector(f"[data-vibe='{vibe}']"): pg.click("#vMore"); pg.wait_for_timeout(300)
+        pg.click(f"[data-vibe='{vibe}']")
     pg.click("#edNext"); pg.wait_for_timeout(600)
     log = {}
     if word:
@@ -59,7 +62,9 @@ with sync_playwright() as p:
     pg.goto(SITE); pg.wait_for_timeout(3000)
     photo, photo_title = pick_photo(pg)
     out["photo_title"] = photo_title
-    runs = [("baseline", "en", dict()), ("zh-words", "zh", dict(word="十月哥本哈根的周日，温暖的羊毛和麂皮")),
+    only = os.environ.get("RUNS", "")
+    style_runs = [(f"style-{d}-{v}", "en", dict(vibe=v, dept=d)) for d, v in [("men", "city-smart"), ("men", "old-money"), ("men", "everyday-basics"), ("men", "street"), ("men", "dark-academia"), ("women", "french-girl"), ("women", "minimal-chic"), ("women", "old-money"), ("women", "clean-girl"), ("women", "city-smart")]]
+    runs = style_runs if only == "styles" else [("baseline", "en", dict()), ("zh-words", "zh", dict(word="十月哥本哈根的周日，温暖的羊毛和麂皮")),
             ("en-words", "en", dict(word="dark wool trousers for the office")), ("photo", "en", dict(photo=photo)),
             ("vibe+photo", "en", dict(photo=photo, vibe=True)), ("zh-words+photo", "zh", dict(word="十月哥本哈根的周日，温暖的羊毛和麂皮", photo=photo))]
     for name, lang, kw in runs:
