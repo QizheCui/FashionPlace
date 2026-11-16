@@ -9,7 +9,8 @@
  *   GET  /img?u=<pinimg url>                   passes a Pinterest image through so the app can read it
  *
  * Secrets (Cloudflare → this worker → Settings → Variables and Secrets):
- *   ANTHROPIC_API_KEY   needed for /plan only
+ *   AI binding          Cloudflare Workers AI, used by /plan (set in wrangler.toml, no key needed)
+ *   ANTHROPIC_API_KEY   optional: if set, /plan uses Claude instead (sharper)
  */
 const SITE = "https://qizhecui.github.io/FashionPlace";
 const ALLOWED_ORIGINS = ["https://qizhecui.github.io"];
@@ -33,7 +34,7 @@ export default {
     const url = new URL(request.url);
     const json = (body, status = 200) => new Response(JSON.stringify(body), { status, headers: cors });
     try {
-      if (url.pathname === "/plan" && request.method === "POST") return json(await plan(request, env));
+      if (url.pathname === "/plan") return json(await plan(request, env));
       if (url.pathname === "/pinterest") return json(await pinterest(url.searchParams.get("board") || ""));
       if (url.pathname === "/img") return await pinImage(url.searchParams.get("u") || "", cors);
       return await liveSearch(url, ctx, cors);
@@ -70,29 +71,43 @@ Rules:
 - A plain garment request ("black wool trousers under £150") is "style" with ONE piece.
 - Respect any budget, colour, fabric or department the shopper gave.`;
 
+const CF_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
+
 async function plan(request, env) {
-  if (!env.ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY is not set on the worker");
   const today = new Date().toISOString().slice(0, 10);
   if (planDay !== today) { planDay = today; planCount = 0; }
   if (++planCount > DAILY_PLAN_LIMIT) throw new Error("daily limit reached");
-  const { text = "", dept = "any" } = await request.json();
+  let text = "", dept = "any";
+  if (request.method === "POST") ({ text = "", dept = "any" } = await request.json());
+  else { const u = new URL(request.url); text = u.searchParams.get("text") || ""; dept = u.searchParams.get("dept") || "any"; }
   const msg = String(text).slice(0, 300);
   if (!msg.trim()) throw new Error("empty request");
-  const r = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-    body: JSON.stringify({
-      model: MODEL, max_tokens: 700, system: STYLIST,
-      messages: [{ role: "user", content: `Shopper's profile department: ${dept}\nRequest: ${msg}` }],
-    }),
-  });
-  if (!r.ok) throw new Error(`AI service error ${r.status}`);
-  const d = await r.json();
-  const textOut = (d.content || []).map((c) => c.text || "").join("");
-  const m = textOut.match(/\{[\s\S]*\}/);
+  const user = `Shopper's profile department: ${dept}\nRequest: ${msg}`;
+  let out = "", engine = "";
+  if (env.ANTHROPIC_API_KEY) {
+    // Claude (sharper) when a key has been added
+    const r = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "x-api-key": env.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json" },
+      body: JSON.stringify({ model: MODEL, max_tokens: 700, system: STYLIST, messages: [{ role: "user", content: user }] }),
+    });
+    if (r.ok) { const d = await r.json(); out = (d.content || []).map((c) => c.text || "").join(""); engine = "claude"; }
+  }
+  if (!out && env.AI) {
+    // Cloudflare Workers AI: built in, no key needed, free daily allowance
+    const r = await env.AI.run(CF_MODEL, {
+      messages: [{ role: "system", content: STYLIST }, { role: "user", content: user }],
+      max_tokens: 900, temperature: 0.3,
+    });
+    out = typeof r.response === "string" ? r.response : JSON.stringify(r.response || "");
+    engine = "workers-ai";
+  }
+  if (!out) throw new Error("no AI engine available");
+  const m = out.match(/\{[\s\S]*\}/);
   if (!m) throw new Error("no plan returned");
   const p = JSON.parse(m[0]);
-  p.pieces = (p.pieces || []).slice(0, 6);
+  p.pieces = (p.pieces || []).slice(0, 6).map((x) => ({ ...x, must_words: Array.isArray(x.must_words) ? x.must_words : [] }));
+  p.engine = engine;
   return p;
 }
 

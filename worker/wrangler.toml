@@ -3,3 +3,7 @@ name = "atelier-one"
 main = "live-search.js"
 compatibility_date = "2026-11-01"
 workers_dev = true
+
+# Cloudflare's built-in AI for the stylist (free daily allowance, no key)
+[ai]
+binding = "AI"
