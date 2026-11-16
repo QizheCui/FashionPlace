@@ -413,7 +413,7 @@
       }
       const res = matchQuery(base, q, off);
       S.query.dropped = res.dropped;
-      base = semantic(res.list, S.query.vec, S.query.text);
+      base = semantic(res.list, S.query.vec, S.query.semText || S.query.text);
       const zq = zs(base.map((x) => x.m));
       const ranked = base.map((x, i) => ({ ...x, q: zq[i] + 0.3 * x.s }))
         .sort((a, b) => b.q - a.q).slice(0, 240);
@@ -816,50 +816,109 @@
         <div class="egrid">${r.items.map(cardFn).join("")}</div></div>`).join("")}
       <p class="edit-foot">Planned by an AI stylist, found by our own search across every brand.</p></div>`;
   }
+
+  // ---------- understanding a request: the stylist reads it first, then our own search runs ----------
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  // A garment, colour or fabric is only a hard filter when the shopper literally asked for it: our word
+  // matcher and the stylist must both see it. Mood words ("European autumn") steer the search, never filter it.
+  function namedQuery(plan, parsed) {
+    const n = plan.named;
+    if (!n || typeof n !== "object") return parsed;
+    const has = { cat: n.garment, colour: n.colour, material: n.material };
+    return { ...parsed, facets: parsed.facets.filter((f) => !(f.key in has) || has[f.key]) };
+  }
+  async function understand(text, dept, st) {
+    const live = S.live && S.live.search_url && S.model !== "fake";
+    const planP = live ? askStylist(text, dept).catch((e) => { console.warn("stylist", e); return null; }) : Promise.resolve(null);
+    let plan = null, en = text;
+    if (hasCJK(text)) {
+      if (st) st.textContent = "Understanding your words…";
+      plan = await planP;
+      en = plan && (plan.search_en || plan.pieces.map((x) => x.query).filter(Boolean).join(", "));
+      if (!en || hasCJK(en)) throw new Error("cjk");
+    }
+    if (S.noStylist) plan = null; // test switch: translate only, then search the old way
+    const parsed0 = parseQuery(en);
+    let kw = await keywordPlan(en, parsed0).catch(() => null);
+    const exact0 = !!(kw && kw.ids.size && !kw.missing);
+    if (!plan && live && !exact0 && !S.noStylist) { // a known model name needs no thinking; anything else waits briefly for the stylist
+      if (st) st.textContent = "Understanding your words…";
+      plan = await Promise.race([planP, sleep(S.planWait || 5000).then(() => null)]);
+    }
+    let parsed = parsed0, texts = [], semText = en;
+    if (plan && plan.kind !== "exact") {
+      kw = null; // a feeling isn't a product name: never hunt for its words in titles, never call them missing
+      parsed = namedQuery(plan, parsed0);
+      texts = [plan.mood, ...plan.pieces.map((x) => x.query)].filter((t) => t && !hasCJK(t));
+      if (plan.mood && !hasCJK(plan.mood)) semText = `${en} ${plan.mood}`;
+    } else if (plan && plan.kind === "exact" && !exact0) {
+      const m = await mustWordIds(plan.pieces[0] && plan.pieces[0].must_words).catch(() => null);
+      if (m && m.ids.size) kw = { tokens: m.words, ids: m.ids, parts: [], missing: false };
+    }
+    // the request itself, plus how the stylist pictures it (the overall mood, and each piece of the look)
+    let vec = norm(await encodeQuery(en, st));
+    if (texts.length) {
+      try {
+        const vs = (await encodeTexts(texts.map((t) => `a photo of ${t}`))).map(norm);
+        const mood = plan.mood && !hasCJK(plan.mood) ? vs[0] : null, pieces = mean(mood ? vs.slice(1) : vs);
+        vec = vec.map((x, i) => x + (mood ? 0.8 * mood[i] : 0) + (pieces ? 0.8 * pieces[i] : 0));
+      } catch (e) { console.warn("mood", e); }
+    }
+    await loadKeywordParts(kw);
+    return { shown: text, en, plan, planP, parsed, kw, vec, semText, exact: !!(kw && kw.ids.size && !kw.missing) };
+  }
+  // the front page's ranking for an understood request (no profile): used by the page and by the test set
+  async function rankOpen(u) {
+    const q = u.parsed, kw = u.kw, exact = u.exact;
+    const c0 = q.facets.find((f) => f.key === "cat" && f.cat), d0 = q.facets.find((f) => f.key === "dept");
+    await Promise.all([ensureShard("any"), c0 ? ensureCat(d0 ? d0.dept : "any", c0.cat) : null]);
+    const named = q.facets.some((f) => f.key === "cat");
+    // a style ('classy, modern') means clothes first — bags, hats and scarves only when asked for
+    const all = S.items.filter((it) => it.in_stock && it.image && S.vecs[it.id] && it.price_gbp >= 10 && !JUNK.test(it.title)
+      && (!exact || kw.ids.has(it.id))
+      && !["underwear", "other", "lifestyle"].includes(it.category) && (exact || named || !["accessories", "bags"].includes(it.category)))
+      .map((it) => ({ it }));
+    const res = matchQuery(all, q);
+    const pool = semantic(res.list, u.vec, u.semText).slice(0, 400);
+    const perCat = {}, perBrand = {}, top = [];
+    for (const x of dedupe(pool)) { // a mix: at most two per brand, three of one kind of garment
+      if ((perCat[x.it.category] || 0) >= (named || exact ? 12 : 3) || (perBrand[x.it.brand] || 0) >= (exact ? 12 : 2)) continue;
+      perCat[x.it.category] = (perCat[x.it.category] || 0) + 1; perBrand[x.it.brand] = (perBrand[x.it.brand] || 0) + 1; top.push(x.it);
+      if (top.length >= 12) break;
+    }
+    return { top, pool, res, named, exact };
+  }
+  async function searchFor(text, dept = "any") { // test hook
+    const u = await understand(text, dept, null), r = await rankOpen(u);
+    return { en: u.en, kind: u.plan ? u.plan.kind : null, engine: u.plan ? u.plan.engine : null, mood: u.plan ? u.plan.mood : null,
+      named: u.plan ? u.plan.named : null, facets: u.parsed.facets.map((f) => f.label), dropped: r.res.dropped.map((f) => f.label),
+      missing: !!(u.kw && u.kw.missing), exact: u.exact, matches: r.pool.length,
+      items: r.top.map((it) => ({ title: it.title, brand: it.brand, category: it.category, colour: it.colour || "", materials: it.materials || [], ptype: it.ptype || "", price: it.price_gbp, department: it.department })) };
+  }
   async function landingSearch(text) {
     const st = $("#lStatus"), token = (S.landingToken = (S.landingToken || 0) + 1), shown = text;
-    let pre = null;
-    if (hasCJK(text)) {
-      st.textContent = "Understanding your words…";
-      try { ({ en: text, plan: pre } = await toEnglish(text, "any")); } catch { st.textContent = CJK_ERR; return; }
-      if (token !== S.landingToken) return;
-    }
-    st.textContent = "Searching every brand…";
-    const q00 = parseQuery(text), dd = q00.facets.find((f) => f.key === "dept");
-    const planP = pre ? Promise.resolve(pre) : askStylist(text, dd ? dd.dept : "any").catch((e) => { console.warn("stylist", e); return null; });
     $("#lEdit").innerHTML = "";
+    let u;
+    try { st.textContent = "Searching every brand…"; u = await understand(text, "any", st); }
+    catch (e) {
+      st.textContent = e.message === "cjk" ? CJK_ERR : S.model === "fake" ? "Search works on the live site." : `Couldn't search just now (${e.message}). Try again in a moment.`;
+      return;
+    }
+    if (token !== S.landingToken) return;
     try {
-      const q0 = parseQuery(text), c0 = q0.facets.find((f) => f.key === "cat" && f.cat), d0 = q0.facets.find((f) => f.key === "dept");
-      const [vec, kw] = await Promise.all([encodeQuery(text, st), keywordPlan(text, q0).catch(() => null), ensureShard("any"), c0 ? ensureCat(d0 ? d0.dept : "any", c0.cat) : null]);
-      await loadKeywordParts(kw);
       st.textContent = "Searching every brand…";
-      const q = parseQuery(text), pf = q.facets.find((f) => f.key === "price"), max = pf ? pf.max : Infinity;
-      const exact = kw && kw.ids.size && !kw.missing;
-      const named = q.facets.some((f) => f.key === "cat");
-      // a style ('classy, modern') means clothes first — bags, hats and scarves only when asked for
-      const all = S.items.filter((it) => it.in_stock && it.image && S.vecs[it.id] && it.price_gbp >= 10 && !JUNK.test(it.title)
-        && (!exact || kw.ids.has(it.id))
-        && !["underwear", "other", "lifestyle"].includes(it.category) && (exact || named || !["accessories", "bags"].includes(it.category)))
-        .map((it) => ({ it }));
-      const res = matchQuery(all, q);
-      const pool = semantic(res.list, vec, text).slice(0, 400);
-      // a mix: no more than two in a row from one brand, three of one kind of garment
-      const perCat = {}, top = [];
-      const perBrand = {};
-      for (const x of dedupe(pool)) {
-        if ((perCat[x.it.category] || 0) >= (named || exact ? 12 : 3) || (perBrand[x.it.brand] || 0) >= (exact ? 12 : 2)) continue;
-        perCat[x.it.category] = (perCat[x.it.category] || 0) + 1; perBrand[x.it.brand] = (perBrand[x.it.brand] || 0) + 1; top.push(x.it);
-        if (top.length >= 12) break;
-      }
+      const { top, pool, res, exact } = await rankOpen(u);
+      if (token !== S.landingToken) return;
+      const q = u.parsed, kw = u.kw, pf = q.facets.find((f) => f.key === "price"), max = pf ? pf.max : Infinity;
       const men = pool.slice(0, 40).filter((x) => x.it.department === "men").length, women = pool.slice(0, 40).filter((x) => x.it.department === "women").length;
-      S.landingQuery = { text: shown, vec, max, dept: men > women * 2 ? "men" : women > men * 2 ? "women" : "any" };
+      S.landingQuery = { text: shown, vec: u.vec, max, dept: men > women * 2 ? "men" : women > men * 2 ? "women" : "any" };
       st.textContent = "";
       $("#lResHead").innerHTML = `<h2>For “${esc(shown)}”</h2>${facetChips(q, res.dropped, new Set(), kw).replace(/data-qfacet="[^"]*"/g, "disabled")}
         <p class="l-sub">${!pool.length ? "Nothing in our brands matches that yet — try removing a word or two." : `${pool.length >= 400 ? "Hundreds of matches" : `${pool.length} match${pool.length === 1 ? "" : "es"}`} across ${new Set(pool.map((x) => x.it.brand)).size} brands. Save it and we'll keep finding more, in your size.`}</p>
         ${pool.length ? `<button class="l-cta" id="lSave">Make this my taste →</button>` : ""}`;
       $("#lGrid").innerHTML = top.map(lcard).join(""); $("#lGridHead").hidden = true;
       $("#lResHead").scrollIntoView({ behavior: "smooth", block: "start" });
-      landingEdit(text, planP, token, { exact, dept: S.landingQuery.dept });
+      landingEdit(u.en, u.plan ? Promise.resolve(u.plan) : u.planP, token, { exact, dept: S.landingQuery.dept });
     } catch (e) {
       st.textContent = S.model === "fake" ? "Search works on the live site." : `Couldn't search just now (${e.message}). Try again in a moment.`;
     }
@@ -1186,7 +1245,7 @@
     S.edit = null; el.hidden = true;
     if (!S.live || !S.live.search_url || S.model === "fake") return;
     el.hidden = false; const stop = stylistLoading(el);
-    const plan = pre || await askStylist(text, P().department).catch(() => null); stop();
+    const plan = (await pre) || await askStylist(text, P().department).catch(() => null); stop();
     if (token !== S.editToken || !S.query || S.query.text !== text) return;
     if (!plan || !plan.pieces.length || (plan.kind === "exact" && exact)) { el.hidden = true; el.innerHTML = ""; return; }
     const pr = P().price; // your budget, unless the request named its own
@@ -1198,22 +1257,17 @@
     } catch (e) { console.warn("edit", e); el.hidden = true; }
   }
   async function runSearch(text) {
-    const st = $("#qStatus"), shown = text;
-    let pre = null;
-    if (hasCJK(text)) {
-      st.textContent = "Understanding your words…";
-      try { ({ en: text, plan: pre } = await toEnglish(text, P().department)); } catch { st.textContent = CJK_ERR; return; }
-    }
+    const st = $("#qStatus");
     try {
-      const parsed = parseQuery(text), dept = parsed.facets.find((f) => f.key === "dept"), cat = parsed.facets.find((f) => f.key === "cat" && f.cat);
+      const u = await understand(text, P().department, st);
+      const dept = u.parsed.facets.find((f) => f.key === "dept"), cat = u.parsed.facets.find((f) => f.key === "cat" && f.cat);
       const useDept = dept && dept.dept !== P().department ? "any" : P().department;
-      const [vec, kw] = await Promise.all([encodeQuery(text, st), keywordPlan(text, parsed).catch(() => null), useDept === "any" ? ensureShard("any") : null, cat ? ensureCat(useDept, cat.cat) : null]);
-      await loadKeywordParts(kw);
-      S.query = { text, display: shown, vec, kw, parsed: parseQuery(text) }; S.brand = null; render(); window.scrollTo({ top: 0 });
-      liveSearch(text, vec);
-      appEdit(text, kw && kw.ids.size && !kw.missing, pre);
+      await Promise.all([useDept === "any" ? ensureShard("any") : null, cat ? ensureCat(useDept, cat.cat) : null]);
+      S.query = { text: u.en, display: u.shown, vec: u.vec, kw: u.kw, parsed: u.parsed, semText: u.semText }; S.brand = null; render(); window.scrollTo({ top: 0 });
+      liveSearch(u.en, u.vec);
+      appEdit(u.en, u.exact, u.plan || u.planP);
     } catch (e) {
-      st.textContent = S.model === "fake" ? "Search by feeling works on the live site." : `Couldn't load the style model (${e.message}).`;
+      st.textContent = e.message === "cjk" ? CJK_ERR : S.model === "fake" ? "Search by feeling works on the live site." : `Couldn't load the style model (${e.message}).`;
     }
   }
 
@@ -1381,7 +1435,7 @@
     if (p) { $("#welcome").hidden = true; showLanding(false); await useProfile(p); render(); }
   });
 
-  if (/[?&]debug=1/.test(location.search)) window.__fp = { S, parseQuery, matchQuery, render, pv, norm, mean, keywordPlan, loadKeywordParts, fillPlan, renderEdit, pieceQuery, landingSearch, runSearch }; // for automated tests
+  if (/[?&]debug=1/.test(location.search)) window.__fp = { S, parseQuery, matchQuery, render, pv, norm, mean, keywordPlan, loadKeywordParts, searchFor, understand, fillPlan, renderEdit, pieceQuery, landingSearch, runSearch }; // for automated tests
 
   // ---------- boot ----------
   (async function boot() {

@@ -1,0 +1,26 @@
+name: Search test set
+on:
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "one group only (garment, occasion, feeling, chinese, exact, brand) or blank for all"
+        default: ""
+      baseline:
+        description: "set to 1 to switch the stylist off (the old search), for comparison"
+        default: ""
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install playwright && python -m playwright install --with-deps chromium
+      - run: python tools/search_eval.py
+        env:
+          ONLY: ${{ inputs.only }}
+          BASELINE: ${{ inputs.baseline }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: search-eval, path: e2e/ }

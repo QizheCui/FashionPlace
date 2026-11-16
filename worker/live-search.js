@@ -34,7 +34,7 @@ export default {
     const url = new URL(request.url);
     const json = (body, status = 200) => new Response(JSON.stringify(body), { status, headers: cors });
     try {
-      if (url.pathname === "/plan") return json(await plan(request, env));
+      if (url.pathname === "/plan") return await cachedPlan(request, env, ctx, cors);
       if (url.pathname === "/pinterest") return json(await pinterest(url.searchParams.get("board") || ""));
       if (url.pathname === "/img") return await pinImage(url.searchParams.get("u") || "", cors);
       return await liveSearch(url, ctx, cors);
@@ -45,6 +45,22 @@ export default {
 };
 
 // ---------- the stylist ----------
+// the same request gets the same plan for a week: faster, and it saves the free AI allowance
+async function cachedPlan(request, env, ctx, cors) {
+  let text = "", dept = "any", lang = "en";
+  if (request.method === "POST") ({ text = "", dept = "any", lang = "en" } = await request.json());
+  else { const u = new URL(request.url); text = u.searchParams.get("text") || ""; dept = u.searchParams.get("dept") || "any"; lang = u.searchParams.get("lang") || "en"; }
+  text = String(text).trim().replace(/\s+/g, " ").slice(0, 300);
+  if (!text) throw new Error("empty request");
+  const key = new Request(`https://plan.atelier-one.cache/v${PLAN_VERSION}?t=${encodeURIComponent(text.toLowerCase())}&d=${dept}&l=${lang}`);
+  const hit = await caches.default.match(key);
+  if (hit) { const r = new Response(hit.body, hit); for (const [k, v] of Object.entries(cors)) r.headers.set(k, v); r.headers.set("X-Plan-Cache", "hit"); return r; }
+  const p = await plan({ text, dept, lang }, env);
+  const body = JSON.stringify(p);
+  ctx.waitUntil(caches.default.put(key, new Response(body, { headers: { "Content-Type": "application/json", "Cache-Control": "public, max-age=604800" } })));
+  return new Response(body, { headers: cors });
+}
+
 const STYLIST = `You are the search planner for Atelier ONE, a UK fashion app that searches ~300 brands
 (independent labels, premium and some designer; sneaker shops carry Nike, adidas, On, New Balance).
 Turn the shopper's request into a search plan. Reply with ONLY a JSON object:
@@ -53,6 +69,8 @@ Turn the shopper's request into a search plan. Reply with ONLY a JSON object:
   "search_en": "the whole request rewritten as a short English shopping search, keeping any garment, colour, fabric, budget and department, e.g. 'black wool trousers for work under £150'",
   "department": "men" | "women" | "any",
   "kind": "exact" | "style",
+  "mood": "one English sentence describing how the whole look appears in photos: colours, fabrics, shapes, e.g. 'warm brown and olive wool, suede and corduroy layers, relaxed tailoring'",
+  "named": {"garment": the English garment word the shopper literally asked for or null, "colour": a colour they literally said or null, "material": a fabric they literally said or null},
   "pieces": [
     {"label": "2-4 word name shown to the shopper in the reply language, e.g. 'Navy unstructured blazer'",
      "query": "a short visual description to match product photos, e.g. 'navy unstructured wool blazer'",
@@ -71,23 +89,22 @@ Rules:
   colour and fabric, and set department if the words imply it.
 - A plain garment request ("black wool trousers under £150") is "style" with ONE piece.
 - Respect any budget, colour, fabric or department the shopper gave.
+- "named" holds ONLY what the shopper literally wrote. A mood, place, season or occasion ("European autumn",
+  "old money", "for a wedding") names no garment, colour or material: use null. Never put your own ideas in "named".
 - The shopper may write in Chinese or English. "query", "search_en", "category", "colour", "material" and "must_words"
   are ALWAYS English. Write "understood" and "label" in the reply language you are told.`;
 
-const CF_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
+const CF_MODELS = ["@cf/qwen/qwen3-30b-a3b-fp8", "@cf/meta/llama-3.3-70b-instruct-fp8-fast"];
+const PLAN_VERSION = "4"; // bump to drop cached plans
 
-async function plan(request, env) {
+async function plan({ text, dept, lang }, env) {
   const today = new Date().toISOString().slice(0, 10);
   if (planDay !== today) { planDay = today; planCount = 0; }
   if (++planCount > DAILY_PLAN_LIMIT) throw new Error("daily limit reached");
-  let text = "", dept = "any", lang = "en";
-  if (request.method === "POST") ({ text = "", dept = "any", lang = "en" } = await request.json());
-  else { const u = new URL(request.url); text = u.searchParams.get("text") || ""; dept = u.searchParams.get("dept") || "any"; lang = u.searchParams.get("lang") || "en"; }
-  const msg = String(text).slice(0, 300);
-  if (!msg.trim()) throw new Error("empty request");
+  const msg = text;
   const replyLang = lang === "zh" ? "Simplified Chinese (简体中文)" : "English";
   const user = `Reply language: ${replyLang}\nShopper's profile department: ${dept}\nRequest: ${msg}`;
-  let out = "", engine = "";
+  let out = "", engine = "", lastErr = null;
   if (env.ANTHROPIC_API_KEY) {
     // Claude (sharper) when a key has been added
     const r = await fetch("https://api.anthropic.com/v1/messages", {
@@ -97,19 +114,29 @@ async function plan(request, env) {
     });
     if (r.ok) { const d = await r.json(); out = (d.content || []).map((c) => c.text || "").join(""); engine = "claude"; }
   }
-  if (!out && env.AI) {
-    // Cloudflare Workers AI: built in, no key needed, free daily allowance
-    const r = await env.AI.run(CF_MODEL, {
-      messages: [{ role: "system", content: STYLIST }, { role: "user", content: user }],
-      max_tokens: 900, temperature: 0.3,
-    });
-    out = typeof r.response === "string" ? r.response : JSON.stringify(r.response || "");
-    engine = "workers-ai";
+  const parse = (txt) => {
+    const m = String(txt || "").replace(/<think>[\s\S]*?<\/think>/g, "").match(/\{[\s\S]*\}/);
+    if (!m) return null;
+    try { const p = JSON.parse(m[0]); return Array.isArray(p.pieces) && p.pieces.length ? p : null; } catch { return null; }
+  };
+  let p = parse(out);
+  if (!p && env.AI) {
+    // Cloudflare Workers AI: built in, no key needed, free daily allowance. The lighter model goes first
+    // (about six times cheaper per request); the larger one only if its answer can't be used.
+    for (const model of CF_MODELS) {
+      try {
+        const r = await env.AI.run(model, {
+          messages: [{ role: "system", content: STYLIST }, { role: "user", content: user + (model.includes("qwen") ? " /no_think" : "") }],
+          max_tokens: 900, temperature: 0.2,
+        });
+        const txt = typeof r.response === "string" ? r.response : r.response ? JSON.stringify(r.response)
+          : (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || "";
+        p = parse(txt);
+        if (p) { engine = model.split("/").pop(); break; }
+      } catch (e) { lastErr = e; }
+    }
   }
-  if (!out) throw new Error("no AI engine available");
-  const m = out.match(/\{[\s\S]*\}/);
-  if (!m) throw new Error("no plan returned");
-  const p = JSON.parse(m[0]);
+  if (!p) throw new Error(lastErr ? `stylist unavailable: ${String(lastErr.message || lastErr).slice(0, 120)}` : "no plan returned");
   p.pieces = (p.pieces || []).slice(0, 6).map((x) => ({ ...x, must_words: Array.isArray(x.must_words) ? x.must_words : [] }));
   p.engine = engine;
   return p;

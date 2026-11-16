@@ -1,0 +1,1475 @@
+{
+"_comment": "Search test set. Each case scores the share of the top 12 results that satisfy every check; a case passes at >= thr. no_drop: fails if the search says it dropped or couldn't find words. miss_ok: an honest 'we don't have that' counts as a pass.",
+"cases": [
+{
+"q": "black wool trousers under £150",
+"group": "garment",
+"cat": [
+"trousers",
+"tailoring"
+],
+"thr": 0.75,
+"colour": "black|noir|nero|onyx|jet",
+"material": "wool|merino|lambswool|flannel|tweed|cashmere|shetland|alpaca|mohair",
+"max_price": 150
+},
+{
+"q": "navy wool blazer",
+"group": "garment",
+"cat": [
+"tailoring",
+"outerwear"
+],
+"thr": 0.75,
+"colour": "navy|blue|midnight|indigo|marine",
+"material": "wool|merino|lambswool|flannel|tweed|cashmere|shetland|alpaca|mohair",
+"title": "blazer|jacket|sport coat"
+},
+{
+"q": "grey flannel trousers",
+"group": "garment",
+"cat": [
+"trousers",
+"tailoring"
+],
+"thr": 0.75,
+"colour": "grey|gray|charcoal|slate|anthracite|graphite",
+"material": "wool|merino|lambswool|flannel|tweed|cashmere|shetland|alpaca|mohair"
+},
+{
+"q": "cream cable knit jumper",
+"group": "garment",
+"cat": [
+"knitwear",
+"sweats"
+],
+"thr": 0.75,
+"colour": "cream|ecru|ivory|off.?white|oat|natural|bone|stone|chalk|white",
+"title": "cable|knit|jumper|sweater|cardigan"
+},
+{
+"q": "brown suede loafers",
+"group": "garment",
+"cat": [
+"shoes"
+],
+"thr": 0.75,
+"colour": "brown|chocolate|tobacco|coffee|espresso|cocoa|mocha|chestnut|walnut|tan|rust|moro|bruno",
+"material": "suede",
+"title": "loafer"
+},
+{
+"q": "black leather chelsea boots",
+"group": "garment",
+"cat": [
+"shoes"
+],
+"thr": 0.75,
+"colour": "black|noir|nero|onyx|jet",
+"material": "leather",
+"title": "chelsea|boot"
+},
+{
+"q": "white linen shirt",
+"group": "garment",
+"cat": [
+"shirts",
+"tops"
+],
+"thr": 0.75,
+"colour": "white|ecru|ivory|cream|optic|chalk",
+"material": "linen|lin\\b"
+},
+{
+"q": "blue oxford shirt",
+"group": "garment",
+"cat": [
+"shirts"
+],
+"thr": 0.75,
+"colour": "blue|navy|indigo|cobalt|denim|sky|azure",
+"title": "oxford|shirt"
+},
+{
+"q": "camel wool coat",
+"group": "garment",
+"cat": [
+"outerwear"
+],
+"thr": 0.75,
+"colour": "beige|camel|tan|sand|stone|oat|taupe|khaki|fawn",
+"material": "wool|merino|lambswool|flannel|tweed|cashmere|shetland|alpaca|mohair",
+"title": "coat"
+},
+{
+"q": "navy cashmere jumper",
+"group": "garment",
+"cat": [
+"knitwear",
+"sweats"
+],
+"thr": 0.75,
+"colour": "navy|blue|midnight|indigo|marine",
+"material": "cashmere"
+},
+{
+"q": "green corduroy trousers",
+"group": "garment",
+"cat": [
+"trousers",
+"tailoring"
+],
+"thr": 0.75,
+"colour": "green|olive|khaki|forest|sage|moss|bottle",
+"material": "cord"
+},
+{
+"q": "black leather jacket",
+"group": "garment",
+"cat": [
+"outerwear"
+],
+"thr": 0.75,
+"colour": "black|noir|nero|onyx|jet",
+"material": "leather",
+"title": "jacket"
+},
+{
+"q": "brown suede jacket",
+"group": "garment",
+"cat": [
+"outerwear"
+],
+"thr": 0.75,
+"colour": "brown|chocolate|tobacco|coffee|espresso|cocoa|mocha|chestnut|walnut|tan|rust|moro|bruno",
+"material": "suede",
+"title": "jacket"
+},
+{
+"q": "grey wool overcoat",
+"group": "garment",
+"cat": [
+"outerwear"
+],
+"thr": 0.75,
+"colour": "grey|gray|charcoal|slate|anthracite|graphite",
+"material": "wool|merino|lambswool|flannel|tweed|cashmere|shetland|alpaca|mohair",
+"title": "coat"
+},
+{
+"q": "white leather trainers",
+"group": "garment",
+"cat": [
+"shoes"
+],
+"thr": 0.75,
+"colour": "white|ecru|ivory|cream|optic|chalk",
+"title": "sneaker|trainer|shoe|court|low"
+},
+{
+"q": "blue jeans men",
+"group": "garment",
+"cat": [
+"denim"
+],
+"thr": 0.75,
+"colour": "blue|navy|indigo|cobalt|denim|sky|azure",
+"dept": "men"
+},
+{
+"q": "black jeans women",
+"group": "garment",
+"cat": [
+"denim"
+],
+"thr": 0.75,
+"colour": "black|noir|nero|onyx|jet",
+"dept": "women"
+},
+{
+"q": "navy chinos",
+"group": "garment",
+"cat": [
+"trousers"
+],
+"thr": 0.75,
+"colour": "navy|blue|midnight|indigo|marine",
+"title": "chino|trouser|pant"
+},
+{
+"q": "cream linen trousers",
+"group": "garment",
+"cat": [
+"trousers",
+"tailoring"
+],
+"thr": 0.75,
+"colour": "cream|ecru|ivory|off.?white|oat|natural|bone|stone|chalk|white",
+"material": "linen|lin\\b"
+},
+{
+"q": "burgundy knit polo",
+"group": "garment",
+"cat": [
+"knitwear",
+"sweats",
+"tshirts"
+],
+"thr": 0.75,
+"colour": "burgundy|wine|bordeaux|oxblood|maroon|merlot|red",
+"title": "polo"
+},
+{
+"q": "black turtleneck",
+"group": "garment",
+"cat": [
+"knitwear",
+"sweats",
+"tops",
+"tshirts"
+],
+"thr": 0.75,
+"colour": "black|noir|nero|onyx|jet",
+"title": "turtle|roll.?neck|polo neck|mock|funnel|high neck"
+},
+{
+"q": "grey crewneck sweatshirt",
+"group": "garment",
+"cat": [
+"sweats",
+"knitwear"
+],
+"thr": 0.75,
+"colour": "grey|gray|charcoal|slate|anthracite|graphite",
+"title": "sweat|crew"
+},
+{
+"q": "navy quilted jacket",
+"group": "garment",
+"cat": [
+"outerwear"
+],
+"thr": 0.75,
+"colour": "navy|blue|midnight|indigo|marine",
+"title": "quilt|padded|liner|puffer"
+},
+{
+"q": "olive field jacket",
+"group": "garment",
+"cat": [
+"outerwear"
+],
+"thr": 0.75,
+"colour": "green|olive|khaki|forest|sage|moss|bottle",
+"title": "jacket|field|overshirt|coat"
+},
+{
+"q": "black wool coat women",
+"group": "garment",
+"cat": [
+"outerwear"
+],
+"thr": 0.75,
+"colour": "black|noir|nero|onyx|jet",
+"material": "wool|merino|lambswool|flannel|tweed|cashmere|shetland|alpaca|mohair",
+"dept": "women"
+},
+{
+"q": "red dress",
+"group": "garment",
+"cat": [
+"dresses"
+],
+"thr": 0.75,
+"colour": "red|burgundy|wine|crimson|scarlet|bordeaux|cherry"
+},
+{
+"q": "black midi dress",
+"group": "garment",
+"cat": [
+"dresses"
+],
+"thr": 0.75,
+"colour": "black|noir|nero|onyx|jet",
+"title": "dress"
+},
+{
+"q": "white cotton t-shirt",
+"group": "garment",
+"cat": [
+"tshirts",
+"tops"
+],
+"thr": 0.75,
+"colour": "white|ecru|ivory|cream|optic|chalk",
+"title": "tee|t-shirt|t shirt|tank"
+},
+{
+"q": "striped breton top",
+"group": "garment",
+"cat": [
+"tshirts",
+"tops",
+"knitwear"
+],
+"thr": 0.75,
+"title": "strip|breton|marini|sailor|mariner"
+},
+{
+"q": "silk blouse",
+"group": "garment",
+"cat": [
+"tops",
+"shirts"
+],
+"thr": 0.75,
+"material": "silk|satin"
+},
+{
+"q": "pleated midi skirt",
+"group": "garment",
+"cat": [
+"skirts"
+],
+"thr": 0.75,
+"title": "skirt"
+},
+{
+"q": "denim jacket",
+"group": "garment",
+"cat": [
+"outerwear",
+"denim"
+],
+"thr": 0.75,
+"material": "denim|jean",
+"title": "jacket|trucker"
+},
+{
+"q": "leather belt brown",
+"group": "garment",
+"cat": [
+"accessories"
+],
+"thr": 0.75,
+"colour": "brown|chocolate|tobacco|coffee|espresso|cocoa|mocha|chestnut|walnut|tan|rust|moro|bruno",
+"title": "belt"
+},
+{
+"q": "wool scarf",
+"group": "garment",
+"cat": [
+"accessories"
+],
+"thr": 0.75,
+"material": "wool|merino|lambswool|flannel|tweed|cashmere|shetland|alpaca|mohair",
+"title": "scarf"
+},
+{
+"q": "blue cashmere scarf",
+"group": "garment",
+"cat": [
+"accessories"
+],
+"thr": 0.75,
+"colour": "blue|navy|indigo|cobalt|denim|sky|azure",
+"material": "cashmere",
+"title": "scarf"
+},
+{
+"q": "black beanie",
+"group": "garment",
+"cat": [
+"accessories"
+],
+"thr": 0.75,
+"colour": "black|noir|nero|onyx|jet",
+"title": "beanie|hat|bonnet"
+},
+{
+"q": "leather tote bag",
+"group": "garment",
+"cat": [
+"bags"
+],
+"thr": 0.75,
+"material": "leather",
+"title": "tote|bag"
+},
+{
+"q": "canvas backpack",
+"group": "garment",
+"cat": [
+"bags"
+],
+"thr": 0.75,
+"title": "backpack|rucksack"
+},
+{
+"q": "brown leather derby shoes",
+"group": "garment",
+"cat": [
+"shoes"
+],
+"thr": 0.75,
+"colour": "brown|chocolate|tobacco|coffee|espresso|cocoa|mocha|chestnut|walnut|tan|rust|moro|bruno",
+"material": "leather"
+},
+{
+"q": "black loafers women",
+"group": "garment",
+"cat": [
+"shoes"
+],
+"thr": 0.75,
+"colour": "black|noir|nero|onyx|jet",
+"dept": "women",
+"title": "loafer"
+},
+{
+"q": "ballet flats",
+"group": "garment",
+"cat": [
+"shoes"
+],
+"thr": 0.75,
+"title": "ballet|flat|ballerina"
+},
+{
+"q": "knee high boots",
+"group": "garment",
+"cat": [
+"shoes"
+],
+"thr": 0.75,
+"title": "boot"
+},
+{
+"q": "running shoes",
+"group": "garment",
+"cat": [
+"shoes"
+],
+"thr": 0.75,
+"title": "run|trainer|shoe|sneaker"
+},
+{
+"q": "hiking boots",
+"group": "garment",
+"cat": [
+"shoes"
+],
+"thr": 0.75,
+"title": "boot|hik"
+},
+{
+"q": "linen shorts",
+"group": "garment",
+"cat": [
+"shorts"
+],
+"thr": 0.75,
+"material": "linen|lin\\b"
+},
+{
+"q": "swim shorts",
+"group": "garment",
+"cat": [
+"shorts",
+"activewear"
+],
+"thr": 0.75,
+"title": "swim"
+},
+{
+"q": "navy overshirt",
+"group": "garment",
+"cat": [
+"outerwear",
+"shirts"
+],
+"thr": 0.75,
+"colour": "navy|blue|midnight|indigo|marine",
+"title": "overshirt|shirt jacket|shacket|jacket"
+},
+{
+"q": "chore jacket",
+"group": "garment",
+"cat": [
+"outerwear"
+],
+"thr": 0.75,
+"title": "chore|work|jacket"
+},
+{
+"q": "tweed blazer",
+"group": "garment",
+"cat": [
+"tailoring",
+"outerwear"
+],
+"thr": 0.75,
+"material": "tweed|herringbone|donegal"
+},
+{
+"q": "mohair cardigan",
+"group": "garment",
+"cat": [
+"knitwear",
+"sweats"
+],
+"thr": 0.75,
+"material": "mohair",
+"title": "cardigan"
+},
+{
+"q": "trench coat",
+"group": "garment",
+"cat": [
+"outerwear"
+],
+"thr": 0.75,
+"title": "trench|mac|coat"
+},
+{
+"q": "puffer jacket",
+"group": "garment",
+"cat": [
+"outerwear"
+],
+"thr": 0.75,
+"title": "puffer|down|padded|quilt"
+},
+{
+"q": "waxed jacket",
+"group": "garment",
+"cat": [
+"outerwear"
+],
+"thr": 0.75,
+"title": "wax"
+},
+{
+"q": "rugby shirt",
+"group": "garment",
+"cat": [
+"shirts",
+"tshirts",
+"knitwear",
+"tops",
+"sweats"
+],
+"thr": 0.75,
+"title": "rugby"
+},
+{
+"q": "cardigan under £100",
+"group": "garment",
+"cat": [
+"knitwear",
+"sweats"
+],
+"thr": 0.75,
+"max_price": 100,
+"title": "cardigan"
+},
+{
+"q": "wool trousers under £200",
+"group": "garment",
+"cat": [
+"trousers",
+"tailoring"
+],
+"thr": 0.75,
+"material": "wool|merino|lambswool|flannel|tweed|cashmere|shetland|alpaca|mohair",
+"max_price": 200
+},
+{
+"q": "leather boots under £250",
+"group": "garment",
+"cat": [
+"shoes"
+],
+"thr": 0.75,
+"material": "leather",
+"max_price": 250,
+"title": "boot"
+},
+{
+"q": "men's suit",
+"group": "garment",
+"cat": [
+"tailoring"
+],
+"thr": 0.75,
+"dept": "men",
+"title": "suit|blazer|jacket|trouser"
+},
+{
+"q": "wide leg trousers women",
+"group": "garment",
+"cat": [
+"trousers",
+"tailoring",
+"denim"
+],
+"thr": 0.75,
+"dept": "women"
+},
+{
+"q": "slip dress",
+"group": "garment",
+"cat": [
+"dresses"
+],
+"thr": 0.75,
+"title": "slip|dress"
+},
+{
+"q": "dark trousers for work and dinner",
+"group": "occasion",
+"cat": [
+"trousers",
+"tailoring"
+],
+"thr": 0.6,
+"colour": "black|noir|nero|onyx|jet",
+"not": "jogger|sweat|track|legging|cargo|hik|fleece"
+},
+{
+"q": "dark wool trousers for the office",
+"group": "occasion",
+"cat": [
+"trousers",
+"tailoring"
+],
+"thr": 0.6,
+"not": "jogger|sweat|track|legging|fleece|hik"
+},
+{
+"q": "a warm coat for winter",
+"group": "occasion",
+"cat": [
+"outerwear"
+],
+"thr": 0.6,
+"title": "coat|parka|puffer|down|jacket"
+},
+{
+"q": "something to wear to a wedding as a guest, women",
+"group": "occasion",
+"cat": [
+"dresses",
+"skirts",
+"tops",
+"tailoring",
+"shoes"
+],
+"thr": 0.6,
+"dept": "women",
+"not": "sweat|hoodie|jogger|legging"
+},
+{
+"q": "smart shoes for the office",
+"group": "occasion",
+"cat": [
+"shoes"
+],
+"thr": 0.6,
+"not": "runner|running|trail|slipper|sandal|slide"
+},
+{
+"q": "a jacket for rainy days",
+"group": "occasion",
+"cat": [
+"outerwear"
+],
+"thr": 0.6,
+"title": "rain|shell|water|mac|trench|wax|parka|jacket|coat"
+},
+{
+"q": "gym outfit for men",
+"group": "occasion",
+"cat": [
+"activewear",
+"sweats",
+"shorts",
+"tshirts",
+"shoes",
+"tops"
+],
+"thr": 0.6,
+"dept": "men"
+},
+{
+"q": "clothes for a beach holiday",
+"group": "occasion",
+"cat": [
+"shorts",
+"dresses",
+"shirts",
+"tops",
+"tshirts",
+"skirts",
+"shoes"
+],
+"thr": 0.6,
+"not": "wool|puffer|fleece|boot"
+},
+{
+"q": "first date outfit for a man",
+"group": "occasion",
+"cat": [
+"shirts",
+"knitwear",
+"trousers",
+"tailoring",
+"outerwear",
+"shoes",
+"denim",
+"tshirts"
+],
+"thr": 0.6,
+"dept": "men",
+"not": "jogger|track|legging"
+},
+{
+"q": "interview outfit",
+"group": "occasion",
+"cat": [
+"tailoring",
+"shirts",
+"trousers",
+"shoes",
+"knitwear",
+"tops",
+"skirts",
+"dresses",
+"outerwear"
+],
+"thr": 0.6,
+"not": "hoodie|jogger|track|graphic|legging"
+},
+{
+"q": "cosy loungewear for home",
+"group": "occasion",
+"cat": [
+"sweats",
+"knitwear",
+"trousers",
+"tops",
+"tshirts",
+"shoes",
+"activewear",
+"shorts"
+],
+"thr": 0.6,
+"not": "blazer|suit|heel"
+},
+{
+"q": "a jumper for christmas",
+"group": "occasion",
+"cat": [
+"knitwear",
+"sweats"
+],
+"thr": 0.6,
+"title": "knit|jumper|sweater|cardigan|fair isle|pull"
+},
+{
+"q": "smart casual shirt for dinner",
+"group": "occasion",
+"cat": [
+"shirts",
+"tshirts",
+"knitwear",
+"tops"
+],
+"thr": 0.6
+},
+{
+"q": "comfortable trainers for walking all day",
+"group": "occasion",
+"cat": [
+"shoes"
+],
+"thr": 0.6,
+"title": "sneaker|trainer|shoe|run|walk"
+},
+{
+"q": "outfit for a job in finance, men",
+"group": "occasion",
+"cat": [
+"tailoring",
+"shirts",
+"trousers",
+"shoes",
+"knitwear",
+"outerwear"
+],
+"thr": 0.6,
+"dept": "men",
+"not": "hoodie|jogger|track|graphic|cargo"
+},
+{
+"q": "European autumn",
+"group": "feeling",
+"any": "wool|suede|cord|brown|olive|rust|camel|tweed|flannel|knit|tan|khaki|chocolate|coat|jumper|cardigan|boot|green|beige|mustard|burgundy",
+"thr": 0.5,
+"no_drop": true,
+"not": "swim|linen short|sandal|bikini"
+},
+{
+"q": "Sunday in Copenhagen in October",
+"group": "feeling",
+"any": "wool|suede|cord|brown|olive|rust|camel|tweed|flannel|knit|tan|khaki|chocolate|coat|jumper|cardigan|boot|green|beige|mustard|burgundy|grey|navy|black|scarf",
+"thr": 0.5,
+"no_drop": true
+},
+{
+"q": "old money",
+"group": "feeling",
+"any": "cashmere|wool|navy|cream|camel|tweed|loafer|blazer|polo|cable|flannel|knit|oxford|silk|beige|linen|brown",
+"thr": 0.5,
+"no_drop": true,
+"not": "graphic|hoodie|cargo|track|logo"
+},
+{
+"q": "quiet luxury",
+"group": "feeling",
+"any": "cashmere|wool|merino|silk|beige|taupe|cream|grey|navy|black|knit|coat|trouser|suede|oat|stone|ivory|camel",
+"thr": 0.5,
+"no_drop": true,
+"not": "graphic|logo|print|track|hoodie"
+},
+{
+"q": "modern city finance, classy but not stuffy",
+"group": "feeling",
+"any": "blazer|suit|trouser|shirt|knit|polo|coat|loafer|derby|oxford|wool|navy|grey|charcoal|tailor",
+"thr": 0.5,
+"no_drop": true,
+"not": "hoodie|jogger|track|graphic|cargo|short"
+},
+{
+"q": "modern, classy for the gentlemen",
+"group": "feeling",
+"any": "blazer|suit|trouser|shirt|knit|polo|coat|loafer|wool|navy|grey|tailor|cashmere|derby",
+"thr": 0.5,
+"no_drop": true,
+"not": "hoodie|jogger|graphic|dress|skirt",
+"dept": "men"
+},
+{
+"q": "what a well-dressed architect wears",
+"group": "feeling",
+"any": "black|grey|navy|wool|shirt|trouser|coat|knit|overshirt|jacket|minimal|charcoal",
+"thr": 0.5,
+"no_drop": true
+},
+{
+"q": "French girl, but make it winter",
+"group": "feeling",
+"any": "coat|knit|cardigan|wool|boot|jumper|stripe|navy|scarf|trench|blazer|skirt|dress|jean|beret",
+"thr": 0.5,
+"no_drop": true,
+"dept": "women"
+},
+{
+"q": "scandi minimalism",
+"group": "feeling",
+"any": "black|grey|white|cream|navy|beige|wool|coat|knit|shirt|trouser|oat|stone|ecru|taupe",
+"thr": 0.5,
+"no_drop": true,
+"not": "graphic|floral|print|sequin"
+},
+{
+"q": "dark academia",
+"group": "feeling",
+"any": "tweed|wool|brown|check|plaid|knit|blazer|turtleneck|coat|corduroy|argyle|grey|herringbone|cardigan|loafer|brogue",
+"thr": 0.5,
+"no_drop": true
+},
+{
+"q": "coastal grandmother",
+"group": "feeling",
+"any": "linen|white|cream|blue|stripe|knit|cotton|beige|cardigan|shirt|trouser|ivory|ecru|navy",
+"thr": 0.5,
+"no_drop": true
+},
+{
+"q": "gorpcore",
+"group": "feeling",
+"any": "shell|fleece|trail|hik|gore|nylon|puffer|down|cargo|technical|waterproof|jacket|pant|vest|salomon|arc",
+"thr": 0.5,
+"no_drop": true
+},
+{
+"q": "a rainy walk in the Lake District",
+"group": "feeling",
+"any": "wax|rain|shell|boot|fleece|wool|water|jacket|coat|parka|knit|hik|quilt",
+"thr": 0.5,
+"no_drop": true
+},
+{
+"q": "summer in Italy",
+"group": "feeling",
+"any": "linen|polo|cotton|short|white|cream|loafer|sandal|shirt|dress|stripe|knit|beige|blue",
+"thr": 0.5,
+"no_drop": true
+},
+{
+"q": "weekend in Paris",
+"group": "feeling",
+"any": "coat|blazer|knit|stripe|jean|loafer|trench|shirt|navy|black|boot|cardigan|dress|skirt|wool|trouser",
+"thr": 0.5,
+"no_drop": true
+},
+{
+"q": "skater in the nineties",
+"group": "feeling",
+"any": "baggy|loose|jean|denim|flannel|tee|t-shirt|hoodie|graphic|check|plaid|skate|sneaker|cord|work",
+"thr": 0.5,
+"no_drop": true
+},
+{
+"q": "rockstar off duty",
+"group": "feeling",
+"any": "leather|black|denim|jean|boot|tee|t-shirt|biker|skinny|jacket",
+"thr": 0.5,
+"no_drop": true
+},
+{
+"q": "cosy fireside evening",
+"group": "feeling",
+"any": "knit|wool|cashmere|cardigan|jumper|sweater|fleece|mohair|sock|slipper|sweat|flannel",
+"thr": 0.5,
+"no_drop": true
+},
+{
+"q": "relaxed tailoring in earthy tones",
+"group": "feeling",
+"any": "blazer|trouser|suit|jacket|pleat|brown|olive|beige|tan|taupe|khaki|wool|linen|rust|camel|green",
+"thr": 0.5,
+"no_drop": true,
+"not": "hoodie|jogger|graphic"
+},
+{
+"q": "clean girl aesthetic",
+"group": "feeling",
+"any": "white|cream|black|beige|rib|tank|bodysuit|knit|trouser|top|tee|blazer|neutral|ivory",
+"thr": 0.5,
+"no_drop": true,
+"dept": "women"
+},
+{
+"q": "off-duty model",
+"group": "feeling",
+"any": "black|leather|blazer|jean|denim|tee|tank|trouser|coat|boot|white|oversized",
+"thr": 0.5,
+"no_drop": true
+},
+{
+"q": "English countryside weekend",
+"group": "feeling",
+"any": "wax|tweed|wool|quilt|boot|knit|fair isle|cord|check|green|brown|jacket|gilet|olive",
+"thr": 0.5,
+"no_drop": true
+},
+{
+"q": "japanese workwear",
+"group": "feeling",
+"any": "indigo|denim|chore|work|canvas|sashiko|selvedge|overshirt|jacket|trouser|cotton|twill|fatigue",
+"thr": 0.5,
+"no_drop": true
+},
+{
+"q": "something bold and colourful",
+"group": "feeling",
+"any": "red|pink|green|blue|yellow|orange|purple|cobalt|stripe|multi|print|bright|colour|fuchsia|magenta|turquoise",
+"thr": 0.5,
+"no_drop": true
+},
+{
+"q": "all black everything",
+"group": "feeling",
+"any": "black|noir|nero|onyx",
+"thr": 0.5,
+"no_drop": true
+},
+{
+"q": "y2k party",
+"group": "feeling",
+"any": "mini|halter|sequin|low|top|skirt|dress|baby|metallic|satin|mesh|corset",
+"thr": 0.5,
+"no_drop": true,
+"dept": "women"
+},
+{
+"q": "vintage prep, ivy league",
+"group": "feeling",
+"any": "oxford|rugby|chino|cricket|varsity|loafer|blazer|stripe|cable|polo|knit|shirt|tweed|madras",
+"thr": 0.5,
+"no_drop": true
+},
+{
+"q": "a walk in Tokyo",
+"group": "feeling",
+"any": "wide|black|navy|coat|shirt|trouser|sneaker|jacket|knit|denim|indigo|nylon|grey",
+"thr": 0.5,
+"no_drop": true
+},
+{
+"q": "understated and expensive looking",
+"group": "feeling",
+"any": "cashmere|wool|silk|merino|suede|leather|navy|beige|grey|cream|black|camel|knit|coat",
+"thr": 0.5,
+"no_drop": true
+},
+{
+"q": "relaxed and effortless for the weekend, men",
+"group": "feeling",
+"any": "tee|t-shirt|jean|denim|sweat|knit|overshirt|chino|trouser|shirt|sneaker|short|jacket",
+"thr": 0.5,
+"no_drop": true,
+"dept": "men"
+},
+{
+"q": "romantic and feminine",
+"group": "feeling",
+"any": "floral|lace|ruffle|silk|dress|blouse|pink|skirt|frill|puff|bow|broderie",
+"thr": 0.5,
+"no_drop": true,
+"dept": "women"
+},
+{
+"q": "mountain cabin in winter",
+"group": "feeling",
+"any": "wool|fleece|knit|flannel|check|plaid|down|puffer|boot|shearling|fair isle|cardigan|parka",
+"thr": 0.5,
+"no_drop": true
+},
+{
+"q": "clothes that feel like a Wes Anderson film",
+"group": "feeling",
+"any": "cord|pastel|pink|yellow|mustard|brown|knit|stripe|suit|blazer|retro|orange|red|beige|cardigan|check",
+"thr": 0.5,
+"no_drop": true
+},
+{
+"q": "tennis club",
+"group": "feeling",
+"any": "white|polo|pleat|knit|cable|short|skirt|stripe|cream|navy|green|sneaker|tennis|cricket",
+"thr": 0.5,
+"no_drop": true
+},
+{
+"q": "minimal monochrome office",
+"group": "feeling",
+"any": "black|white|grey|navy|shirt|trouser|blazer|knit|coat|charcoal|ivory|cream",
+"thr": 0.5,
+"no_drop": true,
+"not": "graphic|hoodie|floral"
+},
+{
+"q": "黑色羊毛西裤，150英镑以内",
+"group": "chinese",
+"cat": [
+"trousers",
+"tailoring"
+],
+"thr": 0.75,
+"colour": "black|noir|nero|onyx|jet",
+"material": "wool|merino|lambswool|flannel|tweed|cashmere|shetland|alpaca|mohair",
+"max_price": 150
+},
+{
+"q": "棕色麂皮乐福鞋",
+"group": "chinese",
+"cat": [
+"shoes"
+],
+"thr": 0.75,
+"colour": "brown|chocolate|tobacco|coffee|espresso|cocoa|mocha|chestnut|walnut|tan|rust|moro|bruno",
+"material": "suede",
+"title": "loafer"
+},
+{
+"q": "驼色羊毛大衣",
+"group": "chinese",
+"cat": [
+"outerwear"
+],
+"thr": 0.75,
+"colour": "beige|camel|tan|sand|stone|oat|taupe|khaki|fawn",
+"material": "wool|merino|lambswool|flannel|tweed|cashmere|shetland|alpaca|mohair",
+"title": "coat"
+},
+{
+"q": "白色亚麻衬衫",
+"group": "chinese",
+"cat": [
+"shirts",
+"tops"
+],
+"thr": 0.75,
+"colour": "white|ecru|ivory|cream|optic|chalk",
+"material": "linen|lin\\b"
+},
+{
+"q": "藏青色羊绒毛衣",
+"group": "chinese",
+"cat": [
+"knitwear",
+"sweats"
+],
+"thr": 0.75,
+"colour": "navy|blue|midnight|indigo|marine",
+"material": "cashmere"
+},
+{
+"q": "黑色皮夹克",
+"group": "chinese",
+"cat": [
+"outerwear"
+],
+"thr": 0.75,
+"colour": "black|noir|nero|onyx|jet",
+"material": "leather",
+"title": "jacket"
+},
+{
+"q": "女士黑色连衣裙",
+"group": "chinese",
+"cat": [
+"dresses"
+],
+"thr": 0.75,
+"colour": "black|noir|nero|onyx|jet",
+"dept": "women"
+},
+{
+"q": "跑鞋",
+"group": "chinese",
+"cat": [
+"shoes"
+],
+"thr": 0.75,
+"title": "run|trainer|shoe|sneaker"
+},
+{
+"q": "蓝色羊绒围巾",
+"group": "chinese",
+"cat": [
+"accessories"
+],
+"thr": 0.75,
+"colour": "blue|navy|indigo|cobalt|denim|sky|azure",
+"material": "cashmere",
+"title": "scarf"
+},
+{
+"q": "灰色卫衣",
+"group": "chinese",
+"cat": [
+"sweats",
+"knitwear"
+],
+"thr": 0.75,
+"colour": "grey|gray|charcoal|slate|anthracite|graphite"
+},
+{
+"q": "欧洲的秋天",
+"group": "chinese",
+"any": "wool|suede|cord|brown|olive|rust|camel|tweed|flannel|knit|tan|khaki|chocolate|coat|jumper|cardigan|boot|green|beige|mustard|burgundy",
+"thr": 0.5,
+"no_drop": true
+},
+{
+"q": "老钱风",
+"group": "chinese",
+"any": "cashmere|wool|navy|cream|camel|tweed|loafer|blazer|polo|cable|flannel|knit|oxford|silk|beige|linen|brown",
+"thr": 0.5,
+"no_drop": true,
+"not": "graphic|hoodie|cargo|track"
+},
+{
+"q": "伦敦金融城风格，精致但不刻板",
+"group": "chinese",
+"any": "blazer|suit|trouser|shirt|knit|polo|coat|loafer|derby|wool|navy|grey|charcoal|tailor",
+"thr": 0.5,
+"no_drop": true,
+"not": "hoodie|jogger|track|graphic"
+},
+{
+"q": "十月哥本哈根的周日",
+"group": "chinese",
+"any": "wool|suede|cord|brown|olive|rust|camel|tweed|flannel|knit|tan|khaki|chocolate|coat|jumper|cardigan|boot|green|beige|mustard|burgundy|grey|navy|black|scarf",
+"thr": 0.5,
+"no_drop": true
+},
+{
+"q": "法式少女风，冬日版",
+"group": "chinese",
+"any": "coat|knit|cardigan|wool|boot|jumper|stripe|navy|scarf|trench|blazer|skirt|dress|jean",
+"thr": 0.5,
+"no_drop": true
+},
+{
+"q": "北欧极简",
+"group": "chinese",
+"any": "black|grey|white|cream|navy|beige|wool|coat|knit|shirt|trouser|oat|stone|ecru",
+"thr": 0.5,
+"no_drop": true,
+"not": "graphic|floral|sequin"
+},
+{
+"q": "上班和约会都能穿的深色长裤",
+"group": "chinese",
+"any": "trouser|pant|slack|chino",
+"thr": 0.5,
+"no_drop": true,
+"cat": [
+"trousers",
+"tailoring",
+"denim"
+],
+"not": "jogger|sweat|track|legging"
+},
+{
+"q": "适合冬天的温暖大衣",
+"group": "chinese",
+"any": "coat|parka|puffer|down|wool|jacket",
+"thr": 0.5,
+"no_drop": true,
+"cat": [
+"outerwear"
+]
+},
+{
+"q": "低调奢华",
+"group": "chinese",
+"any": "cashmere|wool|merino|silk|beige|taupe|cream|grey|navy|black|knit|coat|trouser|suede|camel",
+"thr": 0.5,
+"no_drop": true,
+"not": "graphic|logo|hoodie"
+},
+{
+"q": "户外山系穿搭",
+"group": "chinese",
+"any": "shell|fleece|trail|hik|nylon|puffer|down|cargo|technical|waterproof|jacket|pant|vest",
+"thr": 0.5,
+"no_drop": true
+},
+{
+"q": "adidas samba",
+"group": "exact",
+"title": "samba",
+"thr": 0.7,
+"miss_ok": true
+},
+{
+"q": "adidas evo sl",
+"group": "exact",
+"title": "evo sl",
+"thr": 0.7,
+"miss_ok": true
+},
+{
+"q": "adidas evoxl running shoes",
+"group": "exact",
+"title": "evo sl",
+"thr": 0.7,
+"miss_ok": true
+},
+{
+"q": "new balance 990",
+"group": "exact",
+"title": "990",
+"thr": 0.7,
+"miss_ok": true
+},
+{
+"q": "on cloudmonster",
+"group": "exact",
+"title": "cloudmonster",
+"thr": 0.7,
+"miss_ok": true
+},
+{
+"q": "g.h. bass weejuns",
+"group": "exact",
+"title": "weejun",
+"thr": 0.7,
+"miss_ok": true
+},
+{
+"q": "salomon xt-6",
+"group": "exact",
+"title": "xt-?6",
+"thr": 0.7,
+"miss_ok": true
+},
+{
+"q": "nike air force 1",
+"group": "exact",
+"title": "air force|af1",
+"thr": 0.7,
+"miss_ok": true
+},
+{
+"q": "asics gel kayano",
+"group": "exact",
+"title": "kayano",
+"thr": 0.7,
+"miss_ok": true
+},
+{
+"q": "birkenstock boston",
+"group": "exact",
+"title": "boston",
+"thr": 0.7,
+"miss_ok": true
+},
+{
+"q": "dr martens 1461",
+"group": "exact",
+"title": "1461",
+"thr": 0.7,
+"miss_ok": true
+},
+{
+"q": "barbour bedale",
+"group": "exact",
+"title": "bedale",
+"thr": 0.7,
+"miss_ok": true
+},
+{
+"q": "carhartt detroit jacket",
+"group": "exact",
+"title": "detroit",
+"thr": 0.7,
+"miss_ok": true
+},
+{
+"q": "arc'teryx beta jacket",
+"group": "exact",
+"title": "beta",
+"thr": 0.7,
+"miss_ok": true
+},
+{
+"q": "new balance 1906",
+"group": "exact",
+"title": "1906",
+"thr": 0.7,
+"miss_ok": true
+},
+{
+"q": "clarks wallabee",
+"group": "exact",
+"title": "wallabee",
+"thr": 0.7,
+"miss_ok": true
+},
+{
+"q": "veja campo",
+"group": "exact",
+"title": "campo",
+"thr": 0.7,
+"miss_ok": true
+},
+{
+"q": "converse chuck 70",
+"group": "exact",
+"title": "chuck",
+"thr": 0.7,
+"miss_ok": true
+},
+{
+"q": "percival knitwear",
+"group": "brand",
+"brand": "percival",
+"cat": [
+"knitwear",
+"sweats"
+],
+"thr": 0.7,
+"miss_ok": true
+},
+{
+"q": "wax london overshirt",
+"group": "brand",
+"brand": "wax london",
+"cat": [
+"outerwear",
+"shirts"
+],
+"thr": 0.7,
+"miss_ok": true
+},
+{
+"q": "nike running shoes",
+"group": "brand",
+"brand": "nike",
+"cat": [
+"shoes"
+],
+"thr": 0.7,
+"miss_ok": true
+},
+{
+"q": "sunspel t-shirt",
+"group": "brand",
+"brand": "sunspel",
+"cat": [
+"tshirts",
+"tops"
+],
+"thr": 0.7,
+"miss_ok": true
+},
+{
+"q": "drake's shirt",
+"group": "brand",
+"brand": "drake",
+"cat": [
+"shirts"
+],
+"thr": 0.7,
+"miss_ok": true
+},
+{
+"q": "studio nicholson trousers",
+"group": "brand",
+"brand": "studio nicholson",
+"cat": [
+"trousers",
+"tailoring"
+],
+"thr": 0.7,
+"miss_ok": true
+},
+{
+"q": "oliver spencer blazer",
+"group": "brand",
+"brand": "oliver spencer",
+"cat": [
+"tailoring",
+"outerwear"
+],
+"thr": 0.7,
+"miss_ok": true
+},
+{
+"q": "rains jacket",
+"group": "brand",
+"brand": "rains",
+"cat": [
+"outerwear"
+],
+"thr": 0.7,
+"miss_ok": true
+}
+]
+}
