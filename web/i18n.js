@@ -136,7 +136,7 @@
     // facet chips
     "Trousers": "长裤", "Jeans": "牛仔裤", "Scarves": "围巾", "Hats": "帽子", "Gloves": "手套", "Belts": "腰带", "Cardigans": "开衫", "Knitwear": "针织",
     "Coats": "大衣", "Jackets": "夹克", "Blazers": "西装外套", "Suits": "西装", "T-shirts": "T恤", "Polos": "Polo衫", "Shirts": "衬衫", "Sweats": "卫衣",
-    "Dresses": "连衣裙", "Skirts": "半身裙", "Tops": "上衣", "Boots": "靴子", "Loafers": "乐福鞋", "Trainers": "运动鞋", "Shoes": "鞋履", "Bags": "包袋",
+    "Dresses": "连衣裙", "Skirts": "半身裙", "Tops": "上衣", "Boots": "靴子", "Loafers": "乐福鞋", "Backpacks": "双肩包", "Trainers": "运动鞋", "Shoes": "鞋履", "Bags": "包袋",
     "Shorts": "短裤", "Activewear": "运动服", "Black": "黑色", "White": "白色", "Cream": "米白", "Grey": "灰色", "Navy": "藏青", "Blue": "蓝色", "Green": "绿色",
     "Olive": "橄榄绿", "Brown": "棕色", "Beige": "米色", "Red": "红色", "Burgundy": "酒红", "Pink": "粉色", "Purple": "紫色", "Yellow": "黄色", "Orange": "橙色",
     "Wool": "羊毛", "Cashmere": "羊绒", "Merino": "美丽诺羊毛", "Cotton": "棉", "Linen": "亚麻", "Silk": "丝绸", "Leather": "皮革", "Suede": "麂皮",

@@ -600,10 +600,11 @@
     [/\b(trousers?|pants|chinos?|slacks)\b/, "trousers", null, "Trousers"], [/\bjeans?\b/, "denim", null, "Jeans"],
     [/\b(scarf|scarves)\b/, "accessories", /scarf|scarves/, "Scarves"], [/\b(beanie|hat|cap)s?\b/, "accessories", /beanie|hat\b|cap\b/, "Hats"],
     [/\bgloves?\b/, "accessories", /glove/, "Gloves"], [/\bbelts?\b/, "accessories", /belt/, "Belts"],
+    [/\bpolos?\b/, null, /polo/, "Polos"], [/\b(backpacks?|rucksacks?)\b/, "bags", /backpack|rucksack/, "Backpacks"],
     [/\bcardigans?\b/, "knitwear", /cardigan/, "Cardigans"], [/\b(jumpers?|sweaters?|knits?|knitwear)\b/, "knitwear", null, "Knitwear"],
     [/\b(coats?|overcoats?|parkas?|trench)\b/, "outerwear", /coat|parka|trench/, "Coats"], [/\bjackets?\b/, "outerwear", null, "Jackets"],
     [/\bblazers?\b/, "tailoring", /blazer|jacket/, "Blazers"], [/\bsuits?\b/, "tailoring", null, "Suits"],
-    [/\b(t-?shirts?|tees?)\b/, "tshirts", null, "T-shirts"], [/\bpolos?\b/, null, /polo/, "Polos"],
+    [/\b(t-?shirts?|tees?)\b/, "tshirts", null, "T-shirts"],
     [/\bshirts?\b/, "shirts", null, "Shirts"], [/\b(hoodies?|sweatshirts?|joggers?)\b/, "sweats", null, "Sweats"],
     [/\bdress(es)?\b/, "dresses", null, "Dresses"], [/\bskirts?\b/, "skirts", null, "Skirts"], [/\b(tops?|blouses?|camis?)\b/, "tops", null, "Tops"],
     [/\bboots?\b/, "shoes", /boot/, "Boots"], [/\bloafers?\b/, "shoes", /loafer/, "Loafers"],
@@ -629,8 +630,8 @@
     if ((m = t.match(/£?\s*(\d{2,4})\s*(?:-|–|to)\s*£?\s*(\d{2,4})/))) q.facets.push({ key: "price", min: +m[1], max: +m[2], label: `£${m[1]}–£${m[2]}` });
     else if ((m = t.match(/(?:under|below|less than|max|up to|cheaper than)\s*£?\s*(\d{2,4})/))) q.facets.push({ key: "price", min: 0, max: +m[1], label: `Under £${m[1]}` });
     else if ((m = t.match(/(?:over|above|more than|from)\s*£\s*(\d{2,4})/))) q.facets.push({ key: "price", min: +m[1], max: Infinity, label: `Over £${m[1]}` });
-    if (/\b(women'?s|womens|womenswear|ladies|lady|woman|girls?|for her|feminine)\b/.test(t)) q.facets.push({ key: "dept", dept: "women", label: "Womenswear" });
-    else if (/\b(men'?s|mens|menswear|gentlem[ae]n|gents?|guys?|man|for him|masculine)\b/.test(t)) q.facets.push({ key: "dept", dept: "men", label: "Menswear" });
+    if (/\b(women'?s|womens|women|womenswear|ladies|lady|woman|girls?|for her|feminine)\b/.test(t)) q.facets.push({ key: "dept", dept: "women", label: "Womenswear" });
+    else if (/\b(men'?s|mens|men|menswear|gentlem[ae]n|gents?|guys?|man|for him|masculine)\b/.test(t)) q.facets.push({ key: "dept", dept: "men", label: "Menswear" });
     const b = brandInQuery(text); if (b) q.facets.push({ key: "brand", brand: b, label: b });
     q.outOfScope = /\b(costumes?|fancy dress|halloween|cosplay|onesie|wig|uniform|school uniform|workwear boots? steel)\b/.test(t);
     return q;
@@ -855,6 +856,9 @@
     if (plan && plan.kind !== "exact") {
       kw = null; // a feeling isn't a product name: never hunt for its words in titles, never call them missing
       parsed = namedQuery(plan, parsed0);
+      // the stylist also reads who it's for ("French girl", "a job in finance, men")
+      if ((plan.department === "men" || plan.department === "women") && !parsed.facets.some((f) => f.key === "dept"))
+        parsed = { ...parsed, facets: [...parsed.facets, { key: "dept", dept: plan.department, label: plan.department === "men" ? "Menswear" : "Womenswear" }] };
       texts = [plan.mood, ...plan.pieces.map((x) => x.query)].filter((t) => t && !hasCJK(t));
       if (plan.mood && !hasCJK(plan.mood)) semText = `${en} ${plan.mood}`;
     } else if (plan && plan.kind === "exact" && !exact0) {
