@@ -309,11 +309,13 @@
     let best = null, bestSim = 0.85;
     for (const id of p.liked) { const lv = S.vecs[id]; if (!lv || id === it.id) continue; const s = dot(v, lv); if (s > bestSim) { bestSim = s; best = id; } }
     if (best && S.byId[best]) return `Close to the ${shortTitle(S.byId[best].title)} you liked`;
-    const cands = [
-      ...p.vibes.map((id) => S.vibeById[id]).filter(Boolean).map((x) => [x.label, x.vec]),
-      ...p.words.filter((w) => !w.hidden).map((w) => [w.thumb ? "your photos" : w.label, pv(w.vec)]),
-    ].filter(([l]) => facetFits(l, it.category)).map(([l, vec]) => [l, dot(v, vec)]).sort((a, b) => b[1] - a[1]);
-    const top = cands[0] ? shorten(cands[0][0]) : (leans(S.taste)[0] || ["your taste"])[0];
+    // photo-to-photo similarity runs much higher than words-to-photo, so photos are scaled down to compare fairly
+    const all = [
+      ...p.vibes.map((id) => S.vibeById[id]).filter(Boolean).map((x) => [x.label, x.vec, 1]),
+      ...p.words.filter((w) => !w.hidden).map((w) => [w.thumb ? "your photos" : w.label, pv(w.vec), w.thumb ? 0.45 : 1]),
+    ].map(([l, vec, k]) => [l, k * dot(v, vec)]).sort((a, b) => b[1] - a[1]);
+    const cands = all.filter(([l]) => facetFits(l, it.category));
+    const top = shorten((cands[0] || all[0] || ["your taste"])[0]);
     if (mode === "explore" && S.twist && dot(v, S.twist) > dot(v, S.taste) * 0.92) return `${cap(top)}, with a bolder twist`;
     return `Matches: ${top}`;
   }
@@ -334,14 +336,14 @@
     const seen = new Set();
     return list.filter((x) => { const k = pieceKey(x.it); if (seen.has(k)) return false; seen.add(k); return true; });
   }
-  // no brand more than perBrandRun times in any 6 in a row; optionally no category more than perCatRun times in any 6
+  // no brand more than perBrandRun times in any 6 in a row; optionally no garment type more than perCatRun times in any 6
   function diversify(ranked, perBrandRun = 2, perCatRun = 0) {
     const out = [], pool = dedupe(ranked.slice(0, 900)).slice(0, 600);
     while (pool.length) {
       const recent = out.slice(-6).map((x) => x.it);
       const ok = (x) => recent.filter((r) => r.brand === x.it.brand).length < perBrandRun
         && (!perCatRun || recent.filter((r) => r.category === x.it.category).length < perCatRun);
-      let idx = pool.slice(0, 200).findIndex(ok);
+      let idx = pool.slice(0, 400).findIndex(ok);
       if (idx < 0) idx = pool.findIndex((x) => recent.filter((r) => r.brand === x.it.brand).length < perBrandRun);
       if (idx < 0) idx = 0;
       out.push(pool.splice(idx, 1)[0]);
@@ -428,10 +430,10 @@
       const ranked = cand.map((x, i) => ({ ...x, e: (1 - k) * x.s + 1.5 * k * zw[i] + (mine.has(x.it.brand) ? 0 : 0.5) }))
         .sort((a, b) => b.e - a.e);
       const pool = ranked.length ? ranked : base.filter((x) => !seen.has(x.it.id)).sort((a, b) => b.s - a.s); // tiny catalogue fallback
-      return (S.brand ? dedupe(pool) : diversify(pool, 1, S.category === "all" ? 2 : 0)).map((x) => ({ ...x, why: reason(x.it, "explore") }));
+      return (S.brand ? dedupe(pool) : diversify(pool, 1, S.category === "all" ? 3 : 0)).map((x) => ({ ...x, why: reason(x.it, "explore") }));
     }
     const ranked = base.filter((x) => !p.disliked.includes(x.it.id)).sort((a, b) => b.s - a.s);
-    return (S.brand ? dedupe(ranked) : diversify(ranked, 2, S.category === "all" ? 2 : 0)).map((x) => ({ ...x, why: reason(x.it, "foryou") }));
+    return (S.brand ? dedupe(ranked) : diversify(ranked, 2, S.category === "all" ? 3 : 0)).map((x) => ({ ...x, why: reason(x.it, "foryou") }));
   }
 
   // ---------- brands to know ----------

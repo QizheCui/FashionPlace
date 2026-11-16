@@ -27,7 +27,9 @@ CATEGORY_RULES = [
     ("underwear", r"boxer|\bbriefs?\b|\btrunks\b|underwear|undershirt|vest top|pyjama|pajama|lounge pant|robe\b|gift card|gift voucher"),
     ("lifestyle", r"giclee|art print|\bgsm\b|\bedp\b|\b\d+ ?ml\b|hardcover|paperback|\bvol\.? ?\d|glow box|\bgwp\b|spacer|custom order|flat fee|gift ?wrap|e-?gift|shipping|deposit|insurance|alteration|warranty|diffuser|lotion|hand cream|body wash|shampoo|room spray|vinyl|\brecord\b|eau de|parfum|perfume|fragrance|cologne|candle|incense|\bsoap\b|skincare|serum|\bbook\b|magazine|\bmug\b|ceramic|poster|gift ?card|sticker|key ?ring|lighter|towel|blanket|cushion|\btray\b|\bvase\b|fabric swatch|shirt fabric"),
     ("shoes", r"\bshoes?\b|\bboots?\b|loafer|sneaker|trainer|derby (shoe|boot)|sandal|\bmules?\b|slipper|espadrille|brogue|oxford shoe"),
-    ("bags", r"\bbag|tote|backpack|holdall|duffle|pouch|wallet|card holder"),
+    # a garment named as trousers is trousers, even if it's 'knit', 'flannel' or 'baggy' (but sweatpants stay sweats)
+    ("trousers", r"^(?!.*(sweat|jogger|track ?pant|fleece|legging|lounge|denim|jean)).*(\btrousers?\b|\bpants?\b|\bchinos?\b|\bslacks\b)"),
+    ("bags", r"\bbags?\b|tote|backpack|holdall|duffle|pouch|wallet|card holder"),
     ("accessories", r"\bhats?\b|beanie|\bcaps?\b|scarf|scarves|glove|\bbelts?\b|\bties?\b|\bsocks?\b|sunglass|umbrella|jewel|\brings?\b|necklace"),
     ("sweats", r"sweatshirt|hoodie|sweat\b|sweatpants?|jogger|track ?pants?|fleece"),
     ("activewear", r"legging|sports bra|\btights\b|running (top|tee|t-shirt|shorts?|tights?|jacket|vest|singlet)|training (top|tee|shorts?)|base ?layer|singlet|track ?suit|\bgym\b"),
