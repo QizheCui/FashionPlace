@@ -362,6 +362,14 @@ def run(fake: bool = False) -> None:
                "a photo of a piece of clothing on a white background", "a model wearing clothes", "menswear",
                "womenswear", "a photo of an item for sale"]
     gen = enc.text(generic)
+    if VARIANT == "fsl":
+        # This model has "hub" photos that sit close to almost any sentence. Measure each piece's closeness to
+        # the average of a broad bank of real requests (every style description) and discount it by that.
+        bank = list(generic)
+        for v in json.loads((CONFIG / "vibes.json").read_text())["vibes"]:
+            pr = v["prompts"]
+            bank += [t for ts in (pr.values() if isinstance(pr, dict) else [pr]) for t in ts]
+        gen = unit(enc.text(bank).mean(0))[None, :]
     build_vibes(enc, items, mat, gen)
     # Some photos (text-heavy banners, flat lays) sit close to *any* sentence. The app subtracts each
     # piece's average closeness to these bland captions, so typed searches surface real matches.
