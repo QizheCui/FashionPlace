@@ -1,0 +1,92 @@
+name: Fashion model backfill
+# Reads every product photo with the fashion-trained model, on several machines at once.
+# It re-starts itself until the whole catalogue is read (at most 6 rounds).
+on:
+  workflow_dispatch:
+    inputs:
+      minutes:
+        description: "minutes each machine works"
+        default: "300"
+      round:
+        description: "round number (set automatically)"
+        default: "1"
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: backfill-fsl
+  cancel-in-progress: false
+
+jobs:
+  embed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 345
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Install
+        run: |
+          pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          pip install open_clip_torch pillow numpy
+      - name: Load the catalogue
+        run: |
+          git clone -q --depth 1 --branch data "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" /tmp/databranch
+          mkdir -p data && cp /tmp/databranch/items.json* data/ && for f in data/*.json.gz; do [ -e "$f" ] && gunzip -f "$f"; done
+      - name: Restore what's already been read
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache/fsl
+          key: fsl-merged-none
+          restore-keys: fsl-merged-
+      - name: Read photos
+        run: python -m collector.embed_fsl --shard ${{ matrix.shard }} --of 12 --minutes ${{ inputs.minutes }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fsl-shard-${{ matrix.shard }}
+          path: parts/
+          retention-days: 3
+
+  merge:
+    needs: embed
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install numpy
+      - name: Load the catalogue
+        run: |
+          git clone -q --depth 1 --branch data "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" /tmp/databranch
+          mkdir -p data && cp /tmp/databranch/items.json* data/ && for f in data/*.json.gz; do [ -e "$f" ] && gunzip -f "$f"; done
+      - uses: actions/cache/restore@v4
+        with:
+          path: .cache/fsl
+          key: fsl-merged-none
+          restore-keys: fsl-merged-
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: fsl-shard-*
+          path: parts
+      - name: Merge
+        run: python -m collector.embed_fsl --merge parts
+      - uses: actions/cache/save@v4
+        with:
+          path: .cache/fsl
+          key: fsl-merged-${{ github.run_id }}
+      - name: Another round if photos remain
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          left=$(cat fsl_left.txt); round=${{ inputs.round }}
+          echo "left=$left round=$round"
+          if [ "$left" -gt 500 ] && [ "$round" -lt 6 ]; then
+            gh workflow run backfill-fsl.yml --ref main -f minutes=${{ inputs.minutes }} -f round=$((round + 1))
+          fi
