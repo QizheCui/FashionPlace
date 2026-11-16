@@ -487,7 +487,7 @@
     const p = P(), l = leans(S.taste);
     $("#tastebar").hidden = S.tab === "saved";
     $("#tastebar").innerHTML = `
-      <form class="search" id="searchForm"><input id="q" placeholder="Search anything — “black wool trousers for work under £150” or a feeling" value="${S.query ? esc(S.query.text) : ""}" maxlength="140">${S.query ? `<button type="button" class="ghost sm" id="qClear">Clear</button>` : ""}</form>
+      <form class="search" id="searchForm"><input id="q" placeholder="Search anything — “black wool trousers for work under £150” or a feeling" value="${S.query ? esc(S.query.display || S.query.text) : ""}" maxlength="140">${S.query ? `<button type="button" class="ghost sm" id="qClear">Clear</button>` : ""}</form>
       ${S.query ? facetChips(S.query.parsed || parseQuery(S.query.text), S.query.dropped || [], S.query.off || new Set(), S.query.kw) : ""}
       <div class="tasterow"><div class="leans"><span class="lbl">Your feed leans</span>${l.map(([n, pc]) => `<span class="lean"><b>${esc(n)}</b> ${pc}%</span>`).join("")}</div>
       <div class="learn">${p.liked.length + p.disliked.length ? `Learning from ${p.liked.length} ♥ and ${p.disliked.length} ✕` : "♥ and ✕ pieces to teach it"}</div>
@@ -703,11 +703,21 @@
   async function askStylist(text, dept) {
     if (!S.live || !S.live.search_url || S.model === "fake") return null;
     const r = await fetch(`${S.live.search_url}/plan`, { method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, dept }), signal: AbortSignal.timeout(25000) });
+      body: JSON.stringify({ text, dept, lang: (window.I18N && I18N.lang) || "en" }), signal: AbortSignal.timeout(25000) });
     const d = await r.json();
     if (!r.ok || d.error || !Array.isArray(d.pieces)) throw new Error(d.error || `status ${r.status}`);
     d.pieces = d.pieces.filter((x) => x && (x.query || x.label)).slice(0, 6);
     return d;
+  }
+  // Chinese (or any CJK) words → the stylist's English rewrite: the photo model only reads English
+  const hasCJK = (s) => /[\u3400-\u9fff\uf900-\ufaff]/.test(s);
+  const CJK_ERR = "Chinese search needs our AI stylist, which can't be reached just now — try again in a moment, or search in English.";
+  async function toEnglish(text, dept) {
+    if (!hasCJK(text)) return { en: text, plan: null };
+    const plan = await askStylist(text, dept).catch(() => null);
+    const en = plan && (plan.search_en || plan.pieces.map((x) => x.query).filter(Boolean).join(", "));
+    if (!en || hasCJK(en)) throw new Error("cjk");
+    return { en, plan };
   }
   // the words of one planned piece → the same structured filters a typed search would get
   function pieceQuery(piece, dept) {
@@ -773,10 +783,16 @@
       <p class="edit-foot">Planned by an AI stylist, found by our own search across every brand.</p></div>`;
   }
   async function landingSearch(text) {
-    const st = $("#lStatus"), token = (S.landingToken = (S.landingToken || 0) + 1);
+    const st = $("#lStatus"), token = (S.landingToken = (S.landingToken || 0) + 1), shown = text;
+    let pre = null;
+    if (hasCJK(text)) {
+      st.textContent = "Understanding your words…";
+      try { ({ en: text, plan: pre } = await toEnglish(text, "any")); } catch { st.textContent = CJK_ERR; return; }
+      if (token !== S.landingToken) return;
+    }
     st.textContent = "Searching every brand…";
     const q00 = parseQuery(text), dd = q00.facets.find((f) => f.key === "dept");
-    const planP = askStylist(text, dd ? dd.dept : "any").catch((e) => { console.warn("stylist", e); return null; });
+    const planP = pre ? Promise.resolve(pre) : askStylist(text, dd ? dd.dept : "any").catch((e) => { console.warn("stylist", e); return null; });
     $("#lEdit").innerHTML = "";
     try {
       const q0 = parseQuery(text), c0 = q0.facets.find((f) => f.key === "cat" && f.cat), d0 = q0.facets.find((f) => f.key === "dept");
@@ -802,9 +818,9 @@
         if (top.length >= 12) break;
       }
       const men = pool.slice(0, 40).filter((x) => x.it.department === "men").length, women = pool.slice(0, 40).filter((x) => x.it.department === "women").length;
-      S.landingQuery = { text, vec, max, dept: men > women * 2 ? "men" : women > men * 2 ? "women" : "any" };
+      S.landingQuery = { text: shown, vec, max, dept: men > women * 2 ? "men" : women > men * 2 ? "women" : "any" };
       st.textContent = "";
-      $("#lResHead").innerHTML = `<h2>For “${esc(text)}”</h2>${facetChips(q, res.dropped, new Set(), kw).replace(/data-qfacet="[^"]*"/g, "disabled")}
+      $("#lResHead").innerHTML = `<h2>For “${esc(shown)}”</h2>${facetChips(q, res.dropped, new Set(), kw).replace(/data-qfacet="[^"]*"/g, "disabled")}
         <p class="l-sub">${!pool.length ? "Nothing in our brands matches that yet — try removing a word or two." : `${pool.length >= 400 ? "Hundreds of matches" : `${pool.length} match${pool.length === 1 ? "" : "es"}`} across ${new Set(pool.map((x) => x.it.brand)).size} brands. Save it and we'll keep finding more, in your size.`}</p>
         ${pool.length ? `<button class="l-cta" id="lSave">Make this my taste →</button>` : ""}`;
       $("#lGrid").innerHTML = top.map(lcard).join(""); $("#lGridHead").hidden = true;
@@ -1047,7 +1063,9 @@
   async function addWord(kind) {
     const inp = $("#fWord"), text = inp.value.trim(), st = $("#fStatus"); if (!text) return;
     try {
-      const vec = await encodeText(text, st);
+      let en = text;
+      if (hasCJK(text)) { st.textContent = "Understanding your words…"; try { ({ en } = await toEnglish(text, ED.draft.department)); } catch { st.textContent = CJK_ERR; return; } }
+      const vec = await encodeText(en, st);
       (kind === "love" ? ED.draft.words : ED.draft.avoidWords).push({ label: text, vec: vec.map((x) => Math.round(x * 1e5) / 1e5) });
       renderEditor(); $("#fStatus").textContent = `Added “${text}”.`;
     } catch (e) {
@@ -1108,13 +1126,13 @@
     const html = renderEdit(S.edit.plan, S.edit.rows, (it) => card({ it, why: "Part of the look", status: savedStatus(it, P()) }));
     el.innerHTML = html; el.hidden = !html;
   }
-  async function appEdit(text, exact) {
+  async function appEdit(text, exact, pre) {
     const el = $("#editRow"); if (!el) return;
     const token = (S.editToken = (S.editToken || 0) + 1);
     S.edit = null; el.hidden = true;
     if (!S.live || !S.live.search_url || S.model === "fake") return;
     el.hidden = false; const stop = stylistLoading(el);
-    const plan = await askStylist(text, P().department).catch(() => null); stop();
+    const plan = pre || await askStylist(text, P().department).catch(() => null); stop();
     if (token !== S.editToken || !S.query || S.query.text !== text) return;
     if (!plan || !plan.pieces.length || (plan.kind === "exact" && exact)) { el.hidden = true; el.innerHTML = ""; return; }
     const pr = P().price; // your budget, unless the request named its own
@@ -1126,15 +1144,20 @@
     } catch (e) { console.warn("edit", e); el.hidden = true; }
   }
   async function runSearch(text) {
-    const st = $("#qStatus");
+    const st = $("#qStatus"), shown = text;
+    let pre = null;
+    if (hasCJK(text)) {
+      st.textContent = "Understanding your words…";
+      try { ({ en: text, plan: pre } = await toEnglish(text, P().department)); } catch { st.textContent = CJK_ERR; return; }
+    }
     try {
       const parsed = parseQuery(text), dept = parsed.facets.find((f) => f.key === "dept"), cat = parsed.facets.find((f) => f.key === "cat" && f.cat);
       const useDept = dept && dept.dept !== P().department ? "any" : P().department;
       const [vec, kw] = await Promise.all([encodeQuery(text, st), keywordPlan(text, parsed).catch(() => null), useDept === "any" ? ensureShard("any") : null, cat ? ensureCat(useDept, cat.cat) : null]);
       await loadKeywordParts(kw);
-      S.query = { text, vec, kw, parsed: parseQuery(text) }; S.brand = null; render(); window.scrollTo({ top: 0 });
+      S.query = { text, display: shown, vec, kw, parsed: parseQuery(text) }; S.brand = null; render(); window.scrollTo({ top: 0 });
       liveSearch(text, vec);
-      appEdit(text, kw && kw.ids.size && !kw.missing);
+      appEdit(text, kw && kw.ids.size && !kw.missing, pre);
     } catch (e) {
       st.textContent = S.model === "fake" ? "Search by feeling works on the live site." : `Couldn't load the style model (${e.message}).`;
     }
@@ -1275,7 +1298,7 @@
     if (e.target.id === "lSearch") { e.preventDefault(); const q = $("#lq").value.trim(); if (q) landingSearch(q); return; }
     if (e.target.id === "steerForm") {
       e.preventDefault(); const text = $("#steerText").value.trim(); if (!text) return;
-      try { const vec = await encodeText(text, $("#qStatus")); S.steer.words.push({ label: text, vec }); recompute(); render(); toast("Re-ranked with your note"); }
+      try { let en = text; if (hasCJK(text)) ({ en } = await toEnglish(text, P().department)); const vec = await encodeText(en, $("#qStatus")); S.steer.words.push({ label: text, vec }); recompute(); render(); toast("Re-ranked with your note"); }
       catch (err) { $("#qStatus").textContent = S.model === "fake" ? "Notes work on the live site." : `Couldn't load the style model (${err.message}).`; }
       return;
     }

@@ -97,7 +97,7 @@ def main(inline: bool) -> None:
         import time
         v = str(int(time.time()))
         html = (OUT / "index.html").read_text()
-        html = html.replace('href="style.css"', f'href="style.css?v={v}"').replace('src="app.js"', f'src="app.js?v={v}"')
+        html = html.replace('href="style.css"', f'href="style.css?v={v}"').replace('src="app.js"', f'src="app.js?v={v}"').replace('src="i18n.js"', f'src="i18n.js?v={v}"')
         (OUT / "index.html").write_text(html)
         if (OUT / "data").exists():
             shutil.rmtree(OUT / "data")

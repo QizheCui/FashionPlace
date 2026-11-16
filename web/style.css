@@ -7,8 +7,8 @@
   --accent: #7d4e31;   /* tobacco */
   --olive: #5d6340;
   --wine: #7a2e35;
-  --serif: "Cormorant Garamond", Georgia, serif;
-  --sans: "Inter", system-ui, -apple-system, sans-serif;
+  --serif: "Cormorant Garamond", Georgia, "Songti SC", "Noto Serif SC", "Source Han Serif SC", STSong, serif;
+  --sans: "Inter", system-ui, -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -376,3 +376,12 @@ body.on-landing > :not(#landing):not(.overlay):not(.toast):not(script) { display
   .edit-said { font-size: 19px; }
   .edit-row { padding: 6px 18px 0; }
 }
+
+/* language switch + Chinese typography */
+.l-lang, .lang-btn { border: 1px solid #ded4c6; background: transparent; border-radius: 999px; padding: 6px 12px; font: 500 13px var(--sans); cursor: pointer; color: inherit; }
+.l-lang:hover, .lang-btn:hover { border-color: var(--ink); }
+.lang-btn { margin-left: auto; margin-right: 10px; }
+html[lang="zh-CN"] em, html[lang="zh-CN"] i, html[lang="zh-CN"] .edit-said { font-style: normal; }
+html[lang="zh-CN"] .l-hero h1 { letter-spacing: .02em; line-height: 1.15; }
+html[lang="zh-CN"] .l-eyebrow { letter-spacing: .3em; }
+@media (max-width: 700px) { .lang-btn { margin-right: 0; } .lang-btn + .who { margin-left: 0; } }

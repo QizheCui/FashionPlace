@@ -49,11 +49,12 @@ const STYLIST = `You are the search planner for Atelier ONE, a UK fashion app th
 (independent labels, premium and some designer; sneaker shops carry Nike, adidas, On, New Balance).
 Turn the shopper's request into a search plan. Reply with ONLY a JSON object:
 {
-  "understood": "one short sentence in plain English saying what you think they want",
+  "understood": "one short sentence saying what you think they want, in the reply language",
+  "search_en": "the whole request rewritten as a short English shopping search, keeping any garment, colour, fabric, budget and department, e.g. 'black wool trousers for work under £150'",
   "department": "men" | "women" | "any",
   "kind": "exact" | "style",
   "pieces": [
-    {"label": "2-4 word name shown to the shopper, e.g. 'Navy unstructured blazer'",
+    {"label": "2-4 word name shown to the shopper in the reply language, e.g. 'Navy unstructured blazer'",
      "query": "a short visual description to match product photos, e.g. 'navy unstructured wool blazer'",
      "category": one of "trousers","denim","knitwear","shirts","tshirts","outerwear","tailoring","shoes","bags","accessories","dresses","skirts","tops","sweats","activewear","shorts" or null,
      "colour": a basic colour word or null,
@@ -69,7 +70,9 @@ Rules:
   Act like a stylist: return 4-6 complementary pieces that together make the look, specific about cut,
   colour and fabric, and set department if the words imply it.
 - A plain garment request ("black wool trousers under £150") is "style" with ONE piece.
-- Respect any budget, colour, fabric or department the shopper gave.`;
+- Respect any budget, colour, fabric or department the shopper gave.
+- The shopper may write in Chinese or English. "query", "search_en", "category", "colour", "material" and "must_words"
+  are ALWAYS English. Write "understood" and "label" in the reply language you are told.`;
 
 const CF_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 
@@ -77,12 +80,13 @@ async function plan(request, env) {
   const today = new Date().toISOString().slice(0, 10);
   if (planDay !== today) { planDay = today; planCount = 0; }
   if (++planCount > DAILY_PLAN_LIMIT) throw new Error("daily limit reached");
-  let text = "", dept = "any";
-  if (request.method === "POST") ({ text = "", dept = "any" } = await request.json());
-  else { const u = new URL(request.url); text = u.searchParams.get("text") || ""; dept = u.searchParams.get("dept") || "any"; }
+  let text = "", dept = "any", lang = "en";
+  if (request.method === "POST") ({ text = "", dept = "any", lang = "en" } = await request.json());
+  else { const u = new URL(request.url); text = u.searchParams.get("text") || ""; dept = u.searchParams.get("dept") || "any"; lang = u.searchParams.get("lang") || "en"; }
   const msg = String(text).slice(0, 300);
   if (!msg.trim()) throw new Error("empty request");
-  const user = `Shopper's profile department: ${dept}\nRequest: ${msg}`;
+  const replyLang = lang === "zh" ? "Simplified Chinese (简体中文)" : "English";
+  const user = `Reply language: ${replyLang}\nShopper's profile department: ${dept}\nRequest: ${msg}`;
   let out = "", engine = "";
   if (env.ANTHROPIC_API_KEY) {
     // Claude (sharper) when a key has been added
