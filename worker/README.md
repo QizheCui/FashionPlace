@@ -1,12 +1,13 @@
-# Live search worker
+# Atelier ONE helper (Cloudflare Worker)
 
-Lets the app search every brand **right now** (not just the daily snapshot) when you tell it what you're after.
+Live at https://atelier-one.qc420.workers.dev — deployed automatically by Cloudflare Workers Builds
+from this folder whenever `main` changes.
 
-## One-time setup (about 5 minutes)
-1. Create a free account at https://dash.cloudflare.com/sign-up
-2. **Workers & Pages → Create → Create Worker**, name it `fashionplace-search`, click **Deploy**.
-3. Click **Edit code**, replace everything with the contents of `live-search.js`, then **Deploy**.
-4. Copy the worker's address (looks like `https://fashionplace-search.<you>.workers.dev`).
-5. Put it in `config/live.json` as `{"search_url": "https://fashionplace-search.<you>.workers.dev"}`, or just send it to Claude.
+- `GET /?q=…&dept=men` — live search across Shopify brands' public predictive search
+- `POST /plan` — the AI stylist: turns any request into a precise search plan (needs the secret below)
+- `GET /pinterest?board=<link>` and `GET /img?u=…` — import a public Pinterest board as taste photos
 
-Prices are converted to pounds using the rates in config/brands.json.
+## The one secret
+Cloudflare → Workers & Pages → atelier-one → Settings → Variables and Secrets → Add →
+type **Secret**, name `ANTHROPIC_API_KEY`, value: a key from console.anthropic.com
+(set a monthly spend limit there first).

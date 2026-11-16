@@ -1,0 +1,5 @@
+# Deployed by Cloudflare Workers Builds from this folder on every push to main.
+name = "atelier-one"
+main = "live-search.js"
+compatibility_date = "2026-11-01"
+workers_dev = true
