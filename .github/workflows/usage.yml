@@ -1,0 +1,17 @@
+name: Usage report
+# Prints the anonymous usage summary from the helper (searches, searches with no results, clicks, errors).
+on:
+  workflow_dispatch:
+    inputs:
+      days:
+        description: "how many days back"
+        default: "7"
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          curl -sS "https://atelier-one.qc420.workers.dev/stats?days=${{ inputs.days }}" > stats.json
+          python3 -c "import json; d=json.load(open('stats.json')); print(json.dumps(d, indent=1, ensure_ascii=False))"
+      - uses: actions/upload-artifact@v4
+        with: { name: usage, path: stats.json }
