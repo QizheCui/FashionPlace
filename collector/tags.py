@@ -18,7 +18,7 @@ import numpy as np
 FM_TITLE = [  # first match wins
     ("a", r"\b(running|run|trail|tennis|gym|training|workout|yoga|legging|sports? bra|compression|track ?(pant|suit|top|jacket)|jersey\b.*\b(fc|club|kit)|football (shirt|boot)|basketball|cycling|golf|swim)"),
     ("f", r"\b(tuxedo|dinner jacket|black tie|three piece|3 piece|two piece suit|suit jacket|suit trousers?|dress shirt|bow tie|\btie\b|cufflink|oxford shoe|patent|evening gown|gown)"),
-    ("c", r"\b(hoodie|hooded|sweatshirt|sweatpant|jogger|t-?shirt|\btee\b|tank|graphic|cargo|fleece|shorts|sandal|slide|flip|trainer|sneaker|beanie|cap\b|bucket hat|denim|jeans?|overall|dungaree|vest top|crop top|pyjama|lounge|camp collar|rugby|workwear|chore|utility)"),
+    ("c", r"\b(hoodie|hooded|hood\b|zip[- ]up|sweatshirt|sweatpant|jogger|t-?shirt|\btee\b|tank|graphic|cargo|fleece|shorts|sandal|slide|flip|trainer|sneaker|beanie|cap\b|bucket hat|denim|jeans?|overall|dungaree|vest top|crop top|pyjama|lounge|camp collar|rugby|workwear|chore|utility)"),
     ("s", r"\b(blazer|tailored|suit\b|waistcoat|loafer|derby|brogue|chelsea boot|pleated trousers?|wool trousers?|flannel trousers?|chino|knit(ted)? polo|merino|cashmere|overcoat|trench|topcoat|silk (shirt|blouse)|blouse|midi (dress|skirt)|pencil skirt|oxford shirt|poplin shirt|turtle ?neck|roll ?neck|cardigan)"),
 ]
 SS_TITLE = [
@@ -76,6 +76,10 @@ def tag_items(enc, items: list[dict], mat: np.ndarray) -> dict:
         else:
             cat = it.get("category")
             fm = "a" if cat == "activewear" else "s" if cat == "tailoring" else fm_codes[int(fp.argmax())] if fp.max() > 0.45 else None
+            if fm == "f":  # a photo alone over-reads black clothes and jewellery as formal: call it smart
+                fm = "s"
+            if cat in ("accessories", "bags") and fm in ("f", "s") and fp.max() < 0.7:
+                fm = None
             if fm:
                 src["fm_photo"] += 1
         if fm:
@@ -83,7 +87,7 @@ def tag_items(enc, items: list[dict], mat: np.ndarray) -> dict:
         ss = _title_tag(SS_TITLE, text)
         if ss:
             src["ss_title"] += 1
-        elif sp.max() > 0.6 and ss_codes[int(sp.argmax())] != "n":
+        elif sp.max() > 0.8 and ss_codes[int(sp.argmax())] != "n":
             ss = ss_codes[int(sp.argmax())]
             src["ss_photo"] += 1
         if ss:
