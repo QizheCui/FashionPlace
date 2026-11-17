@@ -17,7 +17,7 @@ import numpy as np
 
 FM_TITLE = [  # first match wins
     ("a", r"\b(running|run|trail|tennis|gym|training|workout|yoga|legging|sports? bra|compression|track ?(pant|suit|top|jacket)|jersey\b.*\b(fc|club|kit)|football (shirt|boot)|basketball|cycling|golf|swim)"),
-    ("f", r"\b(tuxedo|dinner jacket|black tie|three piece|3 piece|two piece suit|suit jacket|suit trousers?|dress shirt|bow tie|\btie\b|cufflink|oxford shoe|patent|evening gown|gown)"),
+    ("f", r"\b(tuxedo|dinner jacket|black tie|three piece|3 piece|two piece suit|suit jacket|suit trousers?|dress shirt|bow tie|neck ?tie|(silk|knit(ted)?|wool|linen|grenadine|repp|cotton|cashmere|printed|paisley|striped|woven) ties?\b(?! ?(shirt|top|dress|blouse|front|back|waist))|cufflink|oxford shoe|patent|evening gown|gown)"),
     ("c", r"\b(hoodie|hooded|hood\b|zip[- ]up|sweatshirt|sweatpant|jogger|t-?shirt|\btee\b|tank|graphic|cargo|fleece|shorts|sandal|slide|flip|trainer|sneaker|beanie|cap\b|bucket hat|denim|jeans?|overall|dungaree|vest top|crop top|pyjama|lounge|camp collar|rugby|workwear|chore|utility)"),
     ("s", r"\b(blazer|tailored|suit\b|waistcoat|loafer|derby|brogue|chelsea boot|pleated trousers?|wool trousers?|flannel trousers?|chino|knit(ted)? polo|merino|cashmere|overcoat|trench|topcoat|silk (shirt|blouse)|blouse|midi (dress|skirt)|pencil skirt|oxford shirt|poplin shirt|turtle ?neck|roll ?neck|cardigan)"),
 ]
