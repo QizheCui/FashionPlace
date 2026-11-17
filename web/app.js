@@ -285,6 +285,14 @@
   const score = (it) => { const v = S.vecs[it.id]; return dot(v, S.taste) - (S.avoid ? 0.35 * dot(v, S.avoid) : 0) - 0.7 * (S.bias[it.id] || 0) + wordFacetBonus(it); };
   // Typed searches: closeness to the words, minus how close the photo is to *every* sentence, then
   // a second pass that also leans towards the best first-pass matches (keeps the results coherent).
+  // the stylist's sense of the occasion ("an interview" → smart) nudges ranking but never filters
+  function boostRank(list, boost) {
+    if (!boost || (!boost.fm && !boost.ss)) return list;
+    const fmOk = { formal: "fs", smart: "fs", "smart casual": "sc", casual: "c", sport: "a" }[boost.fm] || "";
+    const ss = { winter: "c", cold: "c", summer: "w", warm: "w" }[boost.ss] || "";
+    return list.map((x) => ({ ...x, m: (x.m || 0) + (fmOk && x.it.fm ? (fmOk.includes(x.it.fm) ? 0.025 : -0.02) : 0)
+      + (ss && x.it.ss ? (x.it.ss === ss ? 0.015 : -0.03) : 0) })).sort((a, c) => c.m - a.m);
+  }
   function semantic(pool, qvec, text = "") {
     let q = pv(qvec);
     // fashion terms the photo model doesn't know well ('quiet luxury', 'old money') borrow the matching
@@ -423,7 +431,7 @@
       }
       const res = matchQuery(base, q, off);
       S.query.dropped = res.dropped;
-      base = semantic(res.list, S.query.vec, S.query.semText || S.query.text);
+      base = boostRank(semantic(res.list, S.query.vec, S.query.semText || S.query.text), S.query.boost);
       const zq = zs(base.map((x) => x.m));
       const ranked = base.map((x, i) => ({ ...x, q: zq[i] + 0.3 * x.s }))
         .sort((a, b) => b.q - a.q).slice(0, 240);
@@ -508,7 +516,7 @@
   }
   function card({ it, why, status, advice: adv }) {
     const liked = P().liked.includes(it.id);
-    return `<article class="card" data-id="${esc(it.id)}">
+    return `<article class="card" data-id="${esc(it.id)}" data-brand="${esc(it.brand || "")}">
       <div class="photo">
         <div class="ph" style="background:${tint(it.title)}">${esc(shortTitle(it.title))}</div>
         ${it.image ? `<img src="${esc(it.image)}" alt="${esc(it.title)}" loading="lazy" onerror="this.remove()">` : ""}
@@ -569,6 +577,7 @@
     document.querySelectorAll(".tabs button").forEach((b) => b.classList.toggle("active", !S.query && b.dataset.tab === S.tab));
     $("#savedCount").textContent = P().liked.length || "";
     const full = build(), list = full.slice(0, 120);
+    if (S.query && S.query.tracked !== true) { S.query.tracked = true; track("search", { q: S.query.display || S.query.text, n: full.length, x: { where: "app" } }); }
     renderTastebar(); renderBrandsRow(); renderChips(); renderPrice(); renderLive(); renderEditRow();
     if (S.query) $("#intro p").textContent = full.length ? `${full.length >= 240 ? "240+" : full.length} pieces · what you asked for first, then ranked by your taste.` : "Nothing matches that in our brands yet — try removing a filter above.";
     $("#grid").innerHTML = list.map(card).join("");
@@ -587,7 +596,7 @@
     const d = it.deal || {};
     const badge = d.verdict === "real_drop" ? `<span class="badge deal">Price drop −${d.discount_pct}%</span>`
       : d.verdict === "on_sale_unverified" ? `<span class="badge deal">Sale −${d.discount_pct}%</span>` : "";
-    return `<a class="lcard" href="${esc(it.url)}" target="_blank" rel="noopener">
+    return `<a class="lcard" href="${esc(it.url)}" target="_blank" rel="noopener" data-id="${esc(it.id)}" data-brand="${esc(it.brand || "")}">
       <div class="photo"><div class="ph" style="background:${tint(it.title)}">${esc(shortTitle(it.title))}</div>
         ${it.image ? `<img src="${esc(it.image)}" alt="${esc(it.title)}" loading="lazy" onerror="this.remove()">` : ""}<div class="badges">${badge}</div></div>
       <div class="meta"><div class="b">${esc(it.brand)}</div><div class="t">${esc(it.title)}</div>
@@ -639,6 +648,18 @@
     else if ((m = t.match(/(?:over|above|more than|from)\s*£\s*(\d{2,4})/))) q.facets.push({ key: "price", min: +m[1], max: Infinity, label: `Over £${m[1]}` });
     if (/\b(women'?s|womens|women|womenswear|ladies|lady|woman|girls?|for her|feminine)\b/.test(t)) q.facets.push({ key: "dept", dept: "women", label: "Womenswear" });
     else if (/\b(men'?s|mens|men|menswear|gentlem[ae]n|gents?|guys?|man|for him|masculine)\b/.test(t)) q.facets.push({ key: "dept", dept: "men", label: "Menswear" });
+    // formality, season and fit: every piece is tagged nightly, so these are exact too
+    if (/\b(formal|black tie|tuxedo|wedding guest)\b/.test(t)) q.facets.push({ key: "fm", ok: "f", label: "Formal" });
+    else if (/\b(smart|dressy|polished|office|business|elegant)\b/.test(t) && !/smart ?casual/.test(t)) q.facets.push({ key: "fm", ok: "fs", label: "Smart" });
+    else if (/smart ?casual/.test(t)) q.facets.push({ key: "fm", ok: "sc", label: "Smart casual" });
+    else if (/\b(casual|laid[- ]back|everyday)\b/.test(t)) q.facets.push({ key: "fm", ok: "c", label: "Casual" });
+    else if (/\b(sporty|athletic|gym|workout|training)\b/.test(t)) q.facets.push({ key: "fm", ok: "a", label: "Sporty" });
+    if (/\b(winter|cold weather|snow|freezing|ski)\b/.test(t)) q.facets.push({ key: "ss", ok: "c", label: "Winter" });
+    else if (/\b(summer|hot weather|beach|heatwave|tropical)\b/.test(t)) q.facets.push({ key: "ss", ok: "w", label: "Summer" });
+    if (/\b(oversized?|baggy|boxy)\b/.test(t)) q.facets.push({ key: "ft", ok: "o", label: "Oversized" });
+    else if (/\bwide(-| )?leg\b|\bwide fit\b/.test(t)) q.facets.push({ key: "ft", ok: "w", label: "Wide leg" });
+    else if (/\b(slim|skinny)( fit)?\b|\bfitted\b/.test(t)) q.facets.push({ key: "ft", ok: "s", label: "Slim fit" });
+    else if (/\b(relaxed|loose)[- ]fit\b/.test(t)) q.facets.push({ key: "ft", ok: "ro", label: "Relaxed fit" });
     const b = brandInQuery(text); if (b) q.facets.push({ key: "brand", brand: b, label: b });
     q.outOfScope = /\b(costumes?|fancy dress|halloween|cosplay|onesie|wig|uniform|school uniform|workwear boots? steel)\b/.test(t);
     return q;
@@ -653,6 +674,9 @@
       case "price": return it.price_gbp >= f.min && it.price_gbp <= f.max;
       case "dept": return it.department === f.dept || it.department === "unisex";
       case "brand": return it.brand === f.brand;
+      case "fm": return !it.fm || f.ok.includes(it.fm); // untagged pieces aren't ruled out
+      case "ss": return !it.ss || it.ss === f.ok;       // no season tag = worn all year
+      case "ft": return !!it.ft && f.ok.includes(it.ft);
     }
     return true;
   }
@@ -662,7 +686,7 @@
     const strict = pool.filter((x) => active.every((f) => facetOk(x.it, f)));
     if (strict.length || !active.length) return { list: strict, dropped: [] };
     const dropped = [];
-    for (const k of ["material", "colour", "price", "cat"]) {
+    for (const k of ["ft", "ss", "fm", "material", "colour", "price", "cat"]) {
       const f = active.find((x) => x.key === k); if (!f) continue;
       dropped.push(f);
       const rest = active.filter((x) => !dropped.includes(x));
@@ -885,7 +909,8 @@
       } catch (e) { console.warn("mood", e); }
     }
     await loadKeywordParts(kw);
-    return { shown: text, en, plan, planP, parsed, kw, vec, semText, exact: !!(kw && kw.ids.size && !kw.missing) };
+    const boost = plan && plan.kind !== "exact" ? { fm: plan.formality, ss: plan.season } : null;
+    return { shown: text, en, plan, planP, parsed, kw, vec, semText, boost, exact: !!(kw && kw.ids.size && !kw.missing) };
   }
   // the front page's ranking for an understood request (no profile): used by the page and by the test set
   async function rankOpen(u) {
@@ -899,7 +924,7 @@
       && !["underwear", "other", "lifestyle"].includes(it.category) && (exact || named || !["accessories", "bags"].includes(it.category)))
       .map((it) => ({ it }));
     const res = matchQuery(all, q);
-    const ranked = semantic(res.list, u.vec, u.semText), pool = ranked.slice(0, 400);
+    const ranked = boostRank(semantic(res.list, u.vec, u.semText), u.boost), pool = ranked.slice(0, 400);
     const perCat = {}, perBrand = {}, top = [];
     for (const x of dedupe(ranked.slice(0, 4000))) { // look deep enough that one garment type can't fill the page // a mix: at most two per brand, three of one kind of garment
       if ((perCat[x.it.category] || 0) >= (named || exact ? 12 : 3) || (perBrand[x.it.brand] || 0) >= (exact ? 12 : 2)) continue;
@@ -913,7 +938,7 @@
     return { en: u.en, kind: u.plan ? u.plan.kind : null, engine: u.plan ? u.plan.engine : null, mood: u.plan ? u.plan.mood : null,
       named: u.plan ? u.plan.named : null, facets: u.parsed.facets.map((f) => f.label), dropped: r.res.dropped.map((f) => f.label),
       missing: !!(u.kw && u.kw.missing), exact: u.exact, matches: r.pool.length, edit: !namesGarment(u.parsed), pieces: u.plan ? u.plan.pieces.length : 0,
-      items: r.top.map((it) => ({ title: it.title, brand: it.brand, category: it.category, colour: it.colour || "", materials: it.materials || [], ptype: it.ptype || "", price: it.price_gbp, department: it.department })) };
+      boost: u.boost, items: r.top.map((it) => ({ fm: it.fm || "", ss: it.ss || "", ft: it.ft || "", title: it.title, brand: it.brand, category: it.category, colour: it.colour || "", materials: it.materials || [], ptype: it.ptype || "", price: it.price_gbp, department: it.department })) };
   }
   async function landingSearch(text) {
     const st = $("#lStatus"), token = (S.landingToken = (S.landingToken || 0) + 1), shown = text;
@@ -937,6 +962,7 @@
         <p class="l-sub">${!pool.length ? "Nothing in our brands matches that yet — try removing a word or two." : `${pool.length >= 400 ? "Hundreds of matches" : `${pool.length} match${pool.length === 1 ? "" : "es"}`} across ${new Set(pool.map((x) => x.it.brand)).size} brands. Save it and we'll keep finding more, in your size.`}</p>
         ${pool.length ? `<button class="l-cta" id="lSave">Make this my taste →</button>` : ""}`;
       $("#lGrid").innerHTML = top.map(lcard).join(""); $("#lGridHead").hidden = true;
+      track("search", { q: shown, n: pool.length, x: { where: "landing", kind: u.plan ? u.plan.kind : "", dropped: res.dropped.map((f) => f.key).join(",") } });
       $("#lResHead").scrollIntoView({ behavior: "smooth", block: "start" });
       landingEdit(u.en, u.plan ? Promise.resolve(u.plan) : u.planP, token, { exact, dept: S.landingQuery.dept, named: namesGarment(u.parsed) });
     } catch (e) {
@@ -1297,7 +1323,7 @@
       const dept = u.parsed.facets.find((f) => f.key === "dept"), cat = u.parsed.facets.find((f) => f.key === "cat" && f.cat);
       const useDept = dept && dept.dept !== P().department ? "any" : P().department;
       await Promise.all([useDept === "any" ? ensureShard("any") : null, cat ? ensureCat(useDept, cat.cat) : null]);
-      S.query = { text: u.en, display: u.shown, vec: u.vec, kw: u.kw, parsed: u.parsed, semText: u.semText }; S.brand = null; render(); window.scrollTo({ top: 0 });
+      S.query = { text: u.en, display: u.shown, vec: u.vec, kw: u.kw, parsed: u.parsed, semText: u.semText, boost: u.boost }; S.brand = null; render(); window.scrollTo({ top: 0 });
       liveSearch(u.en, u.vec, u.parsed);
       if (namesGarment(u.parsed)) { S.edit = null; S.editToken = (S.editToken || 0) + 1; const er = $("#editRow"); if (er) { er.hidden = true; er.innerHTML = ""; } }
       else appEdit(u.en, u.exact, u.plan || u.planP);
@@ -1328,6 +1354,7 @@
       const wasLiked = p.liked.includes(id);
       p.liked = p.liked.filter((x) => x !== id); p.disliked = p.disliked.filter((x) => x !== id);
       if (act.dataset.act === "like" && !wasLiked) {
+        track("save", { item: act.closest(".card").dataset.id, brand: act.closest(".card").dataset.brand });
         p.liked.unshift(id);
         p.saved[id] = { price: it.price_gbp, date: today(), outOfSize: !!(it.letter_sized && !(it.letter_sizes || []).some((s) => p.sizes.includes(s))),
           item: { ...it } }; // a copy, so Saved works even before that part of the catalogue is loaded
@@ -1473,6 +1500,27 @@
   if (/[?&]debug=1/.test(location.search)) window.__fp = { S, parseQuery, matchQuery, render, pv, norm, mean, keywordPlan, loadKeywordParts, searchFor, understand, fillPlan, renderEdit, pieceQuery, landingSearch, runSearch }; // for automated tests
 
   // ---------- boot ----------
+  // ---------- anonymous usage counts (what's searched, what finds nothing, what gets clicked, errors) ----------
+  // No cookies, no IDs, nothing about the person: just the event. Respects the browser's Do Not Track.
+  const track = (t, data = {}) => {
+    try {
+      if (!S.live || !S.live.search_url || navigator.doNotTrack === "1" || S.model === "fake" || /[?&]debug=1/.test(location.search)) return;
+      const body = JSON.stringify({ t, ...data, x: { lang: (window.I18N && I18N.lang) || "en", model: FSL ? "fsl" : "clip", ...(data.x || {}) } });
+      navigator.sendBeacon(`${S.live.search_url}/ev`, new Blob([body], { type: "text/plain" }));
+    } catch {}
+  };
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest('a[target="_blank"]'), host = a && a.closest("[data-id]");
+    if (!host) return;
+    const where = a.closest("#lEdit") ? "landing-edit" : a.closest("#lGrid") ? "landing" : a.closest("#editRow") ? "edit"
+      : a.closest("#liveRow") ? "live" : S.query ? "search" : S.tab || "feed";
+    track("click", { item: host.dataset.id, brand: host.dataset.brand, x: { where } });
+  }, true);
+  let errCount = 0;
+  const onErr = (msg) => { if (errCount++ < 5) track("error", { q: String(msg || "unknown").slice(0, 200) }); };
+  window.addEventListener("error", (e) => onErr(e.message));
+  window.addEventListener("unhandledrejection", (e) => onErr(e.reason && (e.reason.message || e.reason)));
+
   (async function boot() {
     try {
       const [vibes, brands, index, pbuf] = await Promise.all([
@@ -1503,6 +1551,7 @@
       const unlocked = unlockFromLink();
       const last = unlocked || (S.lastId && S.profiles[S.lastId]);
       if (last && last.setupDone) { await useProfile(last); render(); } else openLanding();
+      track("view", { x: { signedIn: !!(last && last.setupDone) } });
     } catch (err) {
       console.error(err);
       $("#intro").innerHTML = `<h1>No data yet</h1><p>The daily collector hasn't run yet (${esc(err.message)}).</p>`;

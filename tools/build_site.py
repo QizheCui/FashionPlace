@@ -17,7 +17,7 @@ FILES = ["vibes.json", "brands.json", "brand_stats.json", "refiners.json", "gene
 
 BINS = ["projection.bin"]
 KEEP = ["id", "brand", "title", "url", "image", "category", "department", "price_gbp", "compare_at_gbp", "in_stock",
-        "letter_sized", "letter_sizes", "waist_sizes", "shoe_sizes", "deal", "tier", "retailer", "colour", "materials", "ptype"]
+        "letter_sized", "letter_sizes", "waist_sizes", "shoe_sizes", "deal", "tier", "retailer", "colour", "materials", "ptype", "fm", "ss", "ft"]
 DEAL_KEEP = ["verdict", "discount_pct", "is_lowest_price", "tracked_days"]
 
 

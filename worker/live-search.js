@@ -35,6 +35,8 @@ export default {
     const json = (body, status = 200) => new Response(JSON.stringify(body), { status, headers: cors });
     try {
       if (url.pathname === "/plan") return await cachedPlan(request, env, ctx, cors);
+      if (url.pathname === "/ev") { ctx.waitUntil(logEvent(request, env).catch(() => {})); return new Response(null, { status: 204, headers: cors }); }
+      if (url.pathname === "/stats") return json(await stats(env, +url.searchParams.get("days") || 7));
       if (url.pathname === "/pinterest") return json(await pinterest(url.searchParams.get("board") || ""));
       if (url.pathname === "/img") return await pinImage(url.searchParams.get("u") || "", cors);
       return await liveSearch(url, ctx, cors);
@@ -43,6 +45,46 @@ export default {
     }
   },
 };
+
+// ---------- anonymous usage log ----------
+// What people search, which searches find nothing, what they click through to, and errors in their browser.
+// No IP address, no browser fingerprint, no account: just the event. Stored in Cloudflare D1 (free tier).
+let tableReady = false;
+async function ensureTable(env) {
+  if (tableReady) return;
+  await env.DB.prepare(`CREATE TABLE IF NOT EXISTS ev (ts INTEGER, day TEXT, t TEXT, q TEXT, n INTEGER, item TEXT, brand TEXT, x TEXT)`).run();
+  await env.DB.prepare(`CREATE INDEX IF NOT EXISTS ev_day ON ev (day, t)`).run();
+  tableReady = true;
+}
+// drop anything that looks like contact details someone pasted by mistake
+const clean = (v, n) => String(v ?? "").replace(/\S+@\S+/g, "[email]").replace(/\+?\d[\d\s-]{7,}\d/g, "[number]").slice(0, n);
+async function logEvent(request, env) {
+  if (!env.DB) return;
+  const raw = await request.text();
+  if (raw.length > 3000) return;
+  const e = JSON.parse(raw), t = ["view", "search", "click", "error", "save"].includes(e.t) ? e.t : null;
+  if (!t) return;
+  await ensureTable(env);
+  const now = Date.now();
+  await env.DB.prepare(`INSERT INTO ev VALUES (?, ?, ?, ?, ?, ?, ?, ?)`).bind(now, new Date(now).toISOString().slice(0, 10), t,
+    clean(e.q, 120), Number.isFinite(+e.n) ? Math.round(+e.n) : null, clean(e.item, 120), clean(e.brand, 60),
+    clean(JSON.stringify(e.x || {}), 400)).run();
+}
+async function stats(env, days) {
+  if (!env.DB) return { error: "no database" };
+  await ensureTable(env);
+  const since = new Date(Date.now() - Math.min(days, 90) * 864e5).toISOString().slice(0, 10);
+  const all = async (sql) => (await env.DB.prepare(sql).bind(since).all()).results;
+  return {
+    since,
+    per_day: await all(`SELECT day, t, COUNT(*) AS n FROM ev WHERE day >= ? GROUP BY day, t ORDER BY day`),
+    top_searches: await all(`SELECT lower(q) AS q, COUNT(*) AS times, ROUND(AVG(n)) AS avg_results FROM ev WHERE day >= ? AND t = 'search' GROUP BY lower(q) ORDER BY times DESC LIMIT 40`),
+    no_results: await all(`SELECT lower(q) AS q, COUNT(*) AS times FROM ev WHERE day >= ? AND t = 'search' AND n = 0 GROUP BY lower(q) ORDER BY times DESC LIMIT 40`),
+    clicked_brands: await all(`SELECT brand, COUNT(*) AS clicks FROM ev WHERE day >= ? AND t = 'click' GROUP BY brand ORDER BY clicks DESC LIMIT 30`),
+    clicks_from: await all(`SELECT json_extract(x, '$.where') AS place, COUNT(*) AS clicks FROM ev WHERE day >= ? AND t = 'click' GROUP BY place ORDER BY clicks DESC`),
+    errors: await all(`SELECT q AS message, COUNT(*) AS times, MAX(day) AS last FROM ev WHERE day >= ? AND t = 'error' GROUP BY q ORDER BY times DESC LIMIT 20`),
+  };
+}
 
 // ---------- the stylist ----------
 // the same request gets the same plan for a week: faster, and it saves the free AI allowance
@@ -70,6 +112,8 @@ Turn the shopper's request into a search plan. Reply with ONLY a JSON object:
   "department": "men" | "women" | "any",
   "kind": "exact" | "style",
   "mood": "one English sentence describing how the whole look appears in photos: colours, fabrics, shapes, e.g. 'warm brown and olive wool, suede and corduroy layers, relaxed tailoring'",
+  "formality": "formal" | "smart" | "smart casual" | "casual" | "sport" | null  (how dressed-up the occasion is; null if it doesn't say),
+  "season": "winter" | "summer" | null  (only if the request implies the weather),
   "named": {"garment": the English garment word the shopper literally asked for or null, "colour": a colour they literally said or null, "material": a fabric they literally said or null},
   "pieces": [
     {"label": "2-4 word name shown to the shopper in the reply language, e.g. 'Navy unstructured blazer'",
@@ -97,7 +141,7 @@ Rules:
   are ALWAYS English. Write "understood" and "label" in the reply language you are told.`;
 
 const CF_MODELS = ["@cf/qwen/qwen3-30b-a3b-fp8", "@cf/meta/llama-3.3-70b-instruct-fp8-fast"];
-const PLAN_VERSION = "5"; // bump to drop cached plans
+const PLAN_VERSION = "6"; // bump to drop cached plans
 
 async function plan({ text, dept, lang }, env) {
   const today = new Date().toISOString().slice(0, 10);

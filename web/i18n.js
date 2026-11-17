@@ -20,7 +20,7 @@
     "Buy at the right price": "在对的价格入手", "We track prices daily, so you see genuine discounts — and when it's worth waiting.": "我们每天追踪价格，让你看到真正的折扣，也知道什么时候值得再等等。",
     "One feed across": "一个页面，汇集", "Find my style — it's free": "找到我的风格——免费",
     "We read brands' public catalogues once a day and link you straight to the brand to buy. Prices are shown in pounds; some brands ship from abroad.": "我们每天读取一次品牌公开的商品目录，并直接链接到品牌官网购买。价格以英镑显示，部分品牌从海外发货。",
-    "Your profile and likes are saved only on this device. No account needed, and we run no analytics.": "你的资料和收藏只保存在这台设备上。无需注册，我们也不做任何数据追踪。",
+    "Your profile and likes are saved only on this device. No account needed. We count searches and clicks anonymously to improve results: no cookies, nothing that identifies you.": "你的资料和收藏只保存在这台设备上，无需注册。我们会匿名统计搜索和点击来改进结果：不用 Cookie，不收集任何能识别你的信息。",
     "Today in the feed": "今日精选", "More that matches": "更多相符单品", "Make this my taste →": "把这设为我的品味 →",
     "Searching every brand…": "正在搜索所有品牌…", "Nothing in our brands matches that yet — try removing a word or two.": "暂时没有相符的单品——试着删掉一两个词。",
     "Search works on the live site.": "搜索功能在正式网站上可用。",
@@ -136,7 +136,7 @@
     // facet chips
     "Trousers": "长裤", "Jeans": "牛仔裤", "Scarves": "围巾", "Hats": "帽子", "Gloves": "手套", "Belts": "腰带", "Cardigans": "开衫", "Knitwear": "针织",
     "Coats": "大衣", "Jackets": "夹克", "Blazers": "西装外套", "Suits": "西装", "T-shirts": "T恤", "Polos": "Polo衫", "Shirts": "衬衫", "Sweats": "卫衣",
-    "Dresses": "连衣裙", "Skirts": "半身裙", "Tops": "上衣", "Boots": "靴子", "Loafers": "乐福鞋", "Backpacks": "双肩包", "Trainers": "运动鞋", "Shoes": "鞋履", "Bags": "包袋",
+    "Dresses": "连衣裙", "Skirts": "半身裙", "Tops": "上衣", "Boots": "靴子", "Loafers": "乐福鞋", "Formal": "正装", "Smart": "精致正式", "Smart casual": "商务休闲", "Casual": "休闲", "Sporty": "运动", "Winter": "冬季", "Summer": "夏季", "Oversized": "宽松", "Wide leg": "阔腿", "Slim fit": "修身", "Relaxed fit": "宽松版型", "Backpacks": "双肩包", "Trainers": "运动鞋", "Shoes": "鞋履", "Bags": "包袋",
     "Shorts": "短裤", "Activewear": "运动服", "Black": "黑色", "White": "白色", "Cream": "米白", "Grey": "灰色", "Navy": "藏青", "Blue": "蓝色", "Green": "绿色",
     "Olive": "橄榄绿", "Brown": "棕色", "Beige": "米色", "Red": "红色", "Burgundy": "酒红", "Pink": "粉色", "Purple": "紫色", "Yellow": "黄色", "Orange": "橙色",
     "Wool": "羊毛", "Cashmere": "羊绒", "Merino": "美丽诺羊毛", "Cotton": "棉", "Linen": "亚麻", "Silk": "丝绸", "Leather": "皮革", "Suede": "麂皮",

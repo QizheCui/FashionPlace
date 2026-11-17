@@ -19,6 +19,8 @@ def ok_item(c, it):
     if "dept" in c and it["department"] not in (c["dept"], "unisex"): return False
     if "title" in c and not re.search(c["title"], text): return False
     if "brand" in c and c["brand"] not in it["brand"].lower() and c["brand"] not in it["title"].lower(): return False
+    for k in ("fm", "ss", "ft"):  # tag checks: an untagged piece only passes for season (= all year)
+        if f"tag_{k}" in c and not (it.get(k) in c[f"tag_{k}"] if it.get(k) else k == "ss"): return False
     if "any" in c and not re.search(c["any"], text): return False
     if "not" in c and re.search(c["not"], text): return False
     return True

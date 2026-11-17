@@ -244,13 +244,18 @@ def fix_categories(enc, items: list[dict], mat: np.ndarray) -> None:
             it["colour_from_photo"] = True
             filled += 1
     print(f"colours read from photos: {filled}")
-    by_id = {it["id"]: (it["category"], it.get("department"), it.get("colour"), it.get("colour_from_photo")) for it in items}
+    from collector.tags import tag_items
+    tag_items(enc, items, mat)
+    by_id = {it["id"]: (it["category"], it.get("department"), it.get("colour"), it.get("colour_from_photo"), {k: it[k] for k in ("fm", "ss", "ft") if k in it}) for it in items}
     full = json.loads((DATA / "items.json").read_text())
     for it in full["items"]:
         if it["id"] in by_id:
-            it["category"], it["department"], it["colour"], cfp = by_id[it["id"]]
+            it["category"], it["department"], it["colour"], cfp, tags = by_id[it["id"]]
             if cfp:
                 it["colour_from_photo"] = True
+            for k in ("fm", "ss", "ft"):
+                it.pop(k, None)
+            it.update(tags)
     (DATA / "items.json").write_text(json.dumps(full, ensure_ascii=False))
     print(f"categories corrected from photos: {changed}")
 

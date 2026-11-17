@@ -1602,6 +1602,97 @@
 "no_edit": true,
 "colour": "green|olive|khaki|forest|sage|moss|bottle",
 "material": "wool|cashmere|tweed|flannel|merino|alpaca|mohair"
+},
+{
+"q": "oversized hoodie",
+"group": "tags",
+"cat": [
+"sweats",
+"knitwear",
+"outerwear"
+],
+"thr": 0.8,
+"no_edit": true,
+"tag_ft": "o",
+"title": "hood"
+},
+{
+"q": "slim fit chinos",
+"group": "tags",
+"cat": [
+"trousers"
+],
+"thr": 0.8,
+"no_edit": true,
+"tag_ft": "s",
+"title": "chino|trouser|pant"
+},
+{
+"q": "wide leg trousers men",
+"group": "tags",
+"cat": [
+"trousers",
+"tailoring",
+"denim"
+],
+"thr": 0.8,
+"no_edit": true,
+"tag_ft": "w",
+"dept": "men"
+},
+{
+"q": "smart trousers for the office",
+"group": "tags",
+"cat": [
+"trousers",
+"tailoring"
+],
+"thr": 0.8,
+"no_edit": true,
+"tag_fm": "fs"
+},
+{
+"q": "casual shirt",
+"group": "tags",
+"cat": [
+"shirts"
+],
+"thr": 0.8,
+"no_edit": true,
+"tag_fm": "c"
+},
+{
+"q": "linen shirt for summer",
+"group": "tags",
+"cat": [
+"shirts",
+"tops"
+],
+"thr": 0.8,
+"no_edit": true,
+"material": "linen",
+"tag_ss": "w"
+},
+{
+"q": "warm knit for winter",
+"group": "tags",
+"cat": [
+"knitwear",
+"sweats"
+],
+"thr": 0.8,
+"no_edit": true,
+"tag_ss": "c"
+},
+{
+"q": "smart shoes",
+"group": "tags",
+"cat": [
+"shoes"
+],
+"thr": 0.8,
+"no_edit": true,
+"tag_fm": "fs"
 }
 ]
 }
