@@ -1,0 +1,215 @@
+{
+ "date": "2026-11-21",
+ "ok": 188,
+ "needs_feed": [
+  "& Other Stories",
+  "Arket",
+  "COS",
+  "Farfetch",
+  "H&M",
+  "Hoka",
+  "Liberty London",
+  "Lululemon",
+  "Mango",
+  "Massimo Dutti",
+  "Mr Porter",
+  "Mytheresa",
+  "Net-a-Porter (Miu Miu, Prada, Loewe…)",
+  "New Balance",
+  "Nike",
+  "On",
+  "Ralph Lauren",
+  "Reiss",
+  "Selfridges",
+  "Suitsupply",
+  "Uniqlo",
+  "Zara",
+  "adidas"
+ ],
+ "blocked": [
+  "Cheaney",
+  "Christy Dawn",
+  "Daily Paper",
+  "Danielle Guizio",
+  "Eckhaus Latta",
+  "Gestuz",
+  "Gymshark",
+  "Hamilton and Hare",
+  "House of CB",
+  "Jigsaw",
+  "Joanie",
+  "Koio",
+  "Loake",
+  "Meshki",
+  "Morjas",
+  "Mother of Pearl",
+  "Naadam",
+  "Oak Street Bootmakers",
+  "Remain Birger Christensen",
+  "Rhone",
+  "Rotate",
+  "Self-Portrait",
+  "Sleeper",
+  "Sosandar",
+  "St. Agni",
+  "Ten Thousand",
+  "Todd Snyder",
+  "Ulla Johnson",
+  "Universal Works",
+  "Wray"
+ ],
+ "gone": [
+  "Asket",
+  "Axel Arigato",
+  "Bait",
+  "Beams Plus",
+  "Berg & Berg",
+  "Beyond Nine",
+  "Boglioli",
+  "Buck Mason",
+  "Cefinn",
+  "De Bonne Facture",
+  "Djerf Avenue",
+  "Filippa K",
+  "Gant",
+  "Ghost",
+  "Grenson",
+  "Hobes",
+  "Holzweiler",
+  "Howlin'",
+  "Hymn London",
+  "Jacques Soloviere",
+  "L.E.J",
+  "Le Mont St Michel",
+  "Lowie",
+  "ME+EM",
+  "Maison Cléo",
+  "Monsoon",
+  "Musier Paris",
+  "Nanushka",
+  "Navygrey",
+  "Nudie Jeans",
+  "Paraboot",
+  "Posse",
+  "Princess Polly",
+  "Quince",
+  "Rapanui",
+  "Rhode",
+  "Réalisation Par",
+  "Saks Potts",
+  "Samsøe Samsøe",
+  "Sanders",
+  "Seasalt Cornwall",
+  "Sefr",
+  "Sessùn",
+  "Spier & Mackay",
+  "Spoke",
+  "The Fold London",
+  "Tiger of Sweden",
+  "Tracksmith",
+  "Vince",
+  "Vuori",
+  "Wellgosh",
+  "Whimsy + Row",
+  "Wood Wood",
+  "Yuketen"
+ ],
+ "temporary": [
+  {
+   "shop": "Aligne",
+   "reason": "<urlopen error [SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] ssl/tls alert handshake fail",
+   "days": 5
+  },
+  {
+   "shop": "Arpenteur",
+   "reason": "<urlopen error [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ss",
+   "days": 5
+  },
+  {
+   "shop": "Bobbies",
+   "reason": "HTTP Error 403: Forbidden",
+   "days": 5
+  },
+  {
+   "shop": "Cariuma",
+   "reason": "HTTP Error 401: Unauthorized",
+   "days": 5
+  },
+  {
+   "shop": "Common Projects",
+   "reason": "<urlopen error timed out>",
+   "days": 5
+  },
+  {
+   "shop": "Frahm",
+   "reason": "HTTP Error 403: Forbidden",
+   "days": 5
+  },
+  {
+   "shop": "Hanon",
+   "reason": "<urlopen error [SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] ssl/tls alert handshake fail",
+   "days": 5
+  },
+  {
+   "shop": "Hush",
+   "reason": "HTTP Error 429: Too Many Requests",
+   "days": 5
+  },
+  {
+   "shop": "Intentionally Blank",
+   "reason": "HTTP Error 403: Forbidden",
+   "days": 5
+  },
+  {
+   "shop": "Jesse Kamm",
+   "reason": "<urlopen error [Errno -3] Temporary failure in name resolution>",
+   "days": 5
+  },
+  {
+   "shop": "John Smedley",
+   "reason": "HTTP Error 429: Too Many Requests",
+   "days": 5
+  },
+  {
+   "shop": "Lisou",
+   "reason": "<urlopen error timed out>",
+   "days": 5
+  },
+  {
+   "shop": "Luca Faloni",
+   "reason": "HTTP Error 403: Forbidden",
+   "days": 5
+  },
+  {
+   "shop": "Paris Georgia",
+   "reason": "HTTP Error 500: Internal Server Error",
+   "days": 5
+  },
+  {
+   "shop": "Sam Edelman",
+   "reason": "HTTP Error 403: Forbidden",
+   "days": 5
+  },
+  {
+   "shop": "Senso",
+   "reason": "<urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of ",
+   "days": 5
+  },
+  {
+   "shop": "Seventy + Mochi",
+   "reason": "<urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of ",
+   "days": 5
+  },
+  {
+   "shop": "Soar Running",
+   "reason": "<urlopen error [Errno -5] No address associated with hostname>",
+   "days": 5
+  },
+  {
+   "shop": "Twist & Tango",
+   "reason": "<urlopen error timed out>",
+   "days": 5
+  }
+ ],
+ "broken": []
+}
