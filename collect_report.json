@@ -1,0 +1,2260 @@
+{
+  "date": "2026-11-28",
+  "brands": {
+    "Wax London": {
+      "status": "ok",
+      "products": 695,
+      "catalogue": 695,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Percival": {
+      "status": "ok",
+      "products": 932,
+      "catalogue": 932,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Alex Mill": {
+      "status": "ok",
+      "products": 996,
+      "catalogue": 996,
+      "currency": "USD",
+      "last_ok": "2026-11-28"
+    },
+    "Rains": {
+      "status": "ok",
+      "products": 240,
+      "catalogue": 240,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Oliver Spencer": {
+      "status": "ok",
+      "products": 857,
+      "catalogue": 857,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Universal Works": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Sunspel": {
+      "status": "ok",
+      "products": 2420,
+      "catalogue": 2420,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Kestin": {
+      "status": "ok",
+      "products": 159,
+      "catalogue": 159,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Drake's": {
+      "status": "ok",
+      "products": 2149,
+      "catalogue": 2149,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Norse Projects": {
+      "status": "ok",
+      "products": 657,
+      "catalogue": 657,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "De Bonne Facture": {
+      "status": "failed",
+      "reason": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'www.debonnefacture.com'. (_ssl.c:1011)>",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Colhay's": {
+      "status": "ok",
+      "products": 79,
+      "catalogue": 79,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Albam": {
+      "status": "ok",
+      "products": 74,
+      "catalogue": 74,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Folk": {
+      "status": "ok",
+      "products": 1769,
+      "catalogue": 1769,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Private White V.C.": {
+      "status": "ok",
+      "products": 279,
+      "catalogue": 279,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Uskees": {
+      "status": "ok",
+      "products": 249,
+      "catalogue": 249,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Peregrine": {
+      "status": "ok",
+      "products": 115,
+      "catalogue": 115,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Howlin'": {
+      "status": "failed",
+      "reason": "Expecting value: line 1 column 1 (char 0)",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Arpenteur": {
+      "status": "failed",
+      "reason": "<urlopen error [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error (_ssl.c:1011)>",
+      "kind": "temporary",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Nigel Cabourn": {
+      "status": "ok",
+      "products": 0,
+      "catalogue": 0,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "YMC": {
+      "status": "ok",
+      "products": 478,
+      "catalogue": 478,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Studio Nicholson": {
+      "status": "ok",
+      "products": 1312,
+      "catalogue": 1312,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Mfpen": {
+      "status": "ok",
+      "products": 241,
+      "catalogue": 241,
+      "currency": "EUR",
+      "last_ok": "2026-11-28"
+    },
+    "Aim\u00e9 Leon Dore": {
+      "status": "ok",
+      "products": 1109,
+      "catalogue": 1109,
+      "currency": "USD",
+      "last_ok": "2026-11-28"
+    },
+    "Rowing Blazers": {
+      "status": "ok",
+      "products": 708,
+      "catalogue": 708,
+      "currency": "USD",
+      "last_ok": "2026-11-28"
+    },
+    "Anglo-Italian": {
+      "status": "ok",
+      "products": 308,
+      "catalogue": 308,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Taylor Stitch": {
+      "status": "ok",
+      "products": 3000,
+      "catalogue": 3875,
+      "currency": "USD",
+      "last_ok": "2026-11-28"
+    },
+    "Spoke": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Todd Snyder": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Sirplus": {
+      "status": "ok",
+      "products": 249,
+      "catalogue": 249,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Spier & Mackay": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Luca Faloni": {
+      "status": "failed",
+      "reason": "HTTP Error 403: Forbidden",
+      "kind": "temporary",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Buck Mason": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Saturdays NYC": {
+      "status": "ok",
+      "products": 535,
+      "catalogue": 535,
+      "currency": "USD",
+      "last_ok": "2026-11-28"
+    },
+    "Corridor": {
+      "status": "ok",
+      "products": 541,
+      "catalogue": 541,
+      "currency": "USD",
+      "last_ok": "2026-11-28"
+    },
+    "Grenson": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Velasca": {
+      "status": "ok",
+      "products": 1628,
+      "catalogue": 1628,
+      "currency": "EUR",
+      "last_ok": "2026-11-28"
+    },
+    "A Kind of Guise": {
+      "status": "ok",
+      "products": 636,
+      "catalogue": 636,
+      "currency": "EUR",
+      "last_ok": "2026-11-28"
+    },
+    "The Workers Club": {
+      "status": "ok",
+      "products": 163,
+      "catalogue": 163,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Berg & Berg": {
+      "status": "failed",
+      "reason": "not JSON (text/html)",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Asket": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Rixo": {
+      "status": "ok",
+      "products": 829,
+      "catalogue": 829,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Kitri": {
+      "status": "ok",
+      "products": 221,
+      "catalogue": 221,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Damson Madder": {
+      "status": "ok",
+      "products": 577,
+      "catalogue": 577,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Nobody's Child": {
+      "status": "ok",
+      "products": 3000,
+      "catalogue": 3782,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "With Nothing Underneath": {
+      "status": "ok",
+      "products": 210,
+      "catalogue": 210,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Navygrey": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Lisou": {
+      "status": "failed",
+      "reason": "<urlopen error timed out>",
+      "kind": "temporary",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Musier Paris": {
+      "status": "failed",
+      "reason": "<urlopen error [Errno -2] Name or service not known>",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Aligne": {
+      "status": "failed",
+      "reason": "<urlopen error [SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] ssl/tls alert handshake failure (_ssl.c:1011)>",
+      "kind": "temporary",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Omnes": {
+      "status": "ok",
+      "products": 1050,
+      "catalogue": 1050,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Paloma Wool": {
+      "status": "ok",
+      "products": 1045,
+      "catalogue": 1045,
+      "currency": "EUR",
+      "last_ok": "2026-11-28"
+    },
+    "Kowtow": {
+      "status": "ok",
+      "products": 383,
+      "catalogue": 383,
+      "currency": "NZD",
+      "last_ok": "2026-11-28"
+    },
+    "Rouje": {
+      "status": "ok",
+      "products": 752,
+      "catalogue": 752,
+      "currency": "EUR",
+      "last_ok": "2026-11-28"
+    },
+    "ME+EM": {
+      "status": "failed",
+      "reason": "not JSON (text/html; charset=utf-8)",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Never Fully Dressed": {
+      "status": "ok",
+      "products": 844,
+      "catalogue": 844,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Anine Bing": {
+      "status": "ok",
+      "products": 645,
+      "catalogue": 645,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Faithfull the Brand": {
+      "status": "ok",
+      "products": 852,
+      "catalogue": 852,
+      "currency": "AUD",
+      "last_ok": "2026-11-28"
+    },
+    "R\u00e9alisation Par": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Doen": {
+      "status": "ok",
+      "products": 2056,
+      "catalogue": 2056,
+      "currency": "USD",
+      "last_ok": "2026-11-28"
+    },
+    "Staud": {
+      "status": "ok",
+      "products": 1899,
+      "catalogue": 1899,
+      "currency": "USD",
+      "last_ok": "2026-11-28"
+    },
+    "Cult Gaia": {
+      "status": "ok",
+      "products": 1693,
+      "catalogue": 1693,
+      "currency": "USD",
+      "last_ok": "2026-11-28"
+    },
+    "Self-Portrait": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Al\u00e9mais": {
+      "status": "ok",
+      "products": 1145,
+      "catalogue": 1145,
+      "currency": "AUD",
+      "last_ok": "2026-11-28"
+    },
+    "Lirika Matoshi": {
+      "status": "ok",
+      "products": 390,
+      "catalogue": 390,
+      "currency": "USD",
+      "last_ok": "2026-11-28"
+    },
+    "Sleeper": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Hill House Home": {
+      "status": "ok",
+      "products": 996,
+      "catalogue": 996,
+      "currency": "USD",
+      "last_ok": "2026-11-28"
+    },
+    "With J\u00e9an": {
+      "status": "ok",
+      "products": 326,
+      "catalogue": 326,
+      "currency": "AUD",
+      "last_ok": "2026-11-28"
+    },
+    "Posse": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Bec + Bridge": {
+      "status": "ok",
+      "products": 1232,
+      "catalogue": 1232,
+      "currency": "AUD",
+      "last_ok": "2026-11-28"
+    },
+    "St. Agni": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 43,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Matteau": {
+      "status": "ok",
+      "products": 369,
+      "catalogue": 369,
+      "currency": "AUD",
+      "last_ok": "2026-11-28"
+    },
+    "Jesse Kamm": {
+      "status": "failed",
+      "reason": "<urlopen error [Errno -3] Temporary failure in name resolution>",
+      "kind": "temporary",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Djerf Avenue": {
+      "status": "failed",
+      "reason": "not JSON (text/html)",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Skims": {
+      "status": "ok",
+      "products": 3000,
+      "catalogue": 4527,
+      "currency": "USD",
+      "last_ok": "2026-11-28"
+    },
+    "Pangaia": {
+      "status": "ok",
+      "products": 360,
+      "catalogue": 360,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Saks Potts": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Stine Goya": {
+      "status": "ok",
+      "products": 283,
+      "catalogue": 283,
+      "currency": "DKK",
+      "last_ok": "2026-11-28"
+    },
+    "Baum und Pferdgarten": {
+      "status": "ok",
+      "products": 402,
+      "catalogue": 402,
+      "currency": "DKK",
+      "last_ok": "2026-11-28"
+    },
+    "Rotate": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Cecilie Bahnsen": {
+      "status": "ok",
+      "products": 425,
+      "catalogue": 425,
+      "currency": "DKK",
+      "last_ok": "2026-11-28"
+    },
+    "Maison Cl\u00e9o": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "By Far": {
+      "status": "ok",
+      "products": 188,
+      "catalogue": 188,
+      "currency": "EUR",
+      "last_ok": "2026-11-28"
+    },
+    "Mother Denim": {
+      "status": "ok",
+      "products": 1122,
+      "catalogue": 1122,
+      "currency": "USD",
+      "last_ok": "2026-11-28"
+    },
+    "Agolde": {
+      "status": "ok",
+      "products": 665,
+      "catalogue": 665,
+      "currency": "USD",
+      "last_ok": "2026-11-28"
+    },
+    "Re/Done": {
+      "status": "ok",
+      "products": 1290,
+      "catalogue": 1290,
+      "currency": "USD",
+      "last_ok": "2026-11-28"
+    },
+    "Frame": {
+      "status": "ok",
+      "products": 1700,
+      "catalogue": 1700,
+      "currency": "USD",
+      "last_ok": "2026-11-28"
+    },
+    "Khaite": {
+      "status": "ok",
+      "products": 1231,
+      "catalogue": 1231,
+      "currency": "USD",
+      "last_ok": "2026-11-28"
+    },
+    "Wray": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Lisa Says Gah": {
+      "status": "ok",
+      "products": 352,
+      "catalogue": 352,
+      "currency": "USD",
+      "last_ok": "2026-11-28"
+    },
+    "Sister Jane": {
+      "status": "ok",
+      "products": 1415,
+      "catalogue": 1415,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Hush": {
+      "status": "failed",
+      "reason": "HTTP Error 429: Too Many Requests",
+      "kind": "temporary",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Albaray": {
+      "status": "ok",
+      "products": 994,
+      "catalogue": 994,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Baukjen": {
+      "status": "ok",
+      "products": 865,
+      "catalogue": 865,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Mint Velvet": {
+      "status": "ok",
+      "products": 1725,
+      "catalogue": 1725,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Finery London": {
+      "status": "ok",
+      "products": 563,
+      "catalogue": 563,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Monsoon": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Ghost": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Dissh": {
+      "status": "ok",
+      "products": 2431,
+      "catalogue": 2431,
+      "currency": "AUD",
+      "last_ok": "2026-11-28"
+    },
+    "Peppermayo": {
+      "status": "ok",
+      "products": 3000,
+      "catalogue": 5101,
+      "currency": "AUD",
+      "last_ok": "2026-11-28"
+    },
+    "Princess Polly": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Meshki": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Oh Polly": {
+      "status": "ok",
+      "products": 249,
+      "catalogue": 249,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "House of CB": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Kemi Telford": {
+      "status": "ok",
+      "products": 219,
+      "catalogue": 219,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Beyond Nine": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Wyse London": {
+      "status": "ok",
+      "products": 681,
+      "catalogue": 681,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Cefinn": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Rejina Pyo": {
+      "status": "ok",
+      "products": 519,
+      "catalogue": 519,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Paris Georgia": {
+      "status": "failed",
+      "reason": "HTTP Error 500: Internal Server Error",
+      "kind": "temporary",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Loulou de Saison": {
+      "status": "ok",
+      "products": 448,
+      "catalogue": 448,
+      "currency": "EUR",
+      "last_ok": "2026-11-28"
+    },
+    "Sess\u00f9n": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Soeur": {
+      "status": "ok",
+      "products": 713,
+      "catalogue": 713,
+      "currency": "EUR",
+      "last_ok": "2026-11-28"
+    },
+    "Marfa Stance": {
+      "status": "ok",
+      "products": 268,
+      "catalogue": 268,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Gestuz": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Sams\u00f8e Sams\u00f8e": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 5,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Holzweiler": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Envelope 1976": {
+      "status": "ok",
+      "products": 165,
+      "catalogue": 165,
+      "currency": "SEK",
+      "last_ok": "2026-11-28"
+    },
+    "Rodebjer": {
+      "status": "ok",
+      "products": 321,
+      "catalogue": 321,
+      "currency": "SEK",
+      "last_ok": "2026-11-28"
+    },
+    "Hope Stockholm": {
+      "status": "ok",
+      "products": 104,
+      "catalogue": 104,
+      "currency": "SEK",
+      "last_ok": "2026-11-28"
+    },
+    "Nanushka": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Vince": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Naadam": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Jenni Kayne": {
+      "status": "ok",
+      "products": 249,
+      "catalogue": 249,
+      "currency": "USD",
+      "last_ok": "2026-11-28"
+    },
+    "Kotn": {
+      "status": "ok",
+      "products": 1343,
+      "catalogue": 1343,
+      "currency": "USD",
+      "last_ok": "2026-11-28"
+    },
+    "Quince": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Lemaire": {
+      "status": "ok",
+      "products": 995,
+      "catalogue": 995,
+      "currency": "EUR",
+      "last_ok": "2026-11-28"
+    },
+    "Tot\u00eame": {
+      "status": "ok",
+      "products": 1930,
+      "catalogue": 1930,
+      "currency": "EUR",
+      "last_ok": "2026-11-28"
+    },
+    "The Frankie Shop": {
+      "status": "ok",
+      "products": 3000,
+      "catalogue": 3102,
+      "currency": "USD",
+      "last_ok": "2026-11-28"
+    },
+    "Wales Bonner": {
+      "status": "ok",
+      "products": 30,
+      "catalogue": 30,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Bode": {
+      "status": "ok",
+      "products": 2375,
+      "catalogue": 2375,
+      "currency": "USD",
+      "last_ok": "2026-11-28"
+    },
+    "Story mfg.": {
+      "status": "ok",
+      "products": 364,
+      "catalogue": 364,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Kartik Research": {
+      "status": "ok",
+      "products": 160,
+      "catalogue": 160,
+      "currency": "EUR",
+      "last_ok": "2026-11-28"
+    },
+    "Casablanca": {
+      "status": "ok",
+      "products": 707,
+      "catalogue": 707,
+      "currency": "EUR",
+      "last_ok": "2026-11-28"
+    },
+    "Goodhood": {
+      "status": "ok",
+      "products": 6000,
+      "catalogue": 10000,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Kith": {
+      "status": "ok",
+      "products": 6000,
+      "catalogue": 10000,
+      "currency": "USD",
+      "last_ok": "2026-11-28"
+    },
+    "St\u00fcssy": {
+      "status": "ok",
+      "products": 1034,
+      "catalogue": 1034,
+      "currency": "USD",
+      "last_ok": "2026-11-28"
+    },
+    "Daily Paper": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 37,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Represent": {
+      "status": "ok",
+      "products": 1139,
+      "catalogue": 1139,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Dover Street Market": {
+      "status": "ok",
+      "products": 5249,
+      "catalogue": 5249,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Hanifa": {
+      "status": "ok",
+      "products": 108,
+      "catalogue": 108,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Christy Dawn": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Mara Hoffman": {
+      "status": "ok",
+      "products": 77,
+      "catalogue": 77,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "LoveShackFancy": {
+      "status": "ok",
+      "products": 1884,
+      "catalogue": 1884,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Spell": {
+      "status": "ok",
+      "products": 529,
+      "catalogue": 529,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Auguste the Label": {
+      "status": "ok",
+      "products": 254,
+      "catalogue": 254,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Sir the Label": {
+      "status": "ok",
+      "products": 612,
+      "catalogue": 612,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Aje": {
+      "status": "ok",
+      "products": 3000,
+      "catalogue": 5026,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Zulu & Zephyr": {
+      "status": "ok",
+      "products": 833,
+      "catalogue": 833,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Kivari": {
+      "status": "ok",
+      "products": 906,
+      "catalogue": 906,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Lack of Color": {
+      "status": "ok",
+      "products": 211,
+      "catalogue": 211,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Rhode": {
+      "status": "failed",
+      "reason": "<urlopen error [Errno -2] Name or service not known>",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Mirror Palais": {
+      "status": "ok",
+      "products": 108,
+      "catalogue": 108,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Danielle Guizio": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 19,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Miaou": {
+      "status": "ok",
+      "products": 259,
+      "catalogue": 259,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Whimsy + Row": {
+      "status": "failed",
+      "reason": "no products returned",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Pixie Market": {
+      "status": "ok",
+      "products": 241,
+      "catalogue": 241,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Hayley Menzies": {
+      "status": "ok",
+      "products": 123,
+      "catalogue": 123,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Olivia Rubin": {
+      "status": "ok",
+      "products": 98,
+      "catalogue": 98,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Shrimps": {
+      "status": "ok",
+      "products": 139,
+      "catalogue": 139,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Lucy & Yak": {
+      "status": "ok",
+      "products": 229,
+      "catalogue": 229,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "L.F.Markey": {
+      "status": "ok",
+      "products": 395,
+      "catalogue": 395,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Ninety Percent": {
+      "status": "ok",
+      "products": 197,
+      "catalogue": 197,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Organic Basics": {
+      "status": "ok",
+      "products": 1973,
+      "catalogue": 1973,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Girlfriend Collective": {
+      "status": "ok",
+      "products": 163,
+      "catalogue": 163,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Seventy + Mochi": {
+      "status": "failed",
+      "reason": "<urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1011)>",
+      "kind": "temporary",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Simon Miller": {
+      "status": "ok",
+      "products": 455,
+      "catalogue": 455,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Sandy Liang": {
+      "status": "ok",
+      "products": 521,
+      "catalogue": 521,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Batsheva": {
+      "status": "ok",
+      "products": 177,
+      "catalogue": 177,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Collina Strada": {
+      "status": "ok",
+      "products": 536,
+      "catalogue": 536,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Eckhaus Latta": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 2,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Rat & Boa": {
+      "status": "ok",
+      "products": 418,
+      "catalogue": 418,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Rebecca Vallance": {
+      "status": "ok",
+      "products": 249,
+      "catalogue": 249,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Ulla Johnson": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Gabriela Hearst": {
+      "status": "ok",
+      "products": 2106,
+      "catalogue": 2106,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Brother Vellies": {
+      "status": "ok",
+      "products": 191,
+      "catalogue": 191,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Gymshark": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Tracksmith": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Satisfy": {
+      "status": "ok",
+      "products": 248,
+      "catalogue": 248,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Bandit Running": {
+      "status": "ok",
+      "products": 495,
+      "catalogue": 495,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Ciele Athletics": {
+      "status": "ok",
+      "products": 590,
+      "catalogue": 590,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "District Vision": {
+      "status": "ok",
+      "products": 604,
+      "catalogue": 604,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Norda": {
+      "status": "ok",
+      "products": 148,
+      "catalogue": 148,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Soar Running": {
+      "status": "failed",
+      "reason": "<urlopen error [Errno -5] No address associated with hostname>",
+      "kind": "temporary",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Alo Yoga": {
+      "status": "ok",
+      "products": 228,
+      "catalogue": 228,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Vuori": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Rhone": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Ten Thousand": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Outdoor Voices": {
+      "status": "ok",
+      "products": 426,
+      "catalogue": 426,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Bodega": {
+      "status": "ok",
+      "products": 1655,
+      "catalogue": 1655,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Concepts": {
+      "status": "ok",
+      "products": 1243,
+      "catalogue": 1243,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Packer Shoes": {
+      "status": "ok",
+      "products": 1958,
+      "catalogue": 1958,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Extra Butter": {
+      "status": "ok",
+      "products": 6000,
+      "catalogue": 10000,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Feature": {
+      "status": "ok",
+      "products": 6000,
+      "catalogue": 10000,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Bait": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Lapstone & Hammer": {
+      "status": "ok",
+      "products": 3472,
+      "catalogue": 3472,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Hanon": {
+      "status": "failed",
+      "reason": "<urlopen error [SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] ssl/tls alert handshake failure (_ssl.c:1011)>",
+      "kind": "temporary",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Naked Copenhagen": {
+      "status": "ok",
+      "products": 2167,
+      "catalogue": 2167,
+      "currency": "DKK",
+      "last_ok": "2026-11-28"
+    },
+    "Wellgosh": {
+      "status": "failed",
+      "reason": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Afew": {
+      "status": "ok",
+      "products": 6000,
+      "catalogue": 10000,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Blackstock & Weber": {
+      "status": "ok",
+      "products": 80,
+      "catalogue": 80,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Morjas": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Duke + Dexter": {
+      "status": "ok",
+      "products": 395,
+      "catalogue": 395,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Myrqvist": {
+      "status": "ok",
+      "products": 267,
+      "catalogue": 267,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Jacques Soloviere": {
+      "status": "failed",
+      "reason": "<urlopen error [Errno -2] Name or service not known>",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Meermin": {
+      "status": "ok",
+      "products": 258,
+      "catalogue": 258,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Loake": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Sanders": {
+      "status": "failed",
+      "reason": "HTTP Error 404: File Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Oliver Sweeney": {
+      "status": "ok",
+      "products": 2428,
+      "catalogue": 2428,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Cheaney": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Tricker's": {
+      "status": "ok",
+      "products": 209,
+      "catalogue": 209,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Barker": {
+      "status": "ok",
+      "products": 498,
+      "catalogue": 498,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "G.H. Bass": {
+      "status": "ok",
+      "products": 214,
+      "catalogue": 214,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Yuketen": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 7,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Quoddy": {
+      "status": "ok",
+      "products": 661,
+      "catalogue": 661,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Rancourt & Co": {
+      "status": "ok",
+      "products": 197,
+      "catalogue": 197,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Oak Street Bootmakers": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Common Projects": {
+      "status": "failed",
+      "reason": "<urlopen error timed out>",
+      "kind": "temporary",
+      "kept_previous": 13,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Koio": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Axel Arigato": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 22,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Filling Pieces": {
+      "status": "ok",
+      "products": 381,
+      "catalogue": 381,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Diemme": {
+      "status": "ok",
+      "products": 202,
+      "catalogue": 202,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Paraboot": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 18,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Senso": {
+      "status": "failed",
+      "reason": "<urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1011)>",
+      "kind": "temporary",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Alohas": {
+      "status": "ok",
+      "products": 241,
+      "catalogue": 241,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Larroud\u00e9": {
+      "status": "ok",
+      "products": 249,
+      "catalogue": 249,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Mansur Gavriel": {
+      "status": "ok",
+      "products": 204,
+      "catalogue": 204,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Dear Frances": {
+      "status": "ok",
+      "products": 127,
+      "catalogue": 127,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Flattered": {
+      "status": "ok",
+      "products": 245,
+      "catalogue": 245,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "ATP Atelier": {
+      "status": "ok",
+      "products": 256,
+      "catalogue": 256,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Penelope Chilvers": {
+      "status": "ok",
+      "products": 244,
+      "catalogue": 244,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Bobbies": {
+      "status": "failed",
+      "reason": "HTTP Error 403: Forbidden",
+      "kind": "temporary",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Ancient Greek Sandals": {
+      "status": "ok",
+      "products": 1312,
+      "catalogue": 1312,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Carel": {
+      "status": "ok",
+      "products": 283,
+      "catalogue": 283,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Le Monde B\u00e9ryl": {
+      "status": "ok",
+      "products": 307,
+      "catalogue": 307,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Rothy's": {
+      "status": "ok",
+      "products": 752,
+      "catalogue": 752,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Intentionally Blank": {
+      "status": "failed",
+      "reason": "HTTP Error 403: Forbidden",
+      "kind": "temporary",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Nisolo": {
+      "status": "ok",
+      "products": 147,
+      "catalogue": 147,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Cariuma": {
+      "status": "failed",
+      "reason": "HTTP Error 401: Unauthorized",
+      "kind": "temporary",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Sam Edelman": {
+      "status": "failed",
+      "reason": "HTTP Error 403: Forbidden",
+      "kind": "temporary",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Loeffler Randall": {
+      "status": "ok",
+      "products": 1062,
+      "catalogue": 1062,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Jenny Bird": {
+      "status": "ok",
+      "products": 518,
+      "catalogue": 518,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Frahm": {
+      "status": "failed",
+      "reason": "HTTP Error 403: Forbidden",
+      "kind": "temporary",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Hymn London": {
+      "status": "failed",
+      "reason": "<urlopen error [Errno -2] Name or service not known>",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Hamilton and Hare": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Orlebar Brown": {
+      "status": "ok",
+      "products": 1295,
+      "catalogue": 1295,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "John Smedley": {
+      "status": "failed",
+      "reason": "HTTP Error 429: Too Many Requests",
+      "kind": "temporary",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "L.E.J": {
+      "status": "failed",
+      "reason": "not JSON (text/html)",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Community Clothing": {
+      "status": "ok",
+      "products": 958,
+      "catalogue": 958,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Rapanui": {
+      "status": "failed",
+      "reason": "not JSON (text/html)",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Finisterre": {
+      "status": "ok",
+      "products": 817,
+      "catalogue": 817,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Howies": {
+      "status": "ok",
+      "products": 369,
+      "catalogue": 369,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Paynter": {
+      "status": "ok",
+      "products": 264,
+      "catalogue": 264,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Hiut Denim": {
+      "status": "ok",
+      "products": 164,
+      "catalogue": 164,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Lavenham": {
+      "status": "ok",
+      "products": 208,
+      "catalogue": 208,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Grenfell": {
+      "status": "ok",
+      "products": 94,
+      "catalogue": 94,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Lyle & Scott": {
+      "status": "ok",
+      "products": 1412,
+      "catalogue": 1412,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Nudie Jeans": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Filippa K": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Wood Wood": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Tiger of Sweden": {
+      "status": "failed",
+      "reason": "not JSON (text/html;charset=UTF-8)",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Sefr": {
+      "status": "failed",
+      "reason": "not JSON (text/html; charset=utf-8)",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Le Mont St Michel": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Armor Lux": {
+      "status": "ok",
+      "products": 2004,
+      "catalogue": 2004,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Saint James": {
+      "status": "ok",
+      "products": 838,
+      "catalogue": 838,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Gant": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 9,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Barena Venezia": {
+      "status": "ok",
+      "products": 312,
+      "catalogue": 312,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Portuguese Flannel": {
+      "status": "ok",
+      "products": 224,
+      "catalogue": 224,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Beams Plus": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Thom Sweeney": {
+      "status": "ok",
+      "products": 66,
+      "catalogue": 66,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Lardini": {
+      "status": "ok",
+      "products": 176,
+      "catalogue": 176,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Boglioli": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Seasalt Cornwall": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Joanie": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Thought": {
+      "status": "ok",
+      "products": 479,
+      "catalogue": 479,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Sosandar": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "The Fold London": {
+      "status": "failed",
+      "reason": "HTTP Error 404: Not Found",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "House of Sunny": {
+      "status": "ok",
+      "products": 142,
+      "catalogue": 142,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Daisy Street": {
+      "status": "ok",
+      "products": 361,
+      "catalogue": 361,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Motel Rocks": {
+      "status": "ok",
+      "products": 3000,
+      "catalogue": 5141,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Hosbjerg": {
+      "status": "ok",
+      "products": 106,
+      "catalogue": 106,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Twist & Tango": {
+      "status": "failed",
+      "reason": "<urlopen error timed out>",
+      "kind": "temporary",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "R\u00e9sum\u00e9": {
+      "status": "ok",
+      "products": 307,
+      "catalogue": 307,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Remain Birger Christensen": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "A-View": {
+      "status": "ok",
+      "products": 959,
+      "catalogue": 959,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Mother of Pearl": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Kate Sheridan": {
+      "status": "ok",
+      "products": 2322,
+      "catalogue": 2322,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Lowie": {
+      "status": "failed",
+      "reason": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Hobes": {
+      "status": "failed",
+      "reason": "<urlopen error [Errno -2] Name or service not known>",
+      "kind": "gone",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Jigsaw": {
+      "status": "failed",
+      "reason": "robots.txt disallows /products.json",
+      "kind": "blocked",
+      "kept_previous": 0,
+      "last_ok": null,
+      "fail_days": 12
+    },
+    "Pretty Lavish": {
+      "status": "ok",
+      "products": 1132,
+      "catalogue": 1132,
+      "currency": "GBP",
+      "last_ok": "2026-11-28"
+    },
+    "Ralph Lauren": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)",
+      "last_ok": null
+    },
+    "Reiss": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)",
+      "last_ok": null
+    },
+    "Arket": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)",
+      "last_ok": null
+    },
+    "COS": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)",
+      "last_ok": null
+    },
+    "Suitsupply": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)",
+      "last_ok": null
+    },
+    "H&M": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)",
+      "last_ok": null
+    },
+    "Uniqlo": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)",
+      "last_ok": null
+    },
+    "Zara": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)",
+      "last_ok": null
+    },
+    "Mango": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)",
+      "last_ok": null
+    },
+    "& Other Stories": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)",
+      "last_ok": null
+    },
+    "Massimo Dutti": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)",
+      "last_ok": null
+    },
+    "Net-a-Porter (Miu Miu, Prada, Loewe\u2026)": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)",
+      "last_ok": null
+    },
+    "Mr Porter": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)",
+      "last_ok": null
+    },
+    "Mytheresa": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)",
+      "last_ok": null
+    },
+    "Farfetch": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)",
+      "last_ok": null
+    },
+    "Selfridges": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)",
+      "last_ok": null
+    },
+    "Liberty London": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)",
+      "last_ok": null
+    },
+    "Nike": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)",
+      "last_ok": null
+    },
+    "adidas": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)",
+      "last_ok": null
+    },
+    "On": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)",
+      "last_ok": null
+    },
+    "New Balance": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)",
+      "last_ok": null
+    },
+    "Hoka": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)",
+      "last_ok": null
+    },
+    "Lululemon": {
+      "status": "skipped",
+      "reason": "source=affiliate (needs feed)",
+      "last_ok": null
+    }
+  }
+}
